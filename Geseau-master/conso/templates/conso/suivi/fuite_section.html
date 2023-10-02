@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block etatactuel %}
+Analyse fuite - {{ section.nom_section }}
+{% endblock etatactuel %}
+
+{% block content %}
+    <h1>Section : {{ section.nom_section }}</h1>
+
+    <form method="post">
+        {% csrf_token %}
+        <label for="heure_debut">Heure de début :</label>
+        <input type="time" name="heure_debut" required><br>
+
+        <label for="heure_fin">Heure de fin :</label>
+        <input type="time" name="heure_fin" required><br>
+
+        <input type="submit" value="Analyser">
+    </form>
+
+    
+        <p>Consommation durant la période : {{ total_consommation }} unités</p>
+        <p>Une consommation a été enregistrée pendant la période spécifiée.</p>
+{% endblock content %}

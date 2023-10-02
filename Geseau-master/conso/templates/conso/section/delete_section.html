@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block etatactuel %}Suppression de votre section{% endblock etatactuel %}
+
+
+{% block content %}
+
+<p>Voulez-vous vraiment supprimer cette section?</p>
+<form action="{% url 'delete_section' item.id %}" method="POST">
+    {% csrf_token %}
+    <a class="btn btn-warning" href="{% url 'section' %}">Annuler</a>
+    <input class="btn btn-danger" type="submit" name="Confirmer" />
+</form>
+
+{% endblock content %}

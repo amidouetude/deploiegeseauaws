@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+
+{% block etatactuel %}
+Telechargement de fichier
+{% endblock etatactuel %}
+
+{% block content %}
+<!-- download.html -->
+
+<div class="consojour col-9">
+  <form method="post" class="card p-3 mt-2 myform details">
+    {% csrf_token %}
+    <div class="form-group">
+      <label for="date_debut">Date de début :</label>
+      <input type="date" id="{{ form.start_date.id_for_label }}" class="form-control" name="{{ form.start_date.name }}" required>
+    </div>
+    <div class="form-group">
+      <label for="{{ form.end_date.id_for_label }}">Date de fin</label>
+      <input type="date" id="{{ form.end_date.id_for_label }}" class="form-control" name="{{ form.end_date.name }}" required>
+    </div>
+    </div class="mt-2">
+      <button type="submit" class="btn btn-info">Télécharger</button>
+  </form>
+</div>
+
+
+{% endblock content %}

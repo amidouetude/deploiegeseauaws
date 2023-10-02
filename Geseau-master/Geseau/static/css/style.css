@@ -1,0 +1,380 @@
+*, ::before, ::after {
+  bottom: border-box;
+  margin: 0;
+  padding: 0;
+
+}
+
+body {
+  font-family: Arial, Helvetica, sans-serif;
+}
+.container-grille {
+  height: 100vh;
+  width: 100%;
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  grid-template-rows: auto 1fr;
+}
+.header {
+  grid-column: span 2;
+  padding: 10px;
+  text-align: center;
+  font-size: 22px;
+  background-color: #fff;
+  color: #65a9dc;
+  justify-content: space-between;
+  align-items: center;
+  display: flex;
+}
+.logo {
+  width: 50px;
+  height: auto;
+  font-size: 60px;
+  text-align: left;
+  margin-left : 30 px;  
+}
+
+  
+
+.header-title {
+  color: #10b3d8;
+  position: relative;
+  font-size: 700 60px/140% "Kanit", sans-serif;;
+  font-weight: bold;
+  margin: 0;
+  text-align: left;
+}
+
+.icons {
+  display: flex;
+  gap: 20px;
+  color: #10b3d8;
+  
+}
+
+.profile-icon,
+.notification-icon {
+  width: 30px;
+  height: 30px;
+  color: #10b3d8;
+  font-size: 40px;
+  /*background-color: #e0e0e0;*/
+  display: inline-block;
+  border-radius: 50%;
+  position : relative;
+}
+
+
+/* Sidebar styles */
+.sidebar {
+  height: inherit 100vh;
+  background-color: #10b3d8;
+  color: #fff;
+  width: 250px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  text-decoration: #080808;
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+}
+
+.sidebar li {
+  margin-bottom: 25px;
+}
+
+.sidebar a {
+  color: #0b0a0a;
+  text-decoration: none;
+  font-size: 18px;
+}
+.sidebar ion-icon {
+  vertical-align: middle;
+  font-size: 24px; 
+}
+.navbar ion-icon + span {
+  font-size: 16px;
+}
+
+.logout-button {
+  background-color: transparent;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  font-size: 16px;
+  margin-bottom: 20px;
+}
+
+.logout-button:hover {
+  text-decoration: underline;
+}
+
+.flex-container {
+  display: flex;
+  align-items: center;
+}
+
+.flex-container ion-icon {
+  margin-right: 10px; /* Marge à droite pour l'icône */
+}
+
+.flex-container span {
+  flex-grow: 1; /* Fait en sorte que le texte occupe tout l'espace restant à droite */
+  text-align: right; /* Alignement du texte à droite */
+}
+
+.main-content {
+  margin-top: 0px; /* Hauteur de la barre d'entÃªte */
+  padding: 0px;
+  margin-right: -10px;
+  height: 100vh;
+  text-align: justify;
+}
+
+.content-header {
+  background-color: #f0f5f8;
+  padding: 5px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  /*z-index: 2;*/
+}
+.total-consumption {
+  background-color: #10b3d8;
+  color: #fff;
+  padding: 5px;
+  border-radius: 5px;
+  font-size: 18px;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.icon-size {
+  font-size: 20px; /* Réglez la taille souhaitée */
+}
+
+.buttons {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+.button {
+  background-color: #10b3d8;
+  color: #fff;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.graphe {
+  color: #fff;
+ 
+
+}
+
+
+
+/*Responsivité*/
+.table-responsive {
+  max-height: 400px; /* Ajustez la hauteur maximale selon vos besoins */
+  overflow-y: auto; /* Activer le défilement vertical si nécessaire */
+}
+
+.sticky-top {
+  position: sticky;
+  top: 0;
+  background-color: #10b3d8; /* Fond blanc pour l'en-tête fixe */
+}
+
+.dark-mode {
+  background-color: #000; /* Fond noir */
+  color: #fff; /* Texte blanc */
+}
+
+.details {
+  margin-bottom: 10px;
+  font-size: 20px;
+  color: #333;
+}
+/*.form-control {
+  font-size: 16px;
+  height: 40px;
+}*/
+
+.logo-container {
+  display: flex;
+  justify-content: center; /* Centrer horizontalement */
+  align-items: center; /* Centrer verticalement */
+  height: 100%; /* Assurez-vous que le container occupe la hauteur complète */
+}
+.logo {
+  max-width: 100%;
+  max-height: 100%;
+}
+
+/*Modif pour faq*/
+.faq-item{
+  margin-bottom: 40px;
+  margin-top: 40px;
+}
+.faq-body{
+  display: none;
+  margin-top: 30px;
+}
+.faq-wrapper{
+  width: 75%;
+  margin: 0 auto;
+}
+.faq-inner{
+  padding: 30px;
+  text-align: justify;
+}
+.faq-plus{
+  float: right;
+  font-size: 1.4em;
+  line-height: 1em;
+  cursor: pointer;
+}
+hr{
+  background-color: #9b9b9b;
+}
+
+/*Modification menu-deroulant*/
+.consojour{
+  padding-left: 20px;
+  position: relative;
+}
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-button {
+  background-color: #1e90ff;
+  color: #fff;
+  padding: 10px 30px 10px 20px;
+  border: none;
+  cursor: pointer;
+  position: relative;
+}
+
+.dropdown-button::after {
+  content: "\25BE"; /* Flèche vers le bas */
+  position: absolute;
+  right: 10px;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #c0e0f7;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+
+.dropdown.open .dropdown-content {
+  display: block;
+}
+
+.dropdown-item {
+  padding: 12px 16px 12px 12px;
+  text-decoration: none;
+  display: block;
+  color: #333;
+}
+
+.dropdown-item:hover {
+  background-color: #a1cde7;
+}
+
+/*  Footer */
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+}
+
+.footer {
+  background-color: skyblue;
+  color: #fff;
+  padding: 20px 0;
+}
+
+.footer-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.footer-logo img {
+  width: 100px;
+  height: auto;
+}
+
+.footer-links {
+  display: flex;
+  gap: 20px;
+}
+
+.footer-links a {
+  color: #fff;
+  text-decoration: none;
+}
+
+.footer-contact p {
+  margin: 0;
+}
+
+.footer-contact a {
+  color: #fff;
+  text-decoration: none;
+}
+
+.footer-bottom {
+  text-align: center;
+  margin-top: 20px;
+}
+
+
+.sidebar {
+  width: 100%;
+}
+
+.sidebar ul {
+  padding: 0;
+}
+
+.sidebar li {
+  margin-bottom: 10px;
+}
+
+.sidebar a {
+  font-size: 14px;
+}
+
+/* Définissez une largeur de seuil pour cacher le menu */
+@media screen and (max-width: 768px) {
+  .sidebar {
+    display: none; /* Cache le menu de navigation */
+  }
+}
+
+
+#myChart {
+  max-width: 100%; /* Pour s'assurer que le graphique ne dépasse pas la largeur du conteneur */
+  height: auto; /* Permet au graphique de conserver son ratio d'aspect */
+  display: block; /* Pour supprimer tout espace supplémentaire sous le graphique */
+}

@@ -1,0 +1,238 @@
+{% extends 'base.html' %}
+
+{% block etatactuel %}
+Foire aux questions
+{% endblock etatactuel %}
+
+{% block content %}
+        <div class="container">
+            <div class="row">
+                <div class="col-md-8 mx-auto">
+                    <div class="accordion" id="faqAccordion">
+                        <!-- Question 1 -->
+                        <div class="faq-item">
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="faqHeading1">
+                                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faqCollapse1" aria-expanded="true" aria-controls="faqCollapse1">
+                                        Q1 : Comment fonctionne notre système de gestion de l'eau ?
+                                    </button>
+                                </h2>
+                                <div id="faqCollapse1" class="accordion-collapse collapse show" aria-labelledby="faqHeading1" data-bs-parent="#faqAccordion">
+                                    <div class="accordion-body">
+                                        Réponse : Notre système de gestion de l'eau utilise des capteurs IoT pour surveiller la consommation d'eau en temps réel. Les données sont collectées et analysées pour vous fournir des informations précises sur votre consommation d'eau.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Question 2 -->
+                        <div class="faq-item">
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="faqHeading2">
+                                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faqCollapse2" aria-expanded="true" aria-controls="faqCollapse2">
+                                        Q2 : Comment puis-je accéder à mes données de consommation d'eau ?
+                                    </button>
+                                </h2>
+                                <div id="faqCollapse2" class="accordion-collapse collapse" aria-labelledby="faqHeading2" data-bs-parent="#faqAccordion">
+                                    <div class="accordion-body">
+                                        Réponse : Vous pouvez accéder à vos données de consommation d'eau à partir de notre tableau de bord en ligne. Il vous suffit de vous connecter à votre compte pour voir vos données en temps réel.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Question 3 -->
+                        <div class="faq-item">
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="faqHeading3">
+                                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faqCollapse3" aria-expanded="true" aria-controls="faqCollapse3">
+                                        Q3 : Puis-je recevoir des alertes en cas de fuite d'eau ou de consommation anormale ?
+                                    </button>
+                                </h2>
+                                <div id="faqCollapse3" class="accordion-collapse collapse" aria-labelledby="faqHeading3" data-bs-parent="#faqAccordion">
+                                    <div class="accordion-body">
+                                        Réponse : Oui, notre système peut vous envoyer des alertes par e-mail ou par SMS en cas de fuite d'eau ou de consommation anormale, vous permettant de réagir rapidement.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Question 4 -->
+                        <div class="faq-item">
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="faqHeading4">
+                                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faqCollapse4" aria-expanded="true" aria-controls="faqCollapse4">
+                                        Q4 : Comment puis-je économiser de l'eau avec votre système ?
+                                    </button>
+                                </h2>
+                                <div id="faqCollapse4" class="accordion-collapse collapse" aria-labelledby="faqHeading4" data-bs-parent="#faqAccordion">
+                                    <div class="accordion-body">
+                                        Réponse : Notre système fournit des recommandations personnalisées pour vous aider à économiser de l'eau. Vous pouvez également configurer des seuils de consommation pour suivre votre budget d'eau.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Question 5 -->
+                        <div class="faq-item">
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="faqHeading5">
+                                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faqCollapse5" aria-expanded="true" aria-controls="faqCollapse5">
+                                        Q5 : Est-ce que votre système est compatible avec d'autres appareils IoT ?
+                                    </button>
+                                </h2>
+                                <div id="faqCollapse5" class="accordion-collapse collapse" aria-labelledby="faqHeading5" data-bs-parent="#faqAccordion">
+                                    <div class="accordion-body">
+                                        Réponse : Oui, notre système est conçu pour être compatible avec d'autres appareils IoT, ce qui vous permet d'intégrer facilement d'autres systèmes de gestion intelligente.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Question 6 -->
+                        <div class="faq-item">
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="faqHeading6">
+                                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faqCollapse6" aria-expanded="true" aria-controls="faqCollapse6">
+                                        Q6 : Comment puis-je installer vos capteurs IoT ?
+                                    </button>
+                                </h2>
+                                <div id="faqCollapse6" class="accordion-collapse collapse" aria-labelledby="faqHeading6" data-bs-parent="#faqAccordion">
+                                    <div class="accordion-body">
+                                        Réponse : L'installation de nos capteurs IoT est simple. Suivez les instructions fournies avec le produit ou consultez notre guide d'installation en ligne.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Question 7 -->
+                        <div class="faq-item">
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="faqHeading7">
+                                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faqCollapse7" aria-expanded="true" aria-controls="faqCollapse7">
+                                        Q7 : Quelle est la durée de vie de vos capteurs IoT ?
+                                    </button>
+                                </h2>
+                                <div id="faqCollapse7" class="accordion-collapse collapse" aria-labelledby="faqHeading7" data-bs-parent="#faqAccordion">
+                                    <div class="accordion-body">
+                                        Réponse : La durée de vie de nos capteurs IoT varie en fonction de l'utilisation, mais elle est généralement de plusieurs années. Nous offrons également une garantie pour assurer la qualité et la performance.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Question 8 -->
+                        <div class="faq-item">
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="faqHeading8">
+                                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faqCollapse8" aria-expanded="true" aria-controls="faqCollapse8">
+                                        Q8 : Comment puis-je contacter votre service client en cas de problème ?
+                                    </button>
+                                </h2>
+                                <div id="faqCollapse8" class="accordion-collapse collapse" aria-labelledby="faqHeading8" data-bs-parent="#faqAccordion">
+                                    <div class="accordion-body">
+                                        Réponse : Vous pouvez nous contacter à tout moment en utilisant notre formulaire de contact sur le site web ou en appelant notre service clientèle au [numéro de téléphone].
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Question 9 -->
+                        <div class="faq-item">
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="faqHeading9">
+                                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faqCollapse9" aria-expanded="true" aria-controls="faqCollapse9">
+                                        Q9 : Quels sont les avantages de ce projet pour les industries ?
+                                    </button>
+                                </h2>
+                                <div id="faqCollapse9" class="accordion-collapse collapse" aria-labelledby="faqHeading9" data-bs-parent="#faqAccordion">
+                                    <div class="accordion-body">
+                                        Réponse : Ce projet offre de nombreux avantages aux industries, notamment la possibilité de déterminer avec précision la quantité d'eau consommée par section de l'entreprise. Cela permet une gestion plus précise du budget alloué à l'eau, des économies grâce à la prévention du gaspillage, et une visibilité claire sur la consommation d'eau. De plus, les alertes avertissent en cas de surconsommation, de gaspillage ou de fuite, permettant une réaction rapide.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Question 10 -->
+                        <div class="faq-item">
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="faqHeading10">
+                                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faqCollapse10" aria-expanded="true" aria-controls="faqCollapse10">
+                                        Q10 : Comment fonctionne le dispositif ?
+                                    </button>
+                                </h2>
+                                <div id="faqCollapse10" class="accordion-collapse collapse" aria-labelledby="faqHeading10" data-bs-parent="#faqAccordion">
+                                    <div class="accordion-body">
+                                        Réponse : Le dispositif comprend des capteurs intelligents qui mesurent en continu le débit et la pression de l'eau dans différentes sections de l'entreprise. Les données sont transmises sans fil à une plateforme en ligne accessible depuis n'importe quel appareil connecté à Internet. Cette plateforme analyse les données et les affiche sous forme de graphiques, de tableaux et d'indicateurs pertinents. Elle permet également de recevoir des alertes en cas d'anomalie, de consulter des prévisions basées sur des modèles statistiques et de recevoir des recommandations personnalisées pour une gestion optimale de l'eau.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Question 11 -->
+                        <div class="faq-item">
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="faqHeading11">
+                                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faqCollapse11" aria-expanded="true" aria-controls="faqCollapse11">
+                                        Q11 : Quel est le coût du dispositif ?
+                                    </button>
+                                </h2>
+                                <div id="faqCollapse11" class="accordion-collapse collapse" aria-labelledby="faqHeading11" data-bs-parent="#faqAccordion">
+                                    <div class="accordion-body">
+                                        Réponse : Pour connaître le coût du dispositif, nous vous invitons à remplir un formulaire de commande sur notre site web [lien vers le formulaire]. Le coût peut varier en fonction de la taille de l'entreprise, du nombre de sections où les capteurs seront installés et du volume estimé d'eau consommé. Un conseiller du projet vous contactera pour confirmer votre commande et fixer un rendez-vous d'installation.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Question 12 -->
+                        <div class="faq-item">
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="faqHeading12">
+                                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faqCollapse12" aria-expanded="true" aria-controls="faqCollapse12">
+                                        Q12 : Comment commander le dispositif ?
+                                    </button>
+                                </h2>
+                                <div id="faqCollapse12" class="accordion-collapse collapse" aria-labelledby="faqHeading12" data-bs-parent="#faqAccordion">
+                                    <div class="accordion-body">
+                                        Réponse : Pour commander le dispositif, vous devez vous rendre sur notre site web [lien vers le formulaire de commande] et remplir le formulaire en ligne avec les informations requises, telles que le nom de l'entreprise, le secteur d'activité, le nombre de sections, le volume estimé d'eau consommé, et le mode de paiement souhaité. Une fois le formulaire validé, un conseiller du projet vous contactera pour finaliser la commande.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Question 13 -->
+                        <div class="faq-item">
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="faqHeading13">
+                                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faqCollapse13" aria-expanded="true" aria-controls="faqCollapse13">
+                                        Q13 : Comment utiliser la plateforme ?
+                                    </button>
+                                </h2>
+                                <div id="faqCollapse13" class="accordion-collapse collapse" aria-labelledby="faqHeading13" data-bs-parent="#faqAccordion">
+                                    <div class="accordion-body">
+                                        Réponse : Pour utiliser la plateforme, suivez ces étapes :
+                                        <br>1. Connectez-vous avec vos identifiants et mot de passe fournis lors de la commande.
+                                        <br>2. Sur la page d'accueil, consultez le tableau de bord qui affiche les principales informations sur votre consommation d'eau, telles que le volume total, le volume par section, le coût, les écarts, les pics, etc.
+                                        <br>3. Utilisez le menu latéral pour accéder à des fonctionnalités supplémentaires telles que les alertes, les prévisions et les conseils.
+                                        <br>4. Le menu supérieur vous permet de modifier votre profil, de contacter le support ou de vous déconnecter en toute sécurité.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Question 14 -->
+                        <div class="faq-item">
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="faqHeading14">
+                                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faqCollapse14" aria-expanded="true" aria-controls="faqCollapse14">
+                                        Q14 : Pourquoi faire une prévision ?
+                                    </button>
+                                </h2>
+                                <div id="faqCollapse14" class="accordion-collapse collapse" aria-labelledby="faqHeading14" data-bs-parent="#faqAccordion">
+                                    <div class="accordion-body">
+                                        Réponse : Pour s'organiser, une entreprise a besoin de prévoir sur ses futurs besoins. Dans le cas de cette fonctionnalité, elle vous permettra de déterminer votre besoin en termes de consommation durant les prochains jours à court terme, à moyen terme durant les prochains mois et à long terme durant les années à venir.
+                                        <br>Bientôt dans la prévision, nous allons tenir compte d'autres paramètres tels que les températures moyennes, les besoins de la population.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+<script type="text/javascript">
+  // Aucun changement nécessaire dans votre script jQuery
+  $(".faq-plus").on('click', function(){
+    $(this).parent().parent().find('.faq-body').slideToggle();
+  });
+</script>
+
+{% endblock content %}

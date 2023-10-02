@@ -1,0 +1,128 @@
+{% extends 'base.html' %}
+
+{% block etatactuel %}
+Prévision
+{% endblock etatactuel %}
+
+{% block content %}
+<div class="container">
+    <h1 class="mt-4">Prévision de consommation quotidienne</h1>
+    <table class="table table-bordered table-striped mt-4 text-center">
+        <thead class="sticky-top text-white">
+            <tr class="">
+                <th>Numéro</th>
+                <th>Date</th>
+                <th>Prévision</th>
+                <th>Borne inférieure (IC)</th>
+                <th>Borne supérieure (IC)</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for date, prediction, lower, upper in forecast_data %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ date|date:"Y-m-d" }}</td>
+                <td>{{ prediction }}</td>
+                <td>{{ lower }}</td>
+                <td>{{ upper }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="mt-4">
+        <h2>Métriques d'évaluation</h2>
+        <p>
+            Erreur Quadratique Moyenne (MSE) : {{ mse }} %
+            <br>
+            La MSE en pourcentage mesure à quel point nos prédictions s'écartent en moyenne des valeurs réelles. Cela nous indique à quel point nos prédictions sont précises.
+            <br>
+            {% if mse < 10 %}
+            La MSE est très faible, ce qui signifie que nos prédictions sont en moyenne très proches des valeurs réelles.
+            {% elif mse < 20 %}
+            La MSE est faible à modérée, indiquant que nos prédictions sont généralement précises.
+            {% elif mse < 50 %}
+            La MSE est modérée à élevée, ce qui suggère que nos prédictions ont des écarts plus importants par rapport aux valeurs réelles.
+            {% else %}
+            La MSE est élevée, ce qui signifie que nos prédictions ont des erreurs significatives par rapport aux valeurs réelles.
+            {% endif %}
+        </p>
+    </div>
+    
+
+    <div class="mt-4">
+        <h1>Graphique des prévisions</h1>
+        <canvas id="forecastChart" width="800" height="400"></canvas>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+<script>
+    var ctx = document.getElementById('forecastChart').getContext('2d');
+    var dates = [];
+    var predictions = [];
+    var lowerBounds = [];
+    var upperBounds = [];
+
+    {% for date, prediction, lower, upper in forecast_data %}
+        dates.push('{{ date|date:"Y-m-d" }}');
+        predictions.push({{ prediction }});
+        lowerBounds.push({{ lower }});
+        upperBounds.push({{ upper }});
+    {% endfor %}
+
+    var data = {
+        labels: dates,
+        datasets: [
+            {
+                label: 'Prévision',
+                data: predictions,
+                borderColor: 'blue',
+                backgroundColor: 'rgba(0, 0, 255, 0.1)',
+                borderWidth: 1,
+            },
+            {
+                label: 'Borne inférieure (IC)',
+                data: lowerBounds,
+                borderColor: 'green',
+                backgroundColor: 'rgba(0, 255, 0, 0.1)',
+                borderWidth: 1,
+            },
+            {
+                label: 'Borne supérieure (IC)',
+                data: upperBounds,
+                borderColor: 'red',
+                backgroundColor: 'rgba(255, 0, 0, 0.1)',
+                borderWidth: 1,
+            },
+        ],
+    };
+
+    var options = {
+        scales: {
+            x: {
+                type: 'time',
+                time: {
+                    unit: 'day',
+                },
+                title: {
+                    display: true,
+                    text: 'Date',
+                },
+            },
+            y: {
+                title: {
+                    display: true,
+                    text: 'Prévision',
+                },
+            },
+        },
+    };
+
+    var chart = new Chart(ctx, {
+        type: 'line',
+        data: data,
+        options: options,
+    });
+</script>
+{% endblock content %}

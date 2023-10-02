@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+
+{% block etatactuel %} {{ section.nom_section }} {% endblock etatactuel %}
+
+{% block content %}
+<div class="container-fluid">
+  
+  <div class="row justify-content-end">
+    <div class="col-4 btn-group ">
+      <div class="buttons">
+        <button class="button">
+          <a class="btn btn-sm" href="{% url 'add_dispositif' section_pk=section.id %}">Ajouter un dispositif</a>
+        </button>
+        <button class="btn btn-outline-info">
+          <a class="btn btn-sm" href="{% url 'section' %}"><ion-icon name="arrow-undo-sharp"></ion-icon><span>Retour</span></a>
+        </button>
+    </div>
+  </div>
+
+  {% comment %} <div>
+    <p>Total consommation: {{ section.total_consommation }}</p>
+    <p>Daily consommation: {{ section.daily_consommation }}</p>
+    <p>Weekly consommation: {{ section.weekly_consommation }}</p>
+    <p>Monthly consommation: {{ section.monthly_consommation }}</p>
+  </div> {% endcomment %}
+  
+  
+    <div class="row">
+      <div class="consojour">
+      <h2>Liste des dispositifs de la section "{{ section.nom_section }}"</h2>
+      <table class="table table-striped table-bordered table-lower">
+          <thead class="sticky-top text-white">
+            <tr>
+              <th scope="col">Lieu d'emplacement</th>
+              <th scope="col" class="col">Consommation du jour</th>
+              <th scope="col" class="col">Consommation de la semaine</th>
+              <th scope="col" class="col">Consommation du mois</th>
+              <th scope="col" class="col">Consommation totale</th>
+              <th scope="col">Options</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for dispo in consom_by_dispositif %}
+            <tr>
+              <td><a href="{% url 'graphe_dispo' dispo.dispositif.id %}" class="text-black btn btn-outline-info btn-sm">{{dispo.dispositif.nom_lieu}}</a></td>
+              <td class="col text-center">{{dispo.daily_consommation_dispositif }}</td>
+              <td class="col text-center">{{dispo.weekly_consommation_dispositif }}</td>
+              <td class="col text-center">{{dispo.monthly_consommation_dispositif}}</td>
+              <td class="col text-center">{{dispo.total_consommation_dispositif}}</td>
+              <td>
+                <div class="btn">
+                  <a href="{% url 'update_dispositif' dispo.dispositif.id %}" class="btn btn-warning bi bi-pencil"></a>
+                  <a href="{% url 'graphe_dispo' dispo.dispositif.id %}" class="btn btn-primary bi bi-eye"></a>
+                  <a href="{% url 'delete_dispositif' dispo.dispositif.id %}" class="btn btn-danger bi bi-trash"></a>
+                </div>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+    
+    
+
+
+
+
+
+  
+</div>
+
+{% endblock content %}

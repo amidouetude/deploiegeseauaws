@@ -1,0 +1,244 @@
+{% extends 'base.html' %}
+
+{% block etatactuel %}
+Tableau de bord
+{% endblock etatactuel %}
+
+{% block content %}
+<div class="container mt-3">
+    <ul class="nav nav-tabs" role="tablist">
+        <li class="nav-item">
+          <a class="nav-link active" data-bs-toggle="tab" href="#home">Consommation générale</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" data-bs-toggle="tab" href="#menu1">Consommation par sections</a>
+        </li>
+    </ul>
+    <br>
+      <!-- Tab panes -->
+    <div class="tab-content">
+        <div class="container tab-pane active" id="home">
+            <div class="content-header">
+                <div>
+                    <div>
+                        <p>Consommation de ce jour {{ today }}</p>
+                        <h3><span id="daily-consommation">{{ daily_consommation }} m&sup3</span></h3>
+                    </div>
+                    <div class="dropdown">
+                        <button class="dropdown-button btn-info">Voir consommation</button>
+                        <div class="dropdown-content">
+                            <a href="{% url 'index' %}" class="dropdown-item">Générale</a> <br>
+                            {% for section in sections %}
+                                <a href="{% url 'graphe_section' section.id %}" class="dropdown-item">{{ section.nom_section }}</a> <br>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <p>Consommation de cette semaine</p> <h3><span id="weekly-consommation">{{ weekly_consommation }} m&sup3 </span></h3>
+                </div>
+                <div>
+                    <p>Consommation de ce mois </p> <h3><span id="monthly-consommation">{{ monthly_consommation }} m&sup3</span></h3>
+                </div>
+            </div><br>
+            <div style="width: 80%; margin: 0 auto;">
+                <h3 class="text-center">Graphique de la consommation des sept derniers jours</h3>
+                <canvas id="myChart"></canvas>
+            </div>      
+        </div>
+        <div class="container tab-pane fade" id="menu1">
+            <div class="row">
+                <div class="col-md-4">
+                    <h3 class="text-center">Journalière</h3>
+                    <canvas id="section-daily-chart"></canvas>
+                </div>
+                <div class="col-md-4">
+                    <h3 class="text-center">Hebdomadaire</h3>
+                    <canvas id="section-weekly-chart"></canvas>
+                </div>
+                <div class="col-md-4">
+                    <h3 class="text-center">Mensuelle</h3>
+                    <canvas id="section-monthly-chart"></canvas>
+                </div>
+            </div><br>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+
+{% block scripts %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var dropdownButton = document.querySelector('.dropdown-button');
+        var dropdown = document.querySelector('.dropdown');
+
+        dropdownButton.addEventListener('click', function() {
+            dropdown.classList.toggle('open');
+        });
+
+        document.addEventListener('click', function(event) {
+            if (!dropdown.contains(event.target)) {
+                dropdown.classList.remove('open');
+            }
+        });
+    });
+</script>
+<script>
+    var ctx = document.getElementById('myChart').getContext('2d');
+    var data = {
+        labels: [{% for item in data %}"{{ item.day|date:'SHORT_DATE_FORMAT' }}",{% endfor %}],
+        datasets: [{
+            label: '',
+            data: [
+                {% for item in data %}
+                {{ item.quantite_sum }},
+                {% endfor %}
+            ],
+            backgroundColor: 'lightblue',
+            borderColor: 'rgba(75, 192, 192, 1)',
+            borderWidth: 1
+        }]
+    };
+
+    var myChart = new Chart(ctx, {
+        type: 'bar',
+        data: data,
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+</script>
+<script>
+    // Configuration du graphique circulaire journalier
+    var sectionDailyChart = new Chart(document.getElementById('section-daily-chart'), {
+        type: 'pie',
+        data: {
+            labels: [{% for section in sections %}"{{ section.nom_section }}",{% endfor %}],
+            datasets: [{
+                data: [{% for section in daily_consommation_section %}{{ section }},{% endfor %}],
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.7)',
+                    'rgba(54, 162, 235, 0.7)',
+                    'rgba(255, 206, 86, 0.7)',
+                    'rgba(75, 192, 192, 0.7)',
+                    'rgba(153, 102, 255, 0.7)',
+                ],
+            }],
+        },
+        options: {
+            tooltips: {
+                callbacks: {
+                    label: function (tooltipItem, data) {
+                        var dataset = data.datasets[tooltipItem.datasetIndex];
+                        var currentValue = dataset.data[tooltipItem.index];
+                        var total = dataset.data.reduce(function (previousValue, currentValue) {
+                            return previousValue + currentValue;
+                        });
+                        var percentage = ((currentValue / total) * 100).toFixed(2) + '%';
+                        return percentage;
+                    },
+                },
+            },
+        },
+    });
+
+    // Configuration du graphique circulaire hebdomadaire
+    var sectionWeeklyChart = new Chart(document.getElementById('section-weekly-chart'), {
+        type: 'pie',
+        data: {
+            labels: [{% for section in sections %}"{{ section.nom_section }}",{% endfor %}],
+            datasets: [{
+                data: [{% for section in weekly_consommation_section %}{{ section }},{% endfor %}],
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.7)',
+                    'rgba(54, 162, 235, 0.7)',
+                    'rgba(255, 206, 86, 0.7)',
+                    'rgba(75, 192, 192, 0.7)',
+                    'rgba(153, 102, 255, 0.7)',
+                ],
+            }],
+        },
+        options: {
+            tooltips: {
+                callbacks: {
+                    label: function (tooltipItem, data) {
+                        var dataset = data.datasets[tooltipItem.datasetIndex];
+                        var total = dataset.data.reduce(function (previousValue, currentValue) {
+                            return previousValue + currentValue;
+                        });
+                        var currentValue = dataset.data[tooltipItem.index];
+                        var percentage = Math.floor(((currentValue / total) * 100) + 0.5);
+                        return data.labels[tooltipItem.index] + ': ' + currentValue + ' m³ (' + percentage + '%)';
+                    },
+                },
+            },
+        },
+    });
+
+    // Configuration du graphique circulaire mensuel
+    var sectionMonthlyChart = new Chart(document.getElementById('section-monthly-chart'), {
+        type: 'pie',
+        data: {
+            labels: [{% for section in sections %}"{{ section.nom_section }}",{% endfor %}],
+            datasets: [{
+                data: [{% for section in monthly_consommation_section %}{{ section }},{% endfor %}],
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.7)',
+                    'rgba(54, 162, 235, 0.7)',
+                    'rgba(255, 206, 86, 0.7)',
+                    'rgba(75, 192, 192, 0.7)',
+                    'rgba(153, 102, 255, 0.7)',
+                ],
+            }],
+        },
+        options: {
+            tooltips: {
+                callbacks: {
+                    label: function (tooltipItem, data) {
+                        var dataset = data.datasets[tooltipItem.datasetIndex];
+                        var total = dataset.data.reduce(function (previousValue, currentValue) {
+                            return previousValue + currentValue;
+                        });
+                        var currentValue = dataset.data[tooltipItem.index];
+                        var percentage = Math.floor(((currentValue / total) * 100) + 0.5);
+                        return data.labels[tooltipItem.index] + ': ' + currentValue + ' m³ (' + percentage + '%)';
+                    },
+                },
+            },
+        },
+    });
+</script>
+<script>
+    function updateConsumptionData() {
+        $.ajax({
+            url: '{% url "index" %}', // Remplacez par l'URL de votre vue Django
+            type: 'GET',
+            dataType: 'json',
+            success: function(data) {
+                // Mettez à jour les éléments HTML avec les nouvelles données
+                $('#daily-consommation').text(data.daily_consommation + ' m³');
+                $('#weekly-consommation').text(data.weekly_consommation + ' m³');
+                $('#monthly-consommation').text(data.monthly_consommation + ' m³');
+    
+                // Vous pouvez ajouter d'autres mises à jour ici si nécessaire
+    
+                // Répétez la mise à jour après un certain délai (par exemple, toutes les 30 secondes)
+                setTimeout(updateConsumptionData, 30000); // 30 000 ms = 30 secondes
+            }
+        });
+    }
+    
+    // Appelez la fonction pour la première fois
+    $(document).ready(function() {
+        updateConsumptionData();
+    });
+</script>
+
+{% endblock scripts %}
