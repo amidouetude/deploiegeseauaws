@@ -14,6 +14,14 @@
                 <div>
                     <h6>Consommation de ce jour {{today}}</h6>
                     <h3>{{daily_consommation}} m&sup3</h3>
+                    <select name="dispo" class="form-select" required onchange="redirectToSection(this)">
+                        <option value="{% url 'graphe_dispo' dispositif.id %}">{{ dispositif.nom_lieu }}</option>
+                        {% for other_dispositif in dispos %}
+                            {% if other_dispositif.id != dispositif.id %}
+                                <option value="{% url 'graphe_dispo' other_dispositif.id %}">{{ other_dispositif.nom_lieu }}</option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
                 </div> 
                 <div>
                     <h6>Consommation de la semaine</h6>
@@ -84,5 +92,14 @@
                 }
             }
         });
+</script>
+<script>
+    function redirectToSection(select) {
+        var selectedOption = select.options[select.selectedIndex];
+        var url = selectedOption.value;
+        if (url !== "") {
+            window.location.href = url;
+        }
+    }
 </script>
 {% endblock scripts %}

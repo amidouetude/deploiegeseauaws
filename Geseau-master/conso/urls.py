@@ -32,6 +32,7 @@ urlpatterns = [
     #path('download/',views.download,name="download"),
     path('alert/',views.alert,name="alert"),
     path('alert/<str:pk>/', views.read_alert, name='lecture'),
+    path('marquer_lue/<int:pk>/', views.marquer_lue, name='marquer_lue'),
     path('budget/',views.budget,name="budget"),
     path('fuite/',views.fuite,name="fuite"),
     #path('fuite/section/<str:pk>/',views.fuite_section,name="fuite_section"),

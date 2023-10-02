@@ -22,11 +22,17 @@
         <div id="home" class="container tab-pane active"><br>
             <div class="content-header">
                 <div>
-                    <h6>Consommation de ce jour {{today}} pour {{section.nom_section}}</h6>
+                    <h6>Consommation de ce jour {{today}}</h6>
                     <h1>{{daily_consommation}} m&sup3</h1>
-                    <div class="dropdown">
-                        <a href="{% url 'index'%}" class="dropdown-item"><ion-icon name="home-outline"></ion-icon></a>
-                    </div>
+                    <select name="section" class="form-select" required onchange="redirectToSection(this)">
+                        <option value="{% url 'graphe_section' section.id %}">{{ section.nom_section }}</option>
+                        <option value="{% url 'index' %}">Générale</option>
+                        {% for other_section in sections %}
+                            {% if other_section.id != section.id %}
+                                <option value="{% url 'graphe_section' other_section.id %}">{{ other_section.nom_section }}</option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
                 </div>
                 <div>
                     <div>
@@ -218,5 +224,14 @@
             },
         },
     });
+</script>
+<script>
+    function redirectToSection(select) {
+        var selectedOption = select.options[select.selectedIndex];
+        var url = selectedOption.value;
+        if (url !== "") {
+            window.location.href = url;
+        }
+    }
 </script>
 {% endblock scripts %}

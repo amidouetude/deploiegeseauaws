@@ -1,13 +1,15 @@
-*, ::before, ::after {
+*,
+::before,
+::after {
   bottom: border-box;
   margin: 0;
   padding: 0;
-
 }
 
 body {
   font-family: Arial, Helvetica, sans-serif;
 }
+
 .container-grille {
   height: 100vh;
   width: 100%;
@@ -15,6 +17,7 @@ body {
   grid-template-columns: 200px 1fr;
   grid-template-rows: auto 1fr;
 }
+
 .header {
   grid-column: span 2;
   padding: 10px;
@@ -26,20 +29,19 @@ body {
   align-items: center;
   display: flex;
 }
+
 .logo {
   width: 50px;
   height: auto;
   font-size: 60px;
   text-align: left;
-  margin-left : 30 px;  
+  margin-left: 30px;
 }
-
-  
 
 .header-title {
   color: #10b3d8;
   position: relative;
-  font-size: 700 60px/140% "Kanit", sans-serif;;
+  font-size: 700 60px/140% "Kanit", sans-serif;
   font-weight: bold;
   margin: 0;
   text-align: left;
@@ -49,7 +51,6 @@ body {
   display: flex;
   gap: 20px;
   color: #10b3d8;
-  
 }
 
 .profile-icon,
@@ -61,9 +62,8 @@ body {
   /*background-color: #e0e0e0;*/
   display: inline-block;
   border-radius: 50%;
-  position : relative;
+  position: relative;
 }
-
 
 /* Sidebar styles */
 .sidebar {
@@ -94,10 +94,12 @@ body {
   text-decoration: none;
   font-size: 18px;
 }
+
 .sidebar ion-icon {
   vertical-align: middle;
-  font-size: 24px; 
+  font-size: 24px;
 }
+
 .navbar ion-icon + span {
   font-size: 16px;
 }
@@ -130,7 +132,7 @@ body {
 }
 
 .main-content {
-  margin-top: 0px; /* Hauteur de la barre d'entÃªte */
+  margin-top: 0px; /* Hauteur de la barre d'entête */
   padding: 0px;
   margin-right: -10px;
   height: 100vh;
@@ -147,6 +149,7 @@ body {
   top: 0;
   /*z-index: 2;*/
 }
+
 .total-consumption {
   background-color: #10b3d8;
   color: #fff;
@@ -178,11 +181,7 @@ body {
 
 .graphe {
   color: #fff;
- 
-
 }
-
-
 
 /*Responsivité*/
 .table-responsive {
@@ -206,6 +205,7 @@ body {
   font-size: 20px;
   color: #333;
 }
+
 /*.form-control {
   font-size: 16px;
   height: 40px;
@@ -217,43 +217,50 @@ body {
   align-items: center; /* Centrer verticalement */
   height: 100%; /* Assurez-vous que le container occupe la hauteur complète */
 }
+
 .logo {
   max-width: 100%;
   max-height: 100%;
 }
 
 /*Modif pour faq*/
-.faq-item{
+.faq-item {
   margin-bottom: 40px;
   margin-top: 40px;
 }
-.faq-body{
+
+.faq-body {
   display: none;
   margin-top: 30px;
 }
-.faq-wrapper{
+
+.faq-wrapper {
   width: 75%;
   margin: 0 auto;
 }
-.faq-inner{
+
+.faq-inner {
   padding: 30px;
   text-align: justify;
 }
-.faq-plus{
+
+.faq-plus {
   float: right;
   font-size: 1.4em;
   line-height: 1em;
   cursor: pointer;
 }
-hr{
+
+hr {
   background-color: #9b9b9b;
 }
 
 /*Modification menu-deroulant*/
-.consojour{
+.consojour {
   padding-left: 20px;
   position: relative;
 }
+
 .dropdown {
   position: relative;
   display: inline-block;
@@ -348,7 +355,6 @@ body {
   margin-top: 20px;
 }
 
-
 .sidebar {
   width: 100%;
 }
@@ -371,7 +377,6 @@ body {
     display: none; /* Cache le menu de navigation */
   }
 }
-
 
 #myChart {
   max-width: 100%; /* Pour s'assurer que le graphique ne dépasse pas la largeur du conteneur */

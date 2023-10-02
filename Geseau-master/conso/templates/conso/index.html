@@ -24,15 +24,12 @@ Tableau de bord
                         <p>Consommation de ce jour {{ today }}</p>
                         <h3><span id="daily-consommation">{{ daily_consommation }} m&sup3</span></h3>
                     </div>
-                    <div class="dropdown">
-                        <button class="dropdown-button btn-info">Voir consommation</button>
-                        <div class="dropdown-content">
-                            <a href="{% url 'index' %}" class="dropdown-item">Générale</a> <br>
-                            {% for section in sections %}
-                                <a href="{% url 'graphe_section' section.id %}" class="dropdown-item">{{ section.nom_section }}</a> <br>
-                            {% endfor %}
-                        </div>
-                    </div>
+                    <select name="section" class="form-select" required onchange="redirectToSection(this)">
+                        <option value="{% url 'index' %}">Générale</option>
+                        {% for section in sections %}
+                            <option value="{% url 'graphe_section' section.id %}">{{ section.nom_section }}</option>
+                        {% endfor %}
+                    </select>                   
                 </div>
                 <div>
                     <p>Consommation de cette semaine</p> <h3><span id="weekly-consommation">{{ weekly_consommation }} m&sup3 </span></h3>
@@ -239,6 +236,15 @@ Tableau de bord
     $(document).ready(function() {
         updateConsumptionData();
     });
+</script>
+<script>
+    function redirectToSection(select) {
+        var selectedOption = select.options[select.selectedIndex];
+        var url = selectedOption.value;
+        if (url !== "") {
+            window.location.href = url;
+        }
+    }
 </script>
 
 {% endblock scripts %}

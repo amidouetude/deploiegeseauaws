@@ -1,3 +1,4 @@
+from datetime import date
 import random
 from django.db import models
 from django.contrib.auth.models import User
@@ -47,18 +48,26 @@ class Budget(models.Model):
     entreprise = models.ForeignKey(Entreprise, null=True, blank=True, on_delete=models.CASCADE)
     montant = models.DecimalField(max_digits=10, decimal_places=2)
     description = models.TextField(blank=True, null=True)
+    date_debut = models.DateField(default=date(2023, 1, 1))  # Date de début du budget
+    date_fin = models.DateField(default=date(2023, 1, 1))    # Date de fin du budget
     date_creation = models.DateTimeField(auto_now_add=True)
+
 
 class Depense(models.Model):
     entreprise = models.ForeignKey(Entreprise, null=True, blank=True, on_delete=models.CASCADE)
     montant = models.DecimalField(max_digits=10, decimal_places=2)
     description = models.TextField(blank=True, null=True)
+    date_debut = models.DateField(default=date(2023, 1, 1))  # Date de début du budget
+    date_fin = models.DateField(default=date(2023, 1, 1))    # Date de fin du budget
     date_creation = models.DateTimeField(auto_now_add=True)
 
 
 class Alert(models.Model):
-    entreprise = models.ForeignKey(Entreprise, null=True, blank=True, on_delete=models.CASCADE)
-    intitule = models.TextField()
+    entreprise = models.ForeignKey(Entreprise, on_delete=models.CASCADE, default=None)
+    intitule = models.CharField(max_length=255)
     message = models.TextField()
-    date = models.DateTimeField(auto_now_add=True)
-    is_read = models.BooleanField(default=False)   
+    date_creation = models.DateTimeField(auto_now_add=True)
+    is_read = models.BooleanField(default=False)
+    def __str__(self):
+        return self.intitule  
+

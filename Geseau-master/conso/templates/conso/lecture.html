@@ -1,32 +1,20 @@
 {% extends 'base.html' %}
 
 {% block etatactuel %}
-    Alert
+    Alert lue
 {% endblock etatactuel %}
 
 {% block content %}
     <div class="container">
-        <h1>Liste des Alertes</h1>
+        <h1>Lire l'Alerte</h1>
         <div class="alert alert-info">
-            {% if alert_count > 0 %}
-                <p>Vous avez <strong>{{ alert_count }}</strong> alertes non lues.</p>
-            {% else %}
-                <p>Toutes les alertes ont été lues.</p>
-            {% endif %}
+            <p><strong>Intitulé :</strong> {{ alert.intitule }}</p>
+            <p><strong>Message :</strong> {{ alert.message }}</p>
+            <p><strong>Date :</strong> {{ alert.date }}</p>
         </div>
-        <ul class="list-group">
-            {% for alert in alerts %}
-                <li class="list-group-item">
-                    {% if alert.is_read %}
-                        <i class="bi bi-envelope-open" aria-hidden="true"></i>
-                    {% else %}
-                        <i class="bi bi-envelope" aria-hidden="true"></i>
-                    {% endif %}
-                    <a href="{% url 'lecture' alert.id %}">{{ alert.intitule }}</a>
-                </li>
-            {% empty %}
-                <li class="list-group-item">Aucune alerte non lue.</li>
-            {% endfor %}
-        </ul>
+        <form method="post" action="{% url 'marquer_lue' alert.id %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-primary">Marquer comme lue</button>
+        </form>
     </div>
 {% endblock content %}

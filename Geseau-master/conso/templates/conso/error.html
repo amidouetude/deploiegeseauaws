@@ -2,9 +2,17 @@
 
 
 {% block etatactuel %}
-Profil
+Erreur de connexion
 {% endblock etatactuel %}
 
 {% block content %}
-Vous n'êtes pas autorisé(e) à effectuer cette requête.
+{% if request.status_code == 403 %}
+    Vous n'êtes pas autorisé(e) à effectuer cette requête.
+{% elif request.status_code == 404 %}
+    La page que vous recherchez n'existe pas.
+{% elif request.status_code == 500 %}
+    Une erreur interne du serveur s'est produite.
+{% else %}
+    Une erreur inattendue s'est produite.
+{% endif %}
 {% endblock content %}

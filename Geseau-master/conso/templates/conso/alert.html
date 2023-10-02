@@ -1,27 +1,30 @@
 {% extends 'base.html' %}
 
 {% block etatactuel %}
-    Alert
+    Liste des alertes
 {% endblock etatactuel %}
 
 {% block content %}
-    <div class="container">
-        <h1>Liste des Alertes</h1>
-        <div class="alert alert-info">
-            {% if alert_count > 0 %}
-                <p>Vous avez <strong>{{ alert_count }}</strong> alertes non lues.</p>
-            {% else %}
-                <p>Toutes les alertes ont été lues.</p>
-            {% endif %}
-        </div>
-        <ul class="list-group">
-            {% for alert in alerts %}
-                <li class="list-group-item">
-                    <a href="{% url 'lecture' alert.id %}">{{ alert.intitule }}</a>
-                </li>
-            {% empty %}
-                <li class="list-group-item">Aucune alerte non lue.</li>
-            {% endfor %}
-        </ul>
+<div class="container">
+    <div class="alert alert-info">
+        {% if alert_count > 0 %}
+            <p>Vous avez <strong>{{ alert_count }}</strong> alertes.</p>
+        {% else %}
+            <p>Aucune alerte disponible.</p>
+        {% endif %}
     </div>
+    <ul class="list-group">
+        {% for alert in alerts %}
+            <li class="list-group-item">
+                {% if alert.is_read %}
+                    <i class="bi bi-envelope-open" aria-hidden="true"></i>
+                {% else %}
+                    <i class="bi bi-envelope" aria-hidden="true"></i>
+                {% endif %}
+                <a href="{% url 'lecture' alert.id %}">{{ alert.intitule }}</a>
+                <span class="badge badge-secondary">{{ alert.date|date:"H:i:s" }}</span> <!-- Affiche l'heure de réception -->
+            </li>
+        {% endfor %}
+    </ul>
+</div>
 {% endblock content %}
