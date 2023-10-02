@@ -22,6 +22,7 @@ ALLOWED_HOSTS = ["*"]
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
+    'whitenoise.runserver_nostatic',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
@@ -34,6 +35,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -83,10 +85,11 @@ DATABASES = {
 
 #AWS S3 BUCKET
 
-AWS_ACCES_KEY_ID = 'AWS_ACCES_KEY_ID'
-AWS_SECRET_ACCES_KEY = 'AWS_SECRET_ACCES_KEY'
-AWS_STORAGE_BUCKET_NAME = 'AWS_STORAGE_BUCKET_NAME'
-AWS_S3_REGION_NAME = 'AWS_S3_REGION_NAME'
+AWS_ACCES_KEY_ID = 'AKIAYQZLJDUIRVTDQFSU'
+AWS_SECRET_ACCES_KEY = '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'
+AWS_STORAGE_BUCKET_NAME = 'deploiedatabase'
+AWS_S3_SIGNATURE_NAME = 's3v4'
+AWS_S3_REGION_NAME = 'us-east-1'
 AWS_S3_FILE_OVERWRITE = False
 AWS_DEFAULT_ACL = None
 AWS_S3_VERITY = True
