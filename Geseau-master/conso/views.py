@@ -657,89 +657,83 @@ def is_stationary(series):
     return result[1] <= 0.05
 
 
-
 def prevision(request):
-    try:
-        user_id = request.user.id
-        user_entreprise_id = get_object_or_404(Entreprise, user_id=user_id)
-        consommations = Consommation.objects.filter(dispositif__section__entreprise=user_entreprise_id)
-        
-        if not consommations:
-            messages.warning(request, "Aucune donnée de consommation disponible pour cette entreprise.")
-            return render(request, "conso/suivi/prevision.html")
-        
-        df = pd.DataFrame(list(consommations.values('created_at', 'quantite')))
+    user_id = request.user.id
+    user_entreprise_id = get_object_or_404(Entreprise, user_id=user_id)
+    consommations = Consommation.objects.filter(dispositif__section__entreprise=user_entreprise_id)
+    
+    if not consommations:
+        messages.warning(request, "Aucune donnée de consommation disponible pour cette entreprise.")
+        return render(request, "conso/suivi/prevision.html")
+    
+    df = pd.DataFrame(list(consommations.values('created_at', 'quantite')))
 
-        if len(df) < 5:
-            messages.warning(request, "Le nombre d'observations de consommation est insuffisant pour effectuer une prévision.")
-            return render(request, "conso/suivi/prevision.html")
-        
-        # Agrégation quotidienne des données
-        df['created_at'] = pd.to_datetime(df['created_at'])
-        df.set_index('created_at', inplace=True)
-        df_daily = df.resample('D').sum()
+    if len(df) < 5:
+        messages.warning(request, "Le nombre d'observations de consommation est insuffisant pour effectuer une prévision.")
+        return render(request, "conso/suivi/prevision.html")
+    
+    # Agrégation quotidienne des données
+    df['created_at'] = pd.to_datetime(df['created_at'])
+    df.set_index('created_at', inplace=True)
+    df_daily = df.resample('D').sum()
 
-        # Gestion des données manquantes (interpolation linéaire)
-        df_daily['quantite'].interpolate(method='linear', inplace=True)
-        
-        # Utilisez pmdarima pour trouver les meilleurs paramètres p, d, et q
-        model = pm.auto_arima(df_daily['quantite'], seasonal=False, stepwise=True, trace=True)
+    # Gestion des données manquantes (interpolation linéaire)
+    df_daily['quantite'].interpolate(method='linear', inplace=True)
+    
+    # Utilisez pmdarima pour trouver les meilleurs paramètres p, d, et q
+    model = pm.auto_arima(df_daily['quantite'], seasonal=False, stepwise=True, trace=True)
 
-        # Utilisez les paramètres trouvés pour ajuster le modèle ARIMA
-        best_p, best_d, best_q = model.order
-        results = arima_model(df_daily['quantite'], order=(best_p, best_d, best_q)).fit()
+    # Utilisez les paramètres trouvés pour ajuster le modèle ARIMA
+    best_p, best_d, best_q = model.order
+    results = arima_model(df_daily['quantite'], order=(best_p, best_d, best_q)).fit()
 
-        # Prévision pour les 7 prochains jours
-        forecast_days = 7
-        forecast = results.forecast(steps=forecast_days)
+    # Prévision pour les 7 prochains jours
+    forecast_days = 7
+    forecast = results.forecast(steps=forecast_days)
 
-        # Dates correspondantes
-        start_date = df_daily.index[-1] + pd.DateOffset(days=1)
-        end_date = start_date + pd.DateOffset(days=forecast_days - 1)
-        date_range = pd.date_range(start_date, end_date)
-        forecast_confidence = results.get_forecast(steps=forecast_days).conf_int()
-        lower_values = forecast_confidence.iloc[:, 0]
-        upper_values = forecast_confidence.iloc[:, 1]
+    # Dates correspondantes
+    start_date = df_daily.index[-1] + pd.DateOffset(days=1)
+    end_date = start_date + pd.DateOffset(days=forecast_days - 1)
+    date_range = pd.date_range(start_date, end_date)
+    forecast_confidence = results.get_forecast(steps=forecast_days).conf_int()
+    lower_values = forecast_confidence.iloc[:, 0]
+    upper_values = forecast_confidence.iloc[:, 1]
 
-        """ # Contrainte : Remplacer les valeurs négatives par zéro
-        lower_values = lower_values.apply(lambda x: max(x, 0))
-        upper_values = upper_values.apply(lambda x: max(x, 0))
+    """ # Contrainte : Remplacer les valeurs négatives par zéro
+    lower_values = lower_values.apply(lambda x: max(x, 0))
+    upper_values = upper_values.apply(lambda x: max(x, 0))
 
-        # Contrainte : Limiter l'écart à 10 % des valeurs prédites
-        max_deviation = 0.1  # 10% de variation
-        for i in range(len(forecast)):
-            deviation = forecast[i] * max_deviation
-            lower_bound = max(forecast[i] - deviation, 0)
-            upper_bound = forecast[i] + deviation
-            lower_values[i] = max(lower_values[i], lower_bound)
-            upper_values[i] = upper_bound """
+    # Contrainte : Limiter l'écart à 10 % des valeurs prédites
+    max_deviation = 0.1  # 10% de variation
+    for i in range(len(forecast)):
+        deviation = forecast[i] * max_deviation
+        lower_bound = max(forecast[i] - deviation, 0)
+        upper_bound = forecast[i] + deviation
+        lower_values[i] = max(lower_values[i], lower_bound)
+        upper_values[i] = upper_bound """
 
-        # Créez une liste de tuples avec les dates et les prévisions
-        forecast_data = list(zip(date_range, forecast, lower_values, upper_values))
+    # Créez une liste de tuples avec les dates et les prévisions
+    forecast_data = list(zip(date_range, forecast, lower_values, upper_values))
 
-        # Évaluation de la précision
-        actual_values = df_daily['quantite'][-forecast_days:]
-        mae = mean_absolute_error(actual_values, forecast)
-        mse = mean_squared_error(actual_values, forecast)
-        rmse_value = rmse(actual_values, forecast)
-        pourcentage = mae/rmse_value
-        pourcentage_mae = (mae / actual_values.mean()) * 100
-        pourcentage_mse = (mse / (actual_values.mean() ** 2)) * 100
-        pourcentage_rmse_value = (rmse_value / actual_values.mean()) * 100
+    # Évaluation de la précision
+    actual_values = df_daily['quantite'][-forecast_days:]
+    mae = mean_absolute_error(actual_values, forecast)
+    mse = mean_squared_error(actual_values, forecast)
+    rmse_value = rmse(actual_values, forecast)
+    pourcentage = mae/rmse_value
+    pourcentage_mae = (mae / actual_values.mean()) * 100
+    pourcentage_mse = (mse / (actual_values.mean() ** 2)) * 100
+    pourcentage_rmse_value = (rmse_value / actual_values.mean()) * 100
 
-        # Passer les données à la template
-        context = {
-            'forecast_data': forecast_data,
-            'mae': pourcentage_mae,
-            'mse': pourcentage_mse,
-            'rmse': pourcentage_rmse_value,
-            'pourcentage':pourcentage * 100,
-        }
-        return render(request, "conso/suivi/prevision.html",context)
-    except Exception as e:
-        # Gérer l'exception, par exemple, rediriger vers une page d'erreur
-        return render(request, 'conso/error.html', {'error_message': str(e)})
-
+    # Passer les données à la template
+    context = {
+        'forecast_data': forecast_data,
+        'mae': pourcentage_mae,
+        'mse': pourcentage_mse,
+        'rmse': pourcentage_rmse_value,
+        'pourcentage': pourcentage * 100,
+    }
+    return render(request, "conso/suivi/prevision.html", context)
 
 
 
