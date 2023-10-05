@@ -59,12 +59,47 @@ class Migration(migrations.Migration):
             ],
         ),
         migrations.CreateModel(
+            name='Depense',
+            fields=[
+                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('montant', models.DecimalField(decimal_places=2, max_digits=10)),
+                ('description', models.TextField(blank=True, null=True)),
+                ('date_debut', models.DateField(default=datetime.date(2023, 1, 1))),
+                ('date_fin', models.DateField(default=datetime.date(2023, 1, 1))),
+                ('date_creation', models.DateTimeField(auto_now_add=True)),
+                ('entreprise', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='conso.entreprise')),
+            ],
+        ),
+        migrations.CreateModel(
             name='Consommation',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('quantite', models.FloatField(default=0)),
                 ('created_at', models.DateTimeField(auto_now_add=True, null=True)),
                 ('dispositif', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='conso.dispositif')),
+            ],
+        ),
+        migrations.CreateModel(
+            name='Budget',
+            fields=[
+                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('montant', models.DecimalField(decimal_places=2, max_digits=10)),
+                ('description', models.TextField(blank=True, null=True)),
+                ('date_debut', models.DateField(default=datetime.date(2023, 1, 1))),
+                ('date_fin', models.DateField(default=datetime.date(2023, 1, 1))),
+                ('date_creation', models.DateTimeField(auto_now_add=True)),
+                ('entreprise', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='conso.entreprise')),
+            ],
+        ),
+        migrations.CreateModel(
+            name='Alert',
+            fields=[
+                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('intitule', models.CharField(max_length=255)),
+                ('message', models.TextField()),
+                ('date_creation', models.DateTimeField(auto_now_add=True)),
+                ('is_read', models.BooleanField(default=False)),
+                ('entreprise', models.ForeignKey(default=None, on_delete=django.db.models.deletion.CASCADE, to='conso.entreprise')),
             ],
         ),
     ]

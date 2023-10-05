@@ -22,8 +22,8 @@ ALLOWED_HOSTS = ["*"]
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
-    'whitenoise.runserver_nostatic',
     'django.contrib.contenttypes',
+    'whitenoise.runserver_nostatic',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
@@ -82,29 +82,6 @@ DATABASES = {
         'PORT':'3306',
     }
 }
-
-#DATABASES = {
- #   'default': {
-   #     'ENGINE': 'django.db.backends.mysql',
-     #   'NAME': 'deploiedatabase',
-      #  'USER': 'admin',
-       # 'PASSWORD': 'magx2000',
-        #'HOST':'deploiedatabase.cnnyycew25bt.us-east-1.rds.amazonaws.com',
-        #'PORT':'3306',
-    #}
-#}
-
-#AWS S3 BUCKET = Stockage
-
-AWS_ACCES_KEY_ID = 'AKIAYQZLJDUIRVTDQFSU'
-AWS_SECRET_ACCES_KEY = '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'
-AWS_STORAGE_BUCKET_NAME = 'deploiedatabase'
-AWS_S3_SIGNATURE_NAME = 's3v4'
-AWS_S3_REGION_NAME = 'us-east-1'
-AWS_S3_FILE_OVERWRITE = False
-AWS_DEFAULT_ACL = None
-AWS_S3_VERITY = True
-DEFAULT_FILE_STORAGE = 'storages.backends.s3boto.S3Boto3Storage'
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators

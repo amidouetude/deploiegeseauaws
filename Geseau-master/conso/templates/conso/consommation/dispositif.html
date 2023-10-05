@@ -44,22 +44,6 @@
 
 {% block scripts %}
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
- <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        var dropdownButton = document.querySelector('.dropdown-button');
-        var dropdown = document.querySelector('.dropdown');
-
-        dropdownButton.addEventListener('click', function() {
-            dropdown.classList.toggle('open');
-        });
-
-        document.addEventListener('click', function(event) {
-            if (!dropdown.contains(event.target)) {
-                dropdown.classList.remove('open');
-            }
-        });
-    });
-</script>
 <script>
     var ctx = document.getElementById('myChart').getContext('2d');
         var data = {

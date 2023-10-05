@@ -68,25 +68,13 @@ Tableau de bord
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        var dropdownButton = document.querySelector('.dropdown-button');
-        var dropdown = document.querySelector('.dropdown');
-
-        dropdownButton.addEventListener('click', function() {
-            dropdown.classList.toggle('open');
-        });
-
-        document.addEventListener('click', function(event) {
-            if (!dropdown.contains(event.target)) {
-                dropdown.classList.remove('open');
-            }
-        });
-    });
-</script>
-<script>
     var ctx = document.getElementById('myChart').getContext('2d');
     var data = {
-        labels: [{% for item in data %}"{{ item.day|date:'SHORT_DATE_FORMAT' }}",{% endfor %}],
+        labels: [
+            {% for item in data %}
+            "{{ item.day|date:'SHORT_DATE_FORMAT' }}",
+            {% endfor %}
+        ],
         datasets: [{
             label: '',
             data: [
@@ -95,10 +83,16 @@ Tableau de bord
                 {% endfor %}
             ],
             backgroundColor: 'lightblue',
-            borderColor: 'rgba(75, 192, 192, 1)',
+            borderColor: 'rgba(75, 192, 193, 1)',
             borderWidth: 1
         }]
     };
+
+    // Trouver l'indice de la valeur maximale
+    var maxIndex = data.datasets[0].data.indexOf(Math.max(...data.datasets[0].data));
+
+    // Mettre en rouge la couleur de la barre maximale
+    data.datasets[0].backgroundColor[maxIndex] = 'red';
 
     var myChart = new Chart(ctx, {
         type: 'bar',
@@ -110,10 +104,10 @@ Tableau de bord
                 }
             }
         }
-    });
+    });     
+
 </script>
 <script>
-    // Configuration du graphique circulaire journalier
     var sectionDailyChart = new Chart(document.getElementById('section-daily-chart'), {
         type: 'pie',
         data: {
@@ -212,6 +206,7 @@ Tableau de bord
         },
     });
 </script>
+
 <script>
     function updateConsumptionData() {
         $.ajax({

@@ -1,4 +1,5 @@
 import calendar
+import json
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from collections import defaultdict
@@ -57,7 +58,7 @@ def index(request):
             
             #determination de la consommation du jour
             daily_consommation = (Consommation.objects
-                                .filter(dispositif__section__entreprise=user_entreprise_id,created_at__date__range=(start_of_day, end_of_day))
+                                .filter(dispositif__section__entreprise=user_entreprise_id,created_at__range=(start_of_day, end_of_day))
                                 .aggregate(Sum('quantite'))['quantite__sum'])
             if daily_consommation is None:
                 daily_consommation = 0 
@@ -564,7 +565,10 @@ def ConsDispo(request,pk):
                 .annotate(quantite_sum=Sum('quantite'))
             )
         data_list = [{'day': item['created_at__date'], 'quantite_sum': item['quantite_sum']} for item in data]
-        #Consommation des 12 derniers mois
+        
+        dayli = datetime.today()
+        last_seven_days = [dayli - timedelta(days=i) for i in range(6, -1, -1)]
+        days_of_week = [day.strftime("%A") for day in last_seven_days]
         ahmed = {'data': data_list,
                 "dispositif":dispositif,
                 "dispos":dispos,
@@ -572,6 +576,7 @@ def ConsDispo(request,pk):
                 "daily_consommation":daily_consommation,
                 "weekly_consommation":weekly_consommation,
                 "monthly_consommation":monthly_consommation,
+                "days_of_week":days_of_week,
                 }
         return render(request,'conso/consommation/dispositif.html',ahmed)
     except Exception as e:
@@ -581,6 +586,9 @@ def ConsDispo(request,pk):
 @login_required
 def ConsSection(request, pk):
     try:
+        dayli = datetime.today()
+        last_seven_days = [dayli - timedelta(days=i) for i in range(6, -1, -1)]
+        days_of_week = [day.strftime("%A") for day in last_seven_days]
         section = Section.objects.get(id=pk)
         user_id = request.user.id
         user_entreprise_id = get_object_or_404(Entreprise, user_id=user_id)
@@ -642,6 +650,7 @@ def ConsSection(request, pk):
                 "daily_consommation_dispositif":daily_consommation_dispositif,
                 "weekly_consommation_dispositif":weekly_consommation_dispositif,
                 "monthly_consommation_dispositif":monthly_consommation_dispositif,
+                "days_of_week":days_of_week,
                 }
         return render(request,'conso/consommation/section.html',rachid)
     except Exception as e:
@@ -669,7 +678,7 @@ def prevision(request):
     df = pd.DataFrame(list(consommations.values('created_at', 'quantite')))
 
     if len(df) < 5:
-        messages.warning(request, "Le nombre d'observations de consommation est insuffisant pour effectuer une prévision.")
+        messages.warning(request, "Le nombre de vos données de consommation ne sont pas suffisantes pour effectuer une prévision.")
         return render(request, "conso/suivi/prevision.html")
     
     # Agrégation quotidienne des données
@@ -720,7 +729,6 @@ def prevision(request):
     mae = mean_absolute_error(actual_values, forecast)
     mse = mean_squared_error(actual_values, forecast)
     rmse_value = rmse(actual_values, forecast)
-    pourcentage = mae/rmse_value
     pourcentage_mae = (mae / actual_values.mean()) * 100
     pourcentage_mse = (mse / (actual_values.mean() ** 2)) * 100
     pourcentage_rmse_value = (rmse_value / actual_values.mean()) * 100
@@ -731,9 +739,9 @@ def prevision(request):
         'mae': pourcentage_mae,
         'mse': pourcentage_mse,
         'rmse': pourcentage_rmse_value,
-        'pourcentage': pourcentage * 100,
+        'pourcentage': 100 - pourcentage_mse,
     }
-    return render(request, "conso/suivi/prevision.html", context)
+    return render(request, "conso/suivi/prevision.html",context)
 
 
 
@@ -843,7 +851,7 @@ def budget(request):
         total_consommation = (Consommation.objects
                                     .filter(dispositif__source_eau="ONEA", dispositif__section__entreprise=user_entreprise, created_at__date__range=(start_of_period, end_of_period))
                                     .aggregate(Sum('quantite'))['quantite__sum'] or Decimal('0'))
-        montant_consommation = Decimal('500') * Decimal(total_consommation)
+        montant_consommation = Decimal('1178') * Decimal(total_consommation)
 
         # Obtenez ou créez le budget pour le mois en cours
         budget_obj, created = Budget.objects.get_or_create(
