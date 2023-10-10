@@ -12,7 +12,7 @@
     
             <div class="content-header">
                 <div>
-                    <h6>Consommation de ce jour {{today}}</h6>
+                    <p>Consommation de ce jour {{today}}</p>
                     <h3>{{daily_consommation}} m&sup3</h3>
                     <select name="dispo" class="form-select" required onchange="redirectToSection(this)">
                         <option value="{% url 'graphe_dispo' dispositif.id %}">{{ dispositif.nom_lieu }}</option>
@@ -44,6 +44,15 @@
 
 {% block scripts %}
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Fonction pour rafraîchir la page toutes les 30 secondes
+    function refreshPage() {
+        location.reload();
+    }
+
+    // Actualiser la page toutes les 30 secondes (30000 millisecondes)
+    setInterval(refreshPage, 30000);
+</script>
 <script>
     var ctx = document.getElementById('myChart').getContext('2d');
         var data = {

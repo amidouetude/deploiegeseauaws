@@ -21,8 +21,8 @@ Tableau de bord
             <div class="content-header">
                 <div>
                     <div>
-                        <p>Consommation de ce jour {{ today }}</p>
-                        <h3><span id="daily-consommation">{{ daily_consommation }} m&sup3</span></h3>
+                        <p>Consommation de ce jour {{today}}</p>
+                        <h3><span id="">{{ daily_consommation }} m&sup3</span></h3>
                     </div>
                     <select name="section" class="form-select" required onchange="redirectToSection(this)">
                         <option value="{% url 'index' %}">Générale</option>
@@ -32,10 +32,10 @@ Tableau de bord
                     </select>                   
                 </div>
                 <div>
-                    <p>Consommation de cette semaine</p> <h3><span id="weekly-consommation">{{ weekly_consommation }} m&sup3 </span></h3>
+                    <p>Consommation de cette semaine</p> <h3><span id="">{{ weekly_consommation }} m&sup3 </span></h3>
                 </div>
                 <div>
-                    <p>Consommation de ce mois </p> <h3><span id="monthly-consommation">{{ monthly_consommation }} m&sup3</span></h3>
+                    <p>Consommation de ce mois </p> <h3><span id="">{{ monthly_consommation }} m&sup3</span></h3>
                 </div>
             </div><br>
             <div style="width: 80%; margin: 0 auto;">
@@ -68,44 +68,46 @@ Tableau de bord
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
 <script>
+    // Fonction pour rafraîchir la page toutes les 30 secondes
+    function refreshPage() {
+        location.reload();
+    }
+
+    // Actualiser la page toutes les 30 secondes (30000 millisecondes)
+    setInterval(refreshPage, 30000);
+</script>
+<script>
     var ctx = document.getElementById('myChart').getContext('2d');
-    var data = {
-        labels: [
-            {% for item in data %}
-            "{{ item.day|date:'SHORT_DATE_FORMAT' }}",
-            {% endfor %}
-        ],
-        datasets: [{
-            label: '',
-            data: [
+        var data = {
+            labels: [
                 {% for item in data %}
-                {{ item.quantite_sum }},
+                "{{ item.day|date:'SHORT_DATE_FORMAT' }}",
                 {% endfor %}
             ],
-            backgroundColor: 'lightblue',
-            borderColor: 'rgba(75, 192, 193, 1)',
-            borderWidth: 1
-        }]
-    };
+            datasets: [{
+                label: 'Consommation des sept derniers jours en m³',
+                data: [
+                    {% for item in data %}
+                    {{ item.quantite_sum }},
+                    {% endfor %}
+                ],
+                backgroundColor: 'lightblue',
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1
+            }]
+        };
 
-    // Trouver l'indice de la valeur maximale
-    var maxIndex = data.datasets[0].data.indexOf(Math.max(...data.datasets[0].data));
-
-    // Mettre en rouge la couleur de la barre maximale
-    data.datasets[0].backgroundColor[maxIndex] = 'red';
-
-    var myChart = new Chart(ctx, {
-        type: 'bar',
-        data: data,
-        options: {
-            scales: {
-                y: {
-                    beginAtZero: true
+        var myChart = new Chart(ctx, {
+            type: 'bar',
+            data: data,
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
                 }
             }
-        }
-    });     
-
+        });
 </script>
 <script>
     var sectionDailyChart = new Chart(document.getElementById('section-daily-chart'), {
@@ -204,32 +206,6 @@ Tableau de bord
                 },
             },
         },
-    });
-</script>
-
-<script>
-    function updateConsumptionData() {
-        $.ajax({
-            url: '{% url "index" %}', // Remplacez par l'URL de votre vue Django
-            type: 'GET',
-            dataType: 'json',
-            success: function(data) {
-                // Mettez à jour les éléments HTML avec les nouvelles données
-                $('#daily-consommation').text(data.daily_consommation + ' m³');
-                $('#weekly-consommation').text(data.weekly_consommation + ' m³');
-                $('#monthly-consommation').text(data.monthly_consommation + ' m³');
-    
-                // Vous pouvez ajouter d'autres mises à jour ici si nécessaire
-    
-                // Répétez la mise à jour après un certain délai (par exemple, toutes les 30 secondes)
-                setTimeout(updateConsumptionData, 30000); // 30 000 ms = 30 secondes
-            }
-        });
-    }
-    
-    // Appelez la fonction pour la première fois
-    $(document).ready(function() {
-        updateConsumptionData();
     });
 </script>
 <script>

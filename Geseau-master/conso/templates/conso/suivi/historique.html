@@ -33,7 +33,26 @@ Historique
             </form>
         </div>
     </div>
-
+    {% if messages %}
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-10">
+                <form>
+                    {% for message in messages %}
+                    <div class="form-group text-center">
+                        <p id="messages" class="form-control">{{ message }}</p>
+                    </div>
+                    {% endfor %}
+                </form>
+            </div>
+        </div>
+    </div>
+    {% else %}
     {% if mega %}
         <h2>Résultats pour la période du {{ mega.date_debut }} au {{ mega.date_fin }}</h2>
         
@@ -71,6 +90,7 @@ Historique
 <p>La <strong>date de consommation minimale</strong> correspond au jour où vous avez consommé la plus petite quantité d'eau pendant la période, avec une valeur minimale de {{ mega.context.min_val }}.</p>
 <p>La <strong>date de consommation maximale</strong> correspond au jour où vous avez consommé la plus grande quantité d'eau pendant la période, avec une valeur maximale de {{ mega.context.max_val }}.</p>
 
+    {% endif %}
     {% endif %}
 </div>
 {% endblock content %}

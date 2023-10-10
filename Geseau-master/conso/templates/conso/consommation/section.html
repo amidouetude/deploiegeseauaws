@@ -22,8 +22,8 @@
         <div id="home" class="container tab-pane active"><br>
             <div class="content-header">
                 <div>
-                    <h6>Consommation de ce jour {{today}}</h6>
-                    <h1>{{daily_consommation}} m&sup3</h1>
+                    <p>Consommation de ce jour {{today}}</p>
+                    <h3>{{daily_consommation}} m&sup3</h3>
                     <select name="section" class="form-select" required onchange="redirectToSection(this)">
                         <option value="{% url 'graphe_section' section.id %}">{{ section.nom_section }}</option>
                         <option value="{% url 'index' %}">Générale</option>
@@ -75,6 +75,15 @@
 {% endblock content %}
 
 {% block scripts %}
+<script>
+    // Fonction pour rafraîchir la page toutes les 30 secondes
+    function refreshPage() {
+        location.reload();
+    }
+
+    // Actualiser la page toutes les 30 secondes (30000 millisecondes)
+    setInterval(refreshPage, 30000);
+</script>
 <script>
     var ctx = document.getElementById('myChart').getContext('2d');
         var data = {

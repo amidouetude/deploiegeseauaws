@@ -1,16 +1,17 @@
 {% extends 'base.html' %}
 
 {% block etatactuel %}
-    Alert lue
+    Alerte lue
 {% endblock etatactuel %}
 
 {% block content %}
     <div class="container">
-        <h1>Lire l'Alerte</h1>
         <div class="alert alert-info">
-            <p><strong>Intitulé :</strong> {{ alert.intitule }}</p>
-            <p><strong>Message :</strong> {{ alert.message }}</p>
-            <p><strong>Date :</strong> {{ alert.date }}</p>
+            <h2>{{ alert.intitule }}</h2>
+            <p class="alert-message">{{ alert.message }}</p>
+            <div class="alert-meta">
+                <p><strong>Date de création :</strong> {{ alert.date_creation|date:"d-m-Y H:i:s" }}</p>
+            </div>
         </div>
         <form method="post" action="{% url 'marquer_lue' alert.id %}">
             {% csrf_token %}

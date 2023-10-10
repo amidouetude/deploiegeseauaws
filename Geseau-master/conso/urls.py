@@ -47,7 +47,8 @@ urlpatterns = [
     ###Vue vers la gestion de profil
     path('profil/',views.profil_views,name="profil"),
     path('profil/dispo/',views.dispo,name="dispo"),
-    path('',views.login_views,name="login"),
+    path('login',views.login_views,name="login"),
+    path('',views.chargement,name="charge"),
     path('logout/',views.logout_views,name="logout"),
     path('register/',views.register,name="register"),
     path('profil/password/', views.change_password, name='change_password'),
@@ -61,8 +62,6 @@ urlpatterns = [
     ###Vue vers la consommation
     path('conso/section',views.ConsSection,name='cons_section'),
     path('conso/dispositif',views.ConsDispo,name='cons_dispo'),
-
-    path('daily/', views.prevision_best, name='daily_forecast'),
     
     
 ]

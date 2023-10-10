@@ -1,0 +1,100 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GES'EAU : Se connecter sur la plateforme</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+        integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+        crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.1/css/all.css"
+        integrity="sha384-gfdkjb5BdAXd+lj+gudLWI+BXq4IuLW5IT+brZEZsLFm++aCMlF1V92rMkPaX4PP" crossorigin="anonymous">
+
+    <style>
+        /* Animation pour le fond */
+        @keyframes backgroundAnimation {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        /* Animation pour le logo */
+        @keyframes logoAnimation {
+            0% {
+                transform: scale(1);
+                opacity: 0;
+            }
+            50% {
+                transform: scale(1.2);
+                opacity: 0.5;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        body,
+        html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            background-image: url('{% static 'media/fond.png' %}');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            animation: backgroundAnimation 10s linear infinite;
+        }
+
+        .logo {
+            width: 530px; /* Personnalisez la largeur selon vos besoins */
+            height: 478px; /* Personnalisez la hauteur selon vos besoins */
+            animation: logoAnimation 0s ease-in-out;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            /* Autres styles CSS pour le logo */
+        }
+
+        p {
+            position: absolute;
+            bottom: 10px; /* Ajustez la valeur en fonction de l'espace souhaité en dessous du logo */
+            left: 50%;
+            transform: translateX(-50%);
+            /* Autres styles CSS pour le paragraphe */
+        }
+		/* Style pour la flèche */
+        .arrow {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 9999;
+            background-color: #0078b7;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="d-flex flex-column align-items-center">
+            <img src="{% static 'media/logo_charge.png' %}" alt="logo" class="logo">
+            <p class="text-center">Pour une gestion rationnelle de l'eau</p>
+        </div>
+    </div>
+	<a href="{% url 'login' %}" class="arrow-container">
+        <span class="arrow">&#8594;</span>
+    </a>
+</body>
+</html>
