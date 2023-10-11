@@ -36,273 +36,245 @@ import locale
 
 #Affichage de la conso dans l'index
 def index(request):
-    try:
-        locale.setlocale(locale.LC_TIME, 'fr_FR')
-        if request.user.is_authenticated:
-            user_id = request.user.id
-            user_entreprise_id = get_object_or_404(Entreprise, user_id=user_id)
-            sections = Section.objects.filter(entreprise_id=user_entreprise_id)
-            today = date.today()
-            start_date = today - timedelta(days=6)
-            start_of_day = datetime.combine(today, datetime.min.time())
-            end_of_day = datetime.combine(today, datetime.max.time())
-            month_start = today.replace(day=1)
-            month_end = today.replace(day=calendar.monthrange(today.year, today.month)[1])
-            thisday = datetime.today()
-            start_of_week = thisday - timedelta(days=thisday.weekday())
-            end_of_week = start_of_week + timedelta(days=6)
-            data = []  
+    locale.setlocale(locale.LC_TIME, 'fr_FR')
+    if request.user.is_authenticated:
+        user_id = request.user.id
+        user_entreprise_id = get_object_or_404(Entreprise, user_id=user_id)
+        sections = Section.objects.filter(entreprise_id=user_entreprise_id)
+        today = date.today()
+        start_date = today - timedelta(days=6)
+        start_of_day = datetime.combine(today, datetime.min.time())
+        end_of_day = datetime.combine(today, datetime.max.time())
+        month_start = today.replace(day=1)
+        month_end = today.replace(day=calendar.monthrange(today.year, today.month)[1])
+        thisday = datetime.today()
+        start_of_week = thisday - timedelta(days=thisday.weekday())
+        end_of_week = start_of_week + timedelta(days=6)
+        data = []  
 
-            # Créez une liste des noms des jours de la semaine pour les six derniers jours
-            # Créez une liste de noms de jours pour les 7 derniers jours
-            dayli = datetime.today()
-            last_seven_days = [dayli - timedelta(days=i) for i in range(6, -1, -1)]
-            days_of_week = [day.strftime("%A") for day in last_seven_days]
-            
-            #determination de la consommation du jour
-            daily_consommation = (Consommation.objects
-                                .filter(dispositif__section__entreprise=user_entreprise_id,created_at__range=(start_of_day, end_of_day))
-                                .aggregate(Sum('quantite'))['quantite__sum'])
-            if daily_consommation is None:
-                daily_consommation = 0 
-            
-            #determination de la consommation du jour
-            weekly_consommation = (Consommation.objects
-                                .filter(dispositif__section__entreprise=user_entreprise_id,
-                                        created_at__date__range=[start_of_week, end_of_week])
-                                .aggregate(Sum('quantite'))['quantite__sum'])
-            if weekly_consommation is None:
-                weekly_consommation = 0 
-            
-            daily_consommation_section = []
-            weekly_consommation_section = []
-            monthly_consommation_section = []
-            
-            for section in sections:
-                monthly_consommation_section.append(Consommation.objects.filter(dispositif__section=section, created_at__date__range=(month_start, month_end)).aggregate(Sum('quantite'))['quantite__sum'])
-                weekly_consommation_section.append(Consommation.objects.filter(dispositif__section=section, created_at__date__range=(start_of_week, end_of_week)).aggregate(Sum('quantite'))['quantite__sum'])
-                daily_consommation_section.append(Consommation.objects.filter(dispositif__section=section, created_at__date__range=(start_of_day, end_of_day)).aggregate(Sum('quantite'))['quantite__sum'])
-                    
-            #Determination de la consommation du mois
-            monthly_consommation = (Consommation.objects
-                                .filter(dispositif__section__entreprise=user_entreprise_id,
-                                created_at__date__range=(month_start, month_end))
-                                .aggregate(Sum('quantite'))['quantite__sum'])
-            if monthly_consommation is None:
-                monthly_consommation = 0
-            #determination de la consommation des 07 derniers jours
-            data = (
-                        Consommation.objects
-                        .filter(dispositif__section__entreprise=user_entreprise_id,created_at__date__range=(start_date, today))
-                        .values('created_at__date')
-                        .annotate(quantite_sum=Sum('quantite'))
-                    )
-            #Consommation mensuelle
-            alert_count = Alert.objects.filter(entreprise=user_entreprise_id, is_read=False).count()
-            data_list = [{'day': item['created_at__date'], 'quantite_sum': item['quantite_sum']} for item in data]
-            nom_jour = today.strftime("%A %d %B %Y")
-            context = {
-                "alert_count":alert_count,
-                'data': data_list,
-                "sections": sections,
-                "today": nom_jour,
-                "days_of_week":days_of_week,
-                "daily_consommation": daily_consommation,
-                "weekly_consommation": weekly_consommation,
-                "monthly_consommation": monthly_consommation,
-                "daily_consommation_section": daily_consommation_section,
-                "weekly_consommation_section": weekly_consommation_section,
-                "monthly_consommation_section": monthly_consommation_section,
-            }   
+        # Créez une liste des noms des jours de la semaine pour les six derniers jours
+        # Créez une liste de noms de jours pour les 7 derniers jours
+        dayli = datetime.today()
+        last_seven_days = [dayli - timedelta(days=i) for i in range(6, -1, -1)]
+        days_of_week = [day.strftime("%A") for day in last_seven_days]
         
-        return render(request, 'conso/index.html', context)
-    except Exception as e:
-        # Gérez l'exception ici, par exemple, affichez un message d'erreur ou redirigez l'utilisateur vers une page d'erreur.
-        error_message = f"Une exception s'est produite : {e}"
-        return render(request, 'conso/error.html', {'error_message': error_message})
-
+        #determination de la consommation du jour
+        daily_consommation = (Consommation.objects
+                            .filter(dispositif__section__entreprise=user_entreprise_id,created_at__range=(start_of_day, end_of_day))
+                            .aggregate(Sum('quantite'))['quantite__sum'])
+        if daily_consommation is None:
+            daily_consommation = 0 
+        
+        #determination de la consommation du jour
+        weekly_consommation = (Consommation.objects
+                            .filter(dispositif__section__entreprise=user_entreprise_id,
+                                    created_at__date__range=[start_of_week, end_of_week])
+                            .aggregate(Sum('quantite'))['quantite__sum'])
+        if weekly_consommation is None:
+            weekly_consommation = 0 
+        
+        daily_consommation_section = []
+        weekly_consommation_section = []
+        monthly_consommation_section = []
+        
+        for section in sections:
+            monthly_consommation_section.append(Consommation.objects.filter(dispositif__section=section, created_at__date__range=(month_start, month_end)).aggregate(Sum('quantite'))['quantite__sum'])
+            weekly_consommation_section.append(Consommation.objects.filter(dispositif__section=section, created_at__date__range=(start_of_week, end_of_week)).aggregate(Sum('quantite'))['quantite__sum'])
+            daily_consommation_section.append(Consommation.objects.filter(dispositif__section=section, created_at__date__range=(start_of_day, end_of_day)).aggregate(Sum('quantite'))['quantite__sum'])
+                
+        #Determination de la consommation du mois
+        monthly_consommation = (Consommation.objects
+                            .filter(dispositif__section__entreprise=user_entreprise_id,
+                            created_at__date__range=(month_start, month_end))
+                            .aggregate(Sum('quantite'))['quantite__sum'])
+        if monthly_consommation is None:
+            monthly_consommation = 0
+        #determination de la consommation des 07 derniers jours
+        data = (
+                    Consommation.objects
+                    .filter(dispositif__section__entreprise=user_entreprise_id,created_at__date__range=(start_date, today))
+                    .values('created_at__date')
+                    .annotate(quantite_sum=Sum('quantite'))
+                )
+        #Consommation mensuelle
+        alert_count = Alert.objects.filter(entreprise=user_entreprise_id, is_read=False).count()
+        data_list = [{'day': item['created_at__date'], 'quantite_sum': item['quantite_sum']} for item in data]
+        nom_jour = today.strftime("%A %d %B %Y")
+        context = {
+            "alert_count":alert_count,
+            'data': data_list,
+            "sections": sections,
+            "today": nom_jour,
+            "days_of_week":days_of_week,
+            "daily_consommation": daily_consommation,
+            "weekly_consommation": weekly_consommation,
+            "monthly_consommation": monthly_consommation,
+            "daily_consommation_section": daily_consommation_section,
+            "weekly_consommation_section": weekly_consommation_section,
+            "monthly_consommation_section": monthly_consommation_section,
+        }   
+    
+    return render(request, 'conso/index.html', context)
 ##### Accès vers la vue des sections
 
 #Accès vers la liste des sections
 @login_required
 def section(request):
-    try:
-        user_id = request.user.id
-        user_entreprise_id = get_object_or_404(Entreprise, user_id=user_id)
-        sections = Section.objects.filter(entreprise_id=user_entreprise_id)
-        consom = []
-        #determination du jour
-        today = date.today()
-        start_of_day = datetime.combine(today, datetime.min.time())
-        end_of_day = datetime.combine(today, datetime.max.time())
-        #Determination de la semaine
-        thisday = datetime.today()
-        start_of_week = thisday - timedelta(days=thisday.weekday())
-        end_of_week = start_of_week + timedelta(days=6)
-    #    month_start = today.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
-        for section in sections:
-            #Consommation générale par section
-            total_consommation = Consommation.objects.filter(dispositif__section=section).aggregate(Sum('quantite'))['quantite__sum']
-            if total_consommation is None:
-                total_consommation = 0
-            #Consommation par jour
-            daily_consommation = Consommation.objects.filter(dispositif__section=section,created_at__date__range=(start_of_day, end_of_day)).aggregate(Sum('quantite'))['quantite__sum']
-            if daily_consommation is None:
-                daily_consommation = 0
-            weekly_consommation = Consommation.objects.filter(dispositif__section=section,
-                created_at__date__range=[start_of_week, end_of_week]
-            ).values('created_at__date').aggregate(Sum('quantite'))['quantite__sum']
-            if weekly_consommation is None:
-                weekly_consommation = 0        
-            month_start = today.replace(day=1)
-            month_end = today.replace(day=calendar.monthrange(today.year, today.month)[1])
-            monthly_consommation = Consommation.objects.filter(dispositif__section=section, created_at__date__range=(month_start, month_end)).aggregate(Sum('quantite'))['quantite__sum']
-            if monthly_consommation is None:
-                monthly_consommation = 0
-            alert_count = Alert.objects.filter(entreprise=user_entreprise_id, is_read=False).count()
-            consom.append({
-                'section': section,
-                'total_consommation': total_consommation,
-                'daily_consommation': daily_consommation,
-                'weekly_consommation': weekly_consommation,
-                'monthly_consommation': monthly_consommation
-            })
-        ahmed={'consom':consom, 'alert_count':alert_count,}
-        return render(request,'conso/section/sections.html',ahmed)
-    except Exception as e:
-        # Gérer l'exception, par exemple, rediriger vers une page d'erreur
-        return render(request, 'conso/error.html', {'error_message': str(e)})
+    user_id = request.user.id
+    user_entreprise_id = get_object_or_404(Entreprise, user_id=user_id)
+    sections = Section.objects.filter(entreprise_id=user_entreprise_id)
+    consom = []
+    #determination du jour
+    today = date.today()
+    start_of_day = datetime.combine(today, datetime.min.time())
+    end_of_day = datetime.combine(today, datetime.max.time())
+    #Determination de la semaine
+    thisday = datetime.today()
+    start_of_week = thisday - timedelta(days=thisday.weekday())
+    end_of_week = start_of_week + timedelta(days=6)
+#    month_start = today.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+    for section in sections:
+        #Consommation générale par section
+        total_consommation = Consommation.objects.filter(dispositif__section=section).aggregate(Sum('quantite'))['quantite__sum']
+        if total_consommation is None:
+            total_consommation = 0
+        #Consommation par jour
+        daily_consommation = Consommation.objects.filter(dispositif__section=section,created_at__date__range=(start_of_day, end_of_day)).aggregate(Sum('quantite'))['quantite__sum']
+        if daily_consommation is None:
+            daily_consommation = 0
+        weekly_consommation = Consommation.objects.filter(dispositif__section=section,
+            created_at__date__range=[start_of_week, end_of_week]
+        ).values('created_at__date').aggregate(Sum('quantite'))['quantite__sum']
+        if weekly_consommation is None:
+            weekly_consommation = 0        
+        month_start = today.replace(day=1)
+        month_end = today.replace(day=calendar.monthrange(today.year, today.month)[1])
+        monthly_consommation = Consommation.objects.filter(dispositif__section=section, created_at__date__range=(month_start, month_end)).aggregate(Sum('quantite'))['quantite__sum']
+        if monthly_consommation is None:
+            monthly_consommation = 0
+        alert_count = Alert.objects.filter(entreprise=user_entreprise_id, is_read=False).count()
+        consom.append({
+            'section': section,
+            'total_consommation': total_consommation,
+            'daily_consommation': daily_consommation,
+            'weekly_consommation': weekly_consommation,
+            'monthly_consommation': monthly_consommation
+        })
+    ahmed={'consom':consom, 'alert_count':alert_count,}
+    return render(request,'conso/section/sections.html',ahmed)
 
 #Creer une nouvelle section
 @login_required
 def add_section(request):
-    try:
-        if request.method == "POST":
-            form=SectionForm(request.POST)
-            if form.is_valid():
-                section = form.save(commit = False)
-                section.entreprise = Entreprise.objects.get(user_id=request.user.id)
-                section.save()
-                return redirect('section')
-            else:
-                return render(request,'conso/section/add_section.html',{'form':form, 'alert_count':alert_count})
+    if request.method == "POST":
+        form=SectionForm(request.POST)
+        if form.is_valid():
+            section = form.save(commit = False)
+            section.entreprise = Entreprise.objects.get(user_id=request.user.id)
+            section.save()
+            return redirect('section')
         else:
-            form = SectionForm()
-        user_id = request.user.id
-        user_entreprise_id = get_object_or_404(Entreprise, user_id=user_id)
-        alert_count = Alert.objects.filter(entreprise=user_entreprise_id, is_read=False).count()
-        return render(request,'conso/section/add_section.html',{'form':form,'alert_count':alert_count})
-    except Exception as e:
-        # Gérer l'exception, par exemple, rediriger vers une page d'erreur
-        return render(request, 'conso/error.html', {'error_message': str(e)})
+            return render(request,'conso/section/add_section.html',{'form':form, 'alert_count':alert_count})
+    else:
+        form = SectionForm()
+    user_id = request.user.id
+    user_entreprise_id = get_object_or_404(Entreprise, user_id=user_id)
+    alert_count = Alert.objects.filter(entreprise=user_entreprise_id, is_read=False).count()
+    return render(request,'conso/section/add_section.html',{'form':form,'alert_count':alert_count})
+ 
 
 #Modifier une section existante
 @login_required
 def update_section(request, pk):
-    try:
-        section = Section.objects.get(id=pk)
-        form=SectionForm(instance=section)
-        if request.method=="POST":
-            form = SectionForm(request.POST,instance=section)
-            if form.is_valid():
-                form.save()
-                return redirect('section')
-            else:
-                return render(request,'conso/section/update_update.html',{'form':form, 'section':section,'alert_count':alert_count})
+    section = Section.objects.get(id=pk)
+    form=SectionForm(instance=section)
+    if request.method=="POST":
+        form = SectionForm(request.POST,instance=section)
+        if form.is_valid():
+            form.save()
+            return redirect('section')
         else:
-            form = SectionForm(instance=section)
-            user_id = request.user.id
-            user_entreprise_id = get_object_or_404(Entreprise, user_id=user_id)
-            alert_count = Alert.objects.filter(entreprise=user_entreprise_id, is_read=False).count()
-        return render(request,'conso/section/update_section.html',{'form':form,'section':section,'alert_count':alert_count})
-    except Exception as e:
-        # Gérer l'exception, par exemple, rediriger vers une page d'erreur
-        return render(request, 'conso/error.html', {'error_message': str(e)})
+            return render(request,'conso/section/update_update.html',{'form':form, 'section':section,'alert_count':alert_count})
+    else:
+        form = SectionForm(instance=section)
+        user_id = request.user.id
+        user_entreprise_id = get_object_or_404(Entreprise, user_id=user_id)
+        alert_count = Alert.objects.filter(entreprise=user_entreprise_id, is_read=False).count()
+    return render(request,'conso/section/update_section.html',{'form':form,'section':section,'alert_count':alert_count})
 
 #Supprimer une section
 @login_required
 def delete_section(request, pk):
-    try:
-        section = Section.objects.get(id=pk)
-        user_id = request.user.id
-        user_entreprise_id = get_object_or_404(Entreprise, user_id=user_id)
-        alert_count = Alert.objects.filter(entreprise=user_entreprise_id, is_read=False).count()
-        if request.method=="POST":
-            section.delete()
-            return redirect('section')
-        context={'item':section,'alert_count':alert_count}
-        return render(request,'conso/section/delete_section.html',context)
-    except Exception as e:
-        # Gérer l'exception, par exemple, rediriger vers une page d'erreur
-        return render(request, 'conso/error.html', {'error_message': str(e)})
+    section = Section.objects.get(id=pk)
+    user_id = request.user.id
+    user_entreprise_id = get_object_or_404(Entreprise, user_id=user_id)
+    alert_count = Alert.objects.filter(entreprise=user_entreprise_id, is_read=False).count()
+    if request.method=="POST":
+        section.delete()
+        return redirect('section')
+    context={'item':section,'alert_count':alert_count}
+    return render(request,'conso/section/delete_section.html',context)
 
 #Details sur une section
 @login_required
 def detail_section(request, pk):
-    try:
-        section = Section.objects.get(id=pk)
-        dispos = Dispositif.objects.filter(section=section)
-        consom_by_dispositif = []
-        #determination du jour
-        today = date.today()
-        start_of_day = datetime.combine(today, datetime.min.time())
-        end_of_day = datetime.combine(today, datetime.max.time())
-        #Determination de la semaine
-        thisday = datetime.today()
-        start_of_week = thisday - timedelta(days=thisday.weekday())
-        end_of_week = start_of_week + timedelta(days=6)
-        #Determination du mois
-        month_start = today.replace(day=1)
-        month_end = today.replace(day=calendar.monthrange(today.year, today.month)[1])
-        for dispo in dispos:
-            total_consommation_dispositif = Consommation.objects.filter(dispositif=dispo).aggregate(Sum('quantite'))['quantite__sum']
-            if total_consommation_dispositif is None:
-                total_consommation_dispositif = 0
-            #Consommation par jour
-            daily_consommation_dispositif = Consommation.objects.filter(dispositif=dispo,created_at__date__range=(start_of_day, end_of_day)).aggregate(Sum('quantite'))['quantite__sum']
-            if daily_consommation_dispositif is None:
-                daily_consommation_dispositif = 0
-            weekly_consommation_dispositif = Consommation.objects.filter(dispositif=dispo,
-                created_at__date__range=[start_of_week, end_of_week]
-            ).values('created_at__date').aggregate(Sum('quantite'))['quantite__sum']        
-            if weekly_consommation_dispositif is None:
-                weekly_consommation_dispositif = 0
-            monthly_consommation_dispositif = Consommation.objects.filter(dispositif=dispo, created_at__date__range=(month_start, month_end)).aggregate(Sum('quantite'))['quantite__sum']
-            if monthly_consommation_dispositif is None:
-                monthly_consommation_dispositif = 0
-            consom_by_dispositif.append({
-                    'dispositif': dispo,
-                    'total_consommation_dispositif': total_consommation_dispositif,
-                    'daily_consommation_dispositif': daily_consommation_dispositif,
-                    'weekly_consommation_dispositif': weekly_consommation_dispositif,
-                    'monthly_consommation_dispositif': monthly_consommation_dispositif,
-                })
-        user_id = request.user.id
-        user_entreprise_id = get_object_or_404(Entreprise, user_id=user_id)
-        alert_count = Alert.objects.filter(entreprise=user_entreprise_id, is_read=False).count()
-        actuel = {
-            'alert_count':alert_count,
-            'section': section,
-            'consom_by_dispositif': consom_by_dispositif,
-        }    
-        return render(request, 'conso/section/detail_section.html', actuel) 
-    except Exception as e:
-        # Gérer l'exception, par exemple, rediriger vers une page d'erreur
-        return render(request, 'conso/error.html', {'error_message': str(e)})
+    section = Section.objects.get(id=pk)
+    dispos = Dispositif.objects.filter(section=section)
+    consom_by_dispositif = []
+    #determination du jour
+    today = date.today()
+    start_of_day = datetime.combine(today, datetime.min.time())
+    end_of_day = datetime.combine(today, datetime.max.time())
+    #Determination de la semaine
+    thisday = datetime.today()
+    start_of_week = thisday - timedelta(days=thisday.weekday())
+    end_of_week = start_of_week + timedelta(days=6)
+    #Determination du mois
+    month_start = today.replace(day=1)
+    month_end = today.replace(day=calendar.monthrange(today.year, today.month)[1])
+    for dispo in dispos:
+        total_consommation_dispositif = Consommation.objects.filter(dispositif=dispo).aggregate(Sum('quantite'))['quantite__sum']
+        if total_consommation_dispositif is None:
+            total_consommation_dispositif = 0
+        #Consommation par jour
+        daily_consommation_dispositif = Consommation.objects.filter(dispositif=dispo,created_at__date__range=(start_of_day, end_of_day)).aggregate(Sum('quantite'))['quantite__sum']
+        if daily_consommation_dispositif is None:
+            daily_consommation_dispositif = 0
+        weekly_consommation_dispositif = Consommation.objects.filter(dispositif=dispo,
+            created_at__date__range=[start_of_week, end_of_week]
+        ).values('created_at__date').aggregate(Sum('quantite'))['quantite__sum']        
+        if weekly_consommation_dispositif is None:
+            weekly_consommation_dispositif = 0
+        monthly_consommation_dispositif = Consommation.objects.filter(dispositif=dispo, created_at__date__range=(month_start, month_end)).aggregate(Sum('quantite'))['quantite__sum']
+        if monthly_consommation_dispositif is None:
+            monthly_consommation_dispositif = 0
+        consom_by_dispositif.append({
+                'dispositif': dispo,
+                'total_consommation_dispositif': total_consommation_dispositif,
+                'daily_consommation_dispositif': daily_consommation_dispositif,
+                'weekly_consommation_dispositif': weekly_consommation_dispositif,
+                'monthly_consommation_dispositif': monthly_consommation_dispositif,
+            })
+    user_id = request.user.id
+    user_entreprise_id = get_object_or_404(Entreprise, user_id=user_id)
+    alert_count = Alert.objects.filter(entreprise=user_entreprise_id, is_read=False).count()
+    actuel = {
+        'alert_count':alert_count,
+        'section': section,
+        'consom_by_dispositif': consom_by_dispositif,
+    }    
+    return render(request, 'conso/section/detail_section.html', actuel) 
+    
 
 
 ##### Accès vers la vue des dispositifs
 #Accès vers la liste des dispositifs
 @login_required
 def dispo(request):
-    try:
-        client = request.user
-        dispos = Dispositif.objects.filter(section__entreprise__user=client)
-        alert_count = Alert.objects.filter(entreprise=client, is_read=False).count()
-        return render(request,'conso/dispositif/dispo.html',{'dispos':dispos,'alert_count':alert_count})
-    except Exception as e:
-        # Gérer l'exception, par exemple, rediriger vers une page d'erreur
-        return render(request, 'conso/error.html', {'error_message': str(e)})
+    client = request.user
+    dispos = Dispositif.objects.filter(section__entreprise__user=client)
+    alert_count = Alert.objects.filter(entreprise=client, is_read=False).count()
+    return render(request,'conso/dispositif/dispo.html',{'dispos':dispos,'alert_count':alert_count})
 
 #Ajout d'un nouveau dispositf
 @login_required
@@ -354,19 +326,15 @@ def update_dispo(request, pk):
 #Supprimer un dispositif
 @login_required
 def delete_dispo(request, pk):
-    try:
-        user_id = request.user.id
-        user_entreprise_id = get_object_or_404(Entreprise, user_id=user_id)
-        alert_count = Alert.objects.filter(entreprise=user_entreprise_id, is_read=False).count()
-        dispo = Dispositif.objects.get(id=pk)
-        if request.method == "POST":
-            dispo.delete()
-            return redirect('section')
-        context={'item':dispo,'alert_count':alert_count}
-        return render(request,'conso/dispositif/delete_dispositif.html',context)
-    except Exception as e:
-        # Gérer l'exception, par exemple, rediriger vers une page d'erreur
-        return render(request, 'conso/error.html', {'error_message': str(e)})
+    user_id = request.user.id
+    user_entreprise_id = get_object_or_404(Entreprise, user_id=user_id)
+    alert_count = Alert.objects.filter(entreprise=user_entreprise_id, is_read=False).count()
+    dispo = Dispositif.objects.get(id=pk)
+    if request.method == "POST":
+        dispo.delete()
+        return redirect('section')
+    context={'item':dispo,'alert_count':alert_count}
+    return render(request,'conso/dispositif/delete_dispositif.html',context)
 
 
 ##### Accès vers la vue de FAQ
@@ -561,143 +529,135 @@ def historique(request):
 
 @login_required
 def ConsDispo(request,pk):
-    try:
-        locale.setlocale(locale.LC_TIME, 'fr_FR')
-        dispositif = Dispositif.objects.get(id=pk)
-        client = request.user
-        dispos = Dispositif.objects.filter(section__entreprise__user=client)
-        alert_count = Alert.objects.filter(entreprise__user=client, is_read=False).count()
-        end_date = date.today()
-        start_date = end_date - timedelta(days=6)
-        #determination du jour
-        today = date.today()
-        start_of_day = datetime.combine(today, datetime.min.time())
-        end_of_day = datetime.combine(today, datetime.max.time())
-        month_start = today.replace(day=1)
-        next_month = month_start.replace(month=month_start.month % 12 + 1, year=month_start.year + month_start.month // 12)
-        month_end = next_month - timedelta(days=1)
-        thisday = datetime.today()
-        start_of_week = thisday - timedelta(days=thisday.weekday())
-        end_of_week = start_of_week + timedelta(days=6)
-        #Consommation du jour
-        daily_consommation = Consommation.objects.filter(dispositif=dispositif,created_at__date__range=(start_of_day, end_of_day)).aggregate(Sum('quantite'))['quantite__sum']
-        if daily_consommation is None:
-            daily_consommation = 0
-            #determination de la consommation de la semaine
-        weekly_consommation = (Consommation.objects
-                                .filter(dispositif=dispositif,created_at__date__range=(start_of_week, end_of_week))
+    locale.setlocale(locale.LC_TIME, 'fr_FR')
+    dispositif = Dispositif.objects.get(id=pk)
+    client = request.user
+    dispos = Dispositif.objects.filter(section__entreprise__user=client)
+    alert_count = Alert.objects.filter(entreprise__user=client, is_read=False).count()
+    end_date = date.today()
+    start_date = end_date - timedelta(days=6)
+    #determination du jour
+    today = date.today()
+    start_of_day = datetime.combine(today, datetime.min.time())
+    end_of_day = datetime.combine(today, datetime.max.time())
+    month_start = today.replace(day=1)
+    next_month = month_start.replace(month=month_start.month % 12 + 1, year=month_start.year + month_start.month // 12)
+    month_end = next_month - timedelta(days=1)
+    thisday = datetime.today()
+    start_of_week = thisday - timedelta(days=thisday.weekday())
+    end_of_week = start_of_week + timedelta(days=6)
+    #Consommation du jour
+    daily_consommation = Consommation.objects.filter(dispositif=dispositif,created_at__date__range=(start_of_day, end_of_day)).aggregate(Sum('quantite'))['quantite__sum']
+    if daily_consommation is None:
+        daily_consommation = 0
+        #determination de la consommation de la semaine
+    weekly_consommation = (Consommation.objects
+                            .filter(dispositif=dispositif,created_at__date__range=(start_of_week, end_of_week))
+                            .aggregate(Sum('quantite'))['quantite__sum'])
+    if weekly_consommation is None:
+        weekly_consommation = 0 
+    #Consommation du mois
+    monthly_consommation = (Consommation.objects
+                                .filter(dispositif=dispositif,created_at__date__range=(month_start, month_end))
                                 .aggregate(Sum('quantite'))['quantite__sum'])
-        if weekly_consommation is None:
-            weekly_consommation = 0 
-        #Consommation du mois
-        monthly_consommation = (Consommation.objects
-                                    .filter(dispositif=dispositif,created_at__date__range=(month_start, month_end))
-                                    .aggregate(Sum('quantite'))['quantite__sum'])
-        if monthly_consommation is None:
-            monthly_consommation = 0
-        #Consommation des 07 derniers
-        data = (
-                Consommation.objects
-                .filter(dispositif=dispositif,created_at__date__range=(start_date, end_date))
-                .values('created_at__date')
-                .annotate(quantite_sum=Sum('quantite'))
-            )
-        data_list = [{'day': item['created_at__date'], 'quantite_sum': item['quantite_sum']} for item in data]
-        nom_jour = today.strftime("%A %d %B %Y")
-        dayli = datetime.today()
-        last_seven_days = [dayli - timedelta(days=i) for i in range(6, -1, -1)]
-        days_of_week = [day.strftime("%A") for day in last_seven_days]
-        ahmed = {'data': data_list,
-                 "alert_count":alert_count,
-                "dispositif":dispositif,
-                "dispos":dispos,
-                "today":nom_jour,
-                "daily_consommation":daily_consommation,
-                "weekly_consommation":weekly_consommation,
-                "monthly_consommation":monthly_consommation,
-                "days_of_week":days_of_week,
-                }
-        return render(request,'conso/consommation/dispositif.html',ahmed)
-    except Exception as e:
-        # Gérer l'exception, par exemple, rediriger vers une page d'erreur
-        return render(request, 'conso/error.html', {'error_message': str(e)})
+    if monthly_consommation is None:
+        monthly_consommation = 0
+    #Consommation des 07 derniers
+    data = (
+            Consommation.objects
+            .filter(dispositif=dispositif,created_at__date__range=(start_date, end_date))
+            .values('created_at__date')
+            .annotate(quantite_sum=Sum('quantite'))
+        )
+    data_list = [{'day': item['created_at__date'], 'quantite_sum': item['quantite_sum']} for item in data]
+    nom_jour = today.strftime("%A %d %B %Y")
+    dayli = datetime.today()
+    last_seven_days = [dayli - timedelta(days=i) for i in range(6, -1, -1)]
+    days_of_week = [day.strftime("%A") for day in last_seven_days]
+    ahmed = {'data': data_list,
+                "alert_count":alert_count,
+            "dispositif":dispositif,
+            "dispos":dispos,
+            "today":nom_jour,
+            "daily_consommation":daily_consommation,
+            "weekly_consommation":weekly_consommation,
+            "monthly_consommation":monthly_consommation,
+            "days_of_week":days_of_week,
+            }
+    return render(request,'conso/consommation/dispositif.html',ahmed)
 
 @login_required
 def ConsSection(request, pk):
-    try:
-        locale.setlocale(locale.LC_TIME, 'fr_FR')
-        dayli = datetime.today()
-        last_seven_days = [dayli - timedelta(days=i) for i in range(6, -1, -1)]
-        days_of_week = [day.strftime("%A") for day in last_seven_days]
-        section = Section.objects.get(id=pk)
-        user_id = request.user.id
-        user_entreprise_id = get_object_or_404(Entreprise, user_id=user_id)
-        sections = Section.objects.filter(entreprise_id=user_entreprise_id)
-        dispositifs = Dispositif.objects.filter(section=section)
-        end_date = date.today()
-        start_date = end_date - timedelta(days=6)
-        #determination du jour
-        today = date.today()
-        start_of_day = datetime.combine(today, datetime.min.time())
-        end_of_day = datetime.combine(today, datetime.max.time())
-        month_start = today.replace(day=1)
-        month_end = today.replace(day=calendar.monthrange(today.year, today.month)[1])
-        thisday = datetime.today()
-        start_of_week = thisday - timedelta(days=thisday.weekday())
-        end_of_week = start_of_week + timedelta(days=6)
-        data = []
-        #Consommation du jour
-        daily_consommation = Consommation.objects.filter(dispositif__section=section,created_at__date__range=(start_of_day, end_of_day)).aggregate(Sum('quantite'))['quantite__sum']
-        if daily_consommation is None:
-            daily_consommation = 0
-        #determination de la consommation de la semaine
-        weekly_consommation = (Consommation.objects
-                                .filter(dispositif__section=section,created_at__date__range=(start_of_week, end_of_week))
-                                .aggregate(Sum('quantite'))['quantite__sum'])
-        if weekly_consommation is None:
-            weekly_consommation = 0 
-        #Consommation du mois
-        monthly_consommation = (Consommation.objects
-                                .filter(dispositif__section=section,created_at__date__range=(month_start, month_end))
-                                .aggregate(Sum('quantite'))['quantite__sum'])
-        if monthly_consommation is None:
-            monthly_consommation = 0
-        #Consommation des 07 derniers jours
-        data = (
-                Consommation.objects
-                .filter(dispositif__section=section,created_at__date__range=(start_date, end_date))
-                .values('created_at__date')
-                .annotate(quantite_sum=Sum('quantite'))
-            )
-        data_list = [{'day': item['created_at__date'], 'quantite_sum': item['quantite_sum']} for item in data]
-        #Consommation des 12 derniers mois
-        daily_consommation_dispositif = []
-        weekly_consommation_dispositif = []
-        monthly_consommation_dispositif = []
-        nom_jour = today.strftime("%A %d %B %Y")
-        alert_count = Alert.objects.filter(entreprise=user_entreprise_id, is_read=False).count()
-        for dispo in dispositifs:
-            monthly_consommation_dispositif.append(Consommation.objects.filter(dispositif=dispo, created_at__date__range=(month_start, month_end)).aggregate(Sum('quantite'))['quantite__sum'])
-            weekly_consommation_dispositif.append(Consommation.objects.filter(dispositif=dispo, created_at__date__range=(start_of_week, end_of_week)).aggregate(Sum('quantite'))['quantite__sum'])
-            daily_consommation_dispositif.append(Consommation.objects.filter(dispositif=dispo, created_at__date__range=(start_of_day, end_of_day)).aggregate(Sum('quantite'))['quantite__sum'])
-        rachid = {'data': data_list,
-                  'alert_count':alert_count,
-                "section":section,
-                "sections":sections,
-                "dispositifs":dispositifs,
-                "today":nom_jour,
-                "daily_consommation":daily_consommation,
-                "weekly_consommation":weekly_consommation,
-                "monthly_consommation":monthly_consommation,
-                "daily_consommation_dispositif":daily_consommation_dispositif,
-                "weekly_consommation_dispositif":weekly_consommation_dispositif,
-                "monthly_consommation_dispositif":monthly_consommation_dispositif,
-                "days_of_week":days_of_week,
-                }
-        return render(request,'conso/consommation/section.html',rachid)
-    except Exception as e:
-        # Gérer l'exception, par exemple, rediriger vers une page d'erreur
-        return render(request, 'conso/error.html', {'error_message': str(e)})
+    locale.setlocale(locale.LC_TIME, 'fr_FR')
+    dayli = datetime.today()
+    last_seven_days = [dayli - timedelta(days=i) for i in range(6, -1, -1)]
+    days_of_week = [day.strftime("%A") for day in last_seven_days]
+    section = Section.objects.get(id=pk)
+    user_id = request.user.id
+    user_entreprise_id = get_object_or_404(Entreprise, user_id=user_id)
+    sections = Section.objects.filter(entreprise_id=user_entreprise_id)
+    dispositifs = Dispositif.objects.filter(section=section)
+    end_date = date.today()
+    start_date = end_date - timedelta(days=6)
+    #determination du jour
+    today = date.today()
+    start_of_day = datetime.combine(today, datetime.min.time())
+    end_of_day = datetime.combine(today, datetime.max.time())
+    month_start = today.replace(day=1)
+    month_end = today.replace(day=calendar.monthrange(today.year, today.month)[1])
+    thisday = datetime.today()
+    start_of_week = thisday - timedelta(days=thisday.weekday())
+    end_of_week = start_of_week + timedelta(days=6)
+    data = []
+    #Consommation du jour
+    daily_consommation = Consommation.objects.filter(dispositif__section=section,created_at__date__range=(start_of_day, end_of_day)).aggregate(Sum('quantite'))['quantite__sum']
+    if daily_consommation is None:
+        daily_consommation = 0
+    #determination de la consommation de la semaine
+    weekly_consommation = (Consommation.objects
+                            .filter(dispositif__section=section,created_at__date__range=(start_of_week, end_of_week))
+                            .aggregate(Sum('quantite'))['quantite__sum'])
+    if weekly_consommation is None:
+        weekly_consommation = 0 
+    #Consommation du mois
+    monthly_consommation = (Consommation.objects
+                            .filter(dispositif__section=section,created_at__date__range=(month_start, month_end))
+                            .aggregate(Sum('quantite'))['quantite__sum'])
+    if monthly_consommation is None:
+        monthly_consommation = 0
+    #Consommation des 07 derniers jours
+    data = (
+            Consommation.objects
+            .filter(dispositif__section=section,created_at__date__range=(start_date, end_date))
+            .values('created_at__date')
+            .annotate(quantite_sum=Sum('quantite'))
+        )
+    data_list = [{'day': item['created_at__date'], 'quantite_sum': item['quantite_sum']} for item in data]
+    #Consommation des 12 derniers mois
+    daily_consommation_dispositif = []
+    weekly_consommation_dispositif = []
+    monthly_consommation_dispositif = []
+    nom_jour = today.strftime("%A %d %B %Y")
+    alert_count = Alert.objects.filter(entreprise=user_entreprise_id, is_read=False).count()
+    for dispo in dispositifs:
+        monthly_consommation_dispositif.append(Consommation.objects.filter(dispositif=dispo, created_at__date__range=(month_start, month_end)).aggregate(Sum('quantite'))['quantite__sum'])
+        weekly_consommation_dispositif.append(Consommation.objects.filter(dispositif=dispo, created_at__date__range=(start_of_week, end_of_week)).aggregate(Sum('quantite'))['quantite__sum'])
+        daily_consommation_dispositif.append(Consommation.objects.filter(dispositif=dispo, created_at__date__range=(start_of_day, end_of_day)).aggregate(Sum('quantite'))['quantite__sum'])
+    rachid = {'data': data_list,
+                'alert_count':alert_count,
+            "section":section,
+            "sections":sections,
+            "dispositifs":dispositifs,
+            "today":nom_jour,
+            "daily_consommation":daily_consommation,
+            "weekly_consommation":weekly_consommation,
+            "monthly_consommation":monthly_consommation,
+            "daily_consommation_dispositif":daily_consommation_dispositif,
+            "weekly_consommation_dispositif":weekly_consommation_dispositif,
+            "monthly_consommation_dispositif":monthly_consommation_dispositif,
+            "days_of_week":days_of_week,
+            }
+    return render(request,'conso/consommation/section.html',rachid)
 
 def prevision(request):
     user_id = request.user.id
@@ -781,12 +741,8 @@ def prevision(request):
     raw_quantities = df_daily['quantite'].tolist()
 
     daily = list(zip(raw_dates,raw_quantities))
-    print(daily)
-    print(forecast_data)
 
-    observations = np.concatenate([raw_quantities, forecast])
-    dates = np.concatenate([raw_dates, date_range])
-    daily = list(zip(raw_dates,raw_quantities))
+    
 
 
     # Passer les données à la template
@@ -809,92 +765,90 @@ class ConsommationViewset(ModelViewSet):
 
 @login_required
 def budget(request):
-    try:
-        user = request.user
-        user_entreprise = get_object_or_404(Entreprise, user=user)
-        alert_count = Alert.objects.filter(entreprise=user_entreprise, is_read=False).count()
-        today = date.today()
-        start_of_month = today.replace(day=1)
-        end_of_month = today.replace(day=calendar.monthrange(today.year, today.month)[1])
-        start_of_period = datetime.combine(start_of_month, datetime.min.time())
-        end_of_period = datetime.combine(end_of_month, datetime.max.time())
+    user = request.user
+    user_entreprise = get_object_or_404(Entreprise, user=user)
+    alert_count = Alert.objects.filter(entreprise=user_entreprise, is_read=False).count()
+    today = date.today()
+    start_of_month = today.replace(day=1)
+    end_of_month = today.replace(day=calendar.monthrange(today.year, today.month)[1])
+    start_of_period = datetime.combine(start_of_month, datetime.min.time())
+    end_of_period = datetime.combine(end_of_month, datetime.max.time())
 
-        total_consommation = (Consommation.objects
-                                    .filter(dispositif__source_eau="ONEA", dispositif__section__entreprise=user_entreprise, created_at__date__range=(start_of_period, end_of_period))
-                                    .aggregate(Sum('quantite'))['quantite__sum'] or Decimal('0'))
-        montant_consommation = Decimal('1178') * Decimal(total_consommation)
+    total_consommation = (Consommation.objects
+                                .filter(dispositif__source_eau="ONEA", dispositif__section__entreprise=user_entreprise, created_at__date__range=(start_of_period, end_of_period))
+                                .aggregate(Sum('quantite'))['quantite__sum'] or Decimal('0'))
+    montant_consommation = Decimal('1178') * Decimal(total_consommation)
 
-        # Obtenez ou créez le budget pour le mois en cours
-        budget_obj, created = Budget.objects.get_or_create(
-            entreprise=user_entreprise,
-            date_debut=start_of_month,
-            date_fin=end_of_month,
-            defaults={'montant': Decimal('0')}
-        )
+    # Obtenez ou créez le budget pour le mois en cours
+    budget_obj, created = Budget.objects.get_or_create(
+        entreprise=user_entreprise,
+        date_debut=start_of_month,
+        date_fin=end_of_month,
+        defaults={'montant': Decimal('0')}
+    )
 
-        # Récupérez ou créez la dépense pour le mois en cours
-        depense_obj, created = Depense.objects.get_or_create(
-            entreprise=user_entreprise,
-            date_debut=start_of_month,
-            date_fin=end_of_month,
-            defaults={'montant': Decimal('0')}
-        )
+    # Récupérez ou créez la dépense pour le mois en cours
+    depense_obj, created = Depense.objects.get_or_create(
+        entreprise=user_entreprise,
+        date_debut=start_of_month,
+        date_fin=end_of_month,
+        defaults={'montant': Decimal('0')}
+    )
 
-        if request.method == 'POST':
-            if 'budget' in request.POST:
-                montant_budget = Decimal(request.POST['budget'])
-                budget_obj.montant += montant_budget
-                budget_obj.save()
-                request.session['montant_budget'] = str(montant_budget)
-                alert_intitule = f"Budget défini : {montant_budget}"
-                alert_message = f"Vous avez défini un budget d'un montant de {montant_budget}"
-                if not Alert.objects.filter(intitule=alert_intitule, entreprise=user_entreprise).exists():
-                    alert = Alert(intitule=alert_intitule, message=alert_message, entreprise=user_entreprise)
+    if request.method == 'POST':
+        if 'budget' in request.POST:
+            montant_budget = Decimal(request.POST['budget'])
+            budget_obj.montant += montant_budget
+            budget_obj.save()
+            request.session['montant_budget'] = str(montant_budget)
+            alert_intitule = f"Budget défini : {montant_budget}"
+            alert_message = f"Vous avez défini un budget d'un montant de {montant_budget}"
+            if not Alert.objects.filter(intitule=alert_intitule, entreprise=user_entreprise).exists():
+                alert = Alert(intitule=alert_intitule, message=alert_message, entreprise=user_entreprise)
+                alert.save()
+            return HttpResponseRedirect(request.path)
+        
+        elif 'depense' in request.POST:
+            montant_depense = Decimal(request.POST['depense'])
+            depense_obj.montant += montant_depense
+            depense_obj.save()
+            request.session['montant_depense'] = str(montant_depense)
+            return HttpResponseRedirect(request.path)
+
+    reste_budget = budget_obj.montant - (montant_consommation + depense_obj.montant)
+
+    if budget_obj.montant > 0:
+        seuils = [30, 50, 70, 80, 90, 95, 99, 100, 101]
+
+        alertes = {}
+        for seuil in seuils:
+            if total_consommation <= Decimal(seuil):
+                alertes[seuil] = f"Vous aviez atteint {seuil}% du montant de votre budget alloué à la consommation en eau"
+                # Envoyez l'alerte à l'utilisateur s'il atteint le seuil spécifique
+                if total_consommation <= Decimal(seuil) and not Alert.objects.filter(intitule=f"Alerte budget : {seuil}%", entreprise=user_entreprise).exists():
+                    alert = Alert(intitule=f"Alerte budget : {seuil}%", message=f"Consommation inférieure ou égale à {seuil}%", entreprise=user_entreprise)
                     alert.save()
-                return HttpResponseRedirect(request.path)
-            
-            elif 'depense' in request.POST:
-                montant_depense = Decimal(request.POST['depense'])
-                depense_obj.montant += montant_depense
-                depense_obj.save()
-                request.session['montant_depense'] = str(montant_depense)
-                return HttpResponseRedirect(request.path)
+            else:
+                alertes[seuil] = f"Consommation supérieure à {seuil}%"
+    else:
+        # L'utilisateur n'a pas encore défini de budget, donc pas d'alertes de seuils
+        alertes = {}
 
-        reste_budget = budget_obj.montant - (montant_consommation + depense_obj.montant)
-
-        if budget_obj.montant > 0:
-            seuils = [30, 50, 70, 80, 90, 95, 99, 100, 101]
-
-            alertes = {}
-            for seuil in seuils:
-                if total_consommation <= Decimal(seuil):
-                    alertes[seuil] = f"Vous aviez atteint {seuil}% du montant de votre budget alloué à la consommation en eau"
-                    # Envoyez l'alerte à l'utilisateur s'il atteint le seuil spécifique
-                    if total_consommation <= Decimal(seuil) and not Alert.objects.filter(intitule=f"Alerte budget : {seuil}%", entreprise=user_entreprise).exists():
-                        alert = Alert(intitule=f"Alerte budget : {seuil}%", message=f"Consommation inférieure ou égale à {seuil}%", entreprise=user_entreprise)
-                        alert.save()
-                else:
-                    alertes[seuil] = f"Consommation supérieure à {seuil}%"
-        else:
-            # L'utilisateur n'a pas encore défini de budget, donc pas d'alertes de seuils
-            alertes = {}
-
-        context = {
-            'alert_count':alert_count,
-            'budget_defini': True,
-            'montant_budget': budget_obj.montant,
-            'depense_defini': depense_obj.montant > 0,
-            'montant_depense': depense_obj.montant,
-            'period_consommation': total_consommation,
-            'montant_consommation': montant_consommation,
-            'reste_budget': reste_budget,
-            'alertes': alertes,
-            "start_of_period": start_of_period,
-            "end_of_period": end_of_period,
-        }
-        return render(request, 'conso/suivi/budget.html', context)
-    except Exception as e:
-        return render(request, 'conso/error.html', {'error_message': str(e)})
+    context = {
+        'alert_count':alert_count,
+        'budget_defini': True,
+        'montant_budget': budget_obj.montant,
+        'depense_defini': depense_obj.montant > 0,
+        'montant_depense': depense_obj.montant,
+        'period_consommation': total_consommation,
+        'montant_consommation': montant_consommation,
+        'reste_budget': reste_budget,
+        'alertes': alertes,
+        "start_of_period": start_of_period,
+        "end_of_period": end_of_period,
+    }
+    return render(request, 'conso/suivi/budget.html', context)
+    
 
 
 @login_required
@@ -976,26 +930,20 @@ def alert(request):
 
 @login_required
 def read_alert(request, pk):
-    try:
-        user_id = request.user.id
-        user_entreprise_id = get_object_or_404(Entreprise, user_id=user_id)
-        alert = get_object_or_404(Alert, id=pk)
-        alert.is_read = True
-        alert.save()
-        alert_count = Alert.objects.filter(entreprise=user_entreprise_id, is_read=False).count()
-        return render(request, 'conso/lecture.html', {'alert': alert, 'alerts_count': alert_count})
-    except Exception as e:
-        return render(request, 'conso/error.html', {'error_message': str(e)})
+    user_id = request.user.id
+    user_entreprise_id = get_object_or_404(Entreprise, user_id=user_id)
+    alert = get_object_or_404(Alert, id=pk)
+    alert.is_read = True
+    alert.save()
+    alert_count = Alert.objects.filter(entreprise=user_entreprise_id, is_read=False).count()
+    return render(request, 'conso/lecture.html', {'alert': alert, 'alerts_count': alert_count})
 
 @login_required
 def marquer_lue(request, pk):
-    try:
-        alert = get_object_or_404(Alert, id=pk)
-        alert.is_read = True
-        alert.save()
-        return redirect('alert')
-    except Exception as e:
-        return render(request, 'conso/error.html', {'error_message': str(e)})
+    alert = get_object_or_404(Alert, id=pk)
+    alert.is_read = True
+    alert.save()
+    return redirect('alert')
 
 
 """ # Planifiez l'envoi de l'alerte chaque samedi à 09h

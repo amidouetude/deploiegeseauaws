@@ -26,7 +26,6 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'whitenoise.runserver_nostatic',
     'django.contrib.staticfiles',
     'conso',
     'rest_framework',
@@ -37,7 +36,6 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -77,10 +75,10 @@ WSGI_APPLICATION = 'Geseau.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-       'NAME': 'databaseprime',
-        'USER': 'admin',
-        'PASSWORD': 'magx2000',
-        'HOST':'databaseprime.cnnyycew25bt.us-east-1.rds.amazonaws.com',
+        'NAME': 'geseau_database',
+        'USER': 'root',
+        'PASSWORD': '',
+        'HOST':'localhost',
         'PORT':'3306',
     }
 }
