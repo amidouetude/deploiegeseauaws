@@ -5,7 +5,6 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
@@ -24,18 +23,19 @@ INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
+    'whitenoise.runserver_nostatic',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'conso',
     'rest_framework',
     "corsheaders",
-    'django_cron',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -75,10 +75,10 @@ WSGI_APPLICATION = 'Geseau.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'geseau_database',
-        'USER': 'root',
-        'PASSWORD': '',
-        'HOST':'localhost',
+       'NAME': 'databaseprime',
+        'USER': 'admin',
+        'PASSWORD': 'magx2000',
+        'HOST':'databaseprime.cnnyycew25bt.us-east-1.rds.amazonaws.com',
         'PORT':'3306',
     }
 }
@@ -134,6 +134,3 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 SESSION_ENGINE = "django.contrib.sessions.backends.db"  # Utilisation de la base de données pour stocker les sessions
 
-CRON_CLASSES = [
-    'django_cron.cron.Frequency',
-]

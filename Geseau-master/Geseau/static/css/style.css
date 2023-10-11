@@ -30,7 +30,6 @@ body {
   display: flex;
 }
 
-
 .logo {
   width: 50px;
   height: auto;
@@ -262,6 +261,50 @@ hr {
   position: relative;
 }
 
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-button {
+  background-color: #1e90ff;
+  color: #fff;
+  padding: 10px 30px 10px 20px;
+  border: none;
+  cursor: pointer;
+  position: relative;
+}
+
+.dropdown-button::after {
+  content: "\25BE"; /* Flèche vers le bas */
+  position: absolute;
+  right: 10px;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #c0e0f7;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+
+.dropdown.open .dropdown-content {
+  display: block;
+}
+
+.dropdown-item {
+  padding: 12px 16px 12px 12px;
+  text-decoration: none;
+  display: block;
+  color: #333;
+}
+
+.dropdown-item:hover {
+  background-color: #a1cde7;
+}
+
 /*  Footer */
 body {
   margin: 0;
@@ -339,18 +382,4 @@ body {
   max-width: 100%; /* Pour s'assurer que le graphique ne dépasse pas la largeur du conteneur */
   height: auto; /* Permet au graphique de conserver son ratio d'aspect */
   display: block; /* Pour supprimer tout espace supplémentaire sous le graphique */
-}
-
-
-/* Style pour le contenu du message d'alerte */
-.alert-message {
-  font-size: 18px;
-  margin-top: 10px;
-}
-
-/* Style pour les métadonnées de l'alerte */
-.alert-meta {
-  margin-top: 20px;
-  font-size: 14px;
-  color: #666;
 }
