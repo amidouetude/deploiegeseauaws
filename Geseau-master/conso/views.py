@@ -28,7 +28,6 @@ from statsmodels.tsa.statespace.sarimax import SARIMAX
 import openpyxl
 import statsmodels.api as sm
 from django.contrib import messages
-import locale
 
 
 ##### Accès vers la page d'acceuil
@@ -36,7 +35,6 @@ import locale
 
 #Affichage de la conso dans l'index
 def index(request):
-    locale.setlocale(locale.LC_TIME, 'fr_FR')
     if request.user.is_authenticated:
         user_id = request.user.id
         user_entreprise_id = get_object_or_404(Entreprise, user_id=user_id)
@@ -51,12 +49,6 @@ def index(request):
         start_of_week = thisday - timedelta(days=thisday.weekday())
         end_of_week = start_of_week + timedelta(days=6)
         data = []  
-
-        # Créez une liste des noms des jours de la semaine pour les six derniers jours
-        # Créez une liste de noms de jours pour les 7 derniers jours
-        dayli = datetime.today()
-        last_seven_days = [dayli - timedelta(days=i) for i in range(6, -1, -1)]
-        days_of_week = [day.strftime("%A") for day in last_seven_days]
         
         #determination de la consommation du jour
         daily_consommation = (Consommation.objects
@@ -99,13 +91,11 @@ def index(request):
         #Consommation mensuelle
         alert_count = Alert.objects.filter(entreprise=user_entreprise_id, is_read=False).count()
         data_list = [{'day': item['created_at__date'], 'quantite_sum': item['quantite_sum']} for item in data]
-        nom_jour = today.strftime("%A %d %B %Y")
         context = {
             "alert_count":alert_count,
             'data': data_list,
             "sections": sections,
-            "today": nom_jour,
-            "days_of_week":days_of_week,
+            "today": today,
             "daily_consommation": daily_consommation,
             "weekly_consommation": weekly_consommation,
             "monthly_consommation": monthly_consommation,
@@ -529,7 +519,6 @@ def historique(request):
 
 @login_required
 def ConsDispo(request,pk):
-    locale.setlocale(locale.LC_TIME, 'fr_FR')
     dispositif = Dispositif.objects.get(id=pk)
     client = request.user
     dispos = Dispositif.objects.filter(section__entreprise__user=client)
@@ -570,25 +559,19 @@ def ConsDispo(request,pk):
             .annotate(quantite_sum=Sum('quantite'))
         )
     data_list = [{'day': item['created_at__date'], 'quantite_sum': item['quantite_sum']} for item in data]
-    nom_jour = today.strftime("%A %d %B %Y")
-    dayli = datetime.today()
-    last_seven_days = [dayli - timedelta(days=i) for i in range(6, -1, -1)]
-    days_of_week = [day.strftime("%A") for day in last_seven_days]
     ahmed = {'data': data_list,
                 "alert_count":alert_count,
             "dispositif":dispositif,
             "dispos":dispos,
-            "today":nom_jour,
+            "today":today,
             "daily_consommation":daily_consommation,
             "weekly_consommation":weekly_consommation,
             "monthly_consommation":monthly_consommation,
-            "days_of_week":days_of_week,
             }
     return render(request,'conso/consommation/dispositif.html',ahmed)
 
 @login_required
 def ConsSection(request, pk):
-    locale.setlocale(locale.LC_TIME, 'fr_FR')
     dayli = datetime.today()
     last_seven_days = [dayli - timedelta(days=i) for i in range(6, -1, -1)]
     days_of_week = [day.strftime("%A") for day in last_seven_days]
@@ -637,7 +620,6 @@ def ConsSection(request, pk):
     daily_consommation_dispositif = []
     weekly_consommation_dispositif = []
     monthly_consommation_dispositif = []
-    nom_jour = today.strftime("%A %d %B %Y")
     alert_count = Alert.objects.filter(entreprise=user_entreprise_id, is_read=False).count()
     for dispo in dispositifs:
         monthly_consommation_dispositif.append(Consommation.objects.filter(dispositif=dispo, created_at__date__range=(month_start, month_end)).aggregate(Sum('quantite'))['quantite__sum'])
@@ -648,7 +630,7 @@ def ConsSection(request, pk):
             "section":section,
             "sections":sections,
             "dispositifs":dispositifs,
-            "today":nom_jour,
+            "today":today,
             "daily_consommation":daily_consommation,
             "weekly_consommation":weekly_consommation,
             "monthly_consommation":monthly_consommation,
@@ -853,7 +835,6 @@ def budget(request):
 
 @login_required
 def fuite(request):
-    locale.setlocale(locale.LC_TIME, 'fr_FR')
     today = date.today()
     user_id = request.user.id
     user_entreprise_id = get_object_or_404(Entreprise, user_id=user_id)
