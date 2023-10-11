@@ -142,7 +142,6 @@ def section(request):
         monthly_consommation = Consommation.objects.filter(dispositif__section=section, created_at__date__range=(month_start, month_end)).aggregate(Sum('quantite'))['quantite__sum']
         if monthly_consommation is None:
             monthly_consommation = 0
-        alert_count = Alert.objects.filter(entreprise=user_entreprise_id, is_read=False).count()
         consom.append({
             'section': section,
             'total_consommation': total_consommation,
@@ -150,6 +149,8 @@ def section(request):
             'weekly_consommation': weekly_consommation,
             'monthly_consommation': monthly_consommation
         })
+    alert_count = 0
+    alert_count = Alert.objects.filter(entreprise=user_entreprise_id, is_read=False).count()
     ahmed={'consom':consom, 'alert_count':alert_count,}
     return render(request,'conso/section/sections.html',ahmed)
 
