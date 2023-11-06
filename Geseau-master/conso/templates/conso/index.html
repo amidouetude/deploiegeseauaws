@@ -5,62 +5,67 @@ Tableau de bord
 {% endblock etatactuel %}
 
 {% block content %}
-<div class="container mt-3">
-    <ul class="nav nav-tabs" role="tablist">
-        <li class="nav-item">
-          <a class="nav-link active" data-bs-toggle="tab" href="#home">Consommation générale</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" data-bs-toggle="tab" href="#menu1">Consommation par sections</a>
-        </li>
-    </ul>
-    <br>
-      <!-- Tab panes -->
-    <div class="tab-content">
-        <div class="container tab-pane active" id="home">
-            <div class="content-header">
-                <div>
-                    <div>
-                        <p>Consommation de ce jour {{today}}</p>
-                        <h3><span id="">{{ daily_consommation }} m&sup3</span></h3>
-                    </div>
-                    <select name="section" class="form-select" required onchange="redirectToSection(this)">
-                        <option value="{% url 'index' %}">Générale</option>
-                        {% for section in sections %}
-                            <option value="{% url 'graphe_section' section.id %}">{{ section.nom_section }}</option>
-                        {% endfor %}
-                    </select>                   
-                </div>
-                <div>
-                    <p>Consommation de cette semaine</p> <h3><span id="">{{ weekly_consommation }} m&sup3 </span></h3>
-                </div>
-                <div>
-                    <p>Consommation de ce mois </p> <h3><span id="">{{ monthly_consommation }} m&sup3</span></h3>
-                </div>
-            </div><br>
-            <div style="width: 80%; margin: 0 auto;">
-                <h3 class="text-center">Graphique de la consommation des sept derniers jours</h3>
-                <canvas id="myChart"></canvas>
-            </div>      
-        </div>
-        <div class="container tab-pane fade" id="menu1">
-            <div class="row">
-                <div class="col-md-4">
-                    <h3 class="text-center">Journalière</h3>
-                    <canvas id="section-daily-chart"></canvas>
-                </div>
-                <div class="col-md-4">
-                    <h3 class="text-center">Hebdomadaire</h3>
-                    <canvas id="section-weekly-chart"></canvas>
-                </div>
-                <div class="col-md-4">
-                    <h3 class="text-center">Mensuelle</h3>
-                    <canvas id="section-monthly-chart"></canvas>
-                </div>
-            </div><br>
-        </div>
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <div class="col-md-2"> 
+        <select name="section" class="form-select" required onchange="redirectToSection(this)">
+            <option value="{% url 'index' %}">Générale</option>
+            {% for section in sections %}
+                <option value="{% url 'graphe_section' section.id %}">{{ section.nom_section }}</option>
+            {% endfor %}
+        </select>
     </div>
+    <div class="col-md-4 btn-toolbar mb-2 mb-md-0">
+        <div class="btn-group me-2">
+            <a class="btn btn-info" href="{% url 'historique' %}">
+                <div class="flex-container">
+                    <ion-icon name="calendar-outline"></ion-icon>
+                    <span><strong>Historique</strong></span>
+                </div>
+            </a>
+        </div>
+        <div class="btn-group me-2">
+            <a class="btn btn-info" href="{% url 'prevision' %}">
+                <div class="flex-container">
+                    <ion-icon name="bar-chart-outline"></ion-icon>
+                    <span><strong>Prévisions</strong></span>
+                </div>
+            </a>
+        </div>
+        <div class="btn-group me-2">
+            <a class="btn btn-info" href="{% url 'prevision' %}">
+                <div class="flex-container">
+                    <ion-icon name="book-outline"></ion-icon>
+                    <span><strong>Rapports</strong></span>
+                </div>
+            </a>
+        </div>
+    </div>                
+</div><br>
+<div class="row">
+    <div class="text-center col-md-3">
+        <h3>Aujourd'hui</h3>
+        <h3>{{daily_consommation}} m&sup3</h3>
+        <canvas id="section-daily-chart"></canvas>
+    </div>
+    <div class="text-center col-md-1"></div>
+    <div class="text-center col-md-3">
+        <h3>Cette sémaine</h3>
+        <h3>{{weekly_consommation}} m&sup3</h3>
+        <canvas id="section-weekly-chart"></canvas>
+    </div>
+    <div class="text-center col-md-1"></div>
+    <div class="col-md-3 text-center">
+        <h3>Ce mois</h3>
+        <h3>{{monthly_consommation}} m&sup3</h3>
+        <canvas id="section-monthly-chart"></canvas>
+    </div>
+    <div class="text-center col-md-1"></div>
 </div>
+<br><br>          
+<div style="width: 85%; margin: 0 auto;">
+    <h3 class="text-center">Graphique de la consommation des sept derniers jours</h3>
+    <canvas id="myChart"></canvas>
+</div> 
 {% endblock content %}
 
 {% block scripts %}
@@ -68,13 +73,13 @@ Tableau de bord
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
 <script>
-    // Fonction pour rafraîchir la page toutes les 30 secondes
+    // Fonction pour rafraîchir la page toutes les 20 secondes
     function refreshPage() {
         location.reload();
     }
 
-    // Actualiser la page toutes les 30 secondes (30000 millisecondes)
-    setInterval(refreshPage, 10000);
+    // Actualiser la page toutes les 20 secondes (20000 millisecondes)
+    setInterval(refreshPage, 20000);
 </script>
 <script>
     var ctx = document.getElementById('myChart').getContext('2d');
@@ -117,11 +122,11 @@ Tableau de bord
             datasets: [{
                 data: [{% for section in daily_consommation_section %}{{ section }},{% endfor %}],
                 backgroundColor: [
-                    'rgba(255, 99, 132, 0.7)',
-                    'rgba(54, 162, 235, 0.7)',
-                    'rgba(255, 206, 86, 0.7)',
-                    'rgba(75, 192, 192, 0.7)',
-                    'rgba(153, 102, 255, 0.7)',
+                    'rgba(0, 0, 255, 0.7)',   // Bleu foncé
+                    'rgba(30, 144, 255, 0.7)', // Bleu dodger
+                    'rgba(70, 130, 180, 0.7)', // Bleu acier
+                    'rgba(135, 206, 235, 0.7)', // Bleu poudré
+                    'rgba(173, 216, 230, 0.7)', // Bleu clair
                 ],
             }],
         },
@@ -150,11 +155,11 @@ Tableau de bord
             datasets: [{
                 data: [{% for section in weekly_consommation_section %}{{ section }},{% endfor %}],
                 backgroundColor: [
-                    'rgba(255, 99, 132, 0.7)',
-                    'rgba(54, 162, 235, 0.7)',
-                    'rgba(255, 206, 86, 0.7)',
-                    'rgba(75, 192, 192, 0.7)',
-                    'rgba(153, 102, 255, 0.7)',
+                    'rgba(0, 0, 255, 0.7)',   // Bleu foncé
+                    'rgba(30, 144, 255, 0.7)', // Bleu dodger
+                    'rgba(70, 130, 180, 0.7)', // Bleu acier
+                    'rgba(135, 206, 235, 0.7)', // Bleu poudré
+                    'rgba(173, 216, 230, 0.7)', // Bleu clair
                 ],
             }],
         },
@@ -183,11 +188,11 @@ Tableau de bord
             datasets: [{
                 data: [{% for section in monthly_consommation_section %}{{ section }},{% endfor %}],
                 backgroundColor: [
-                    'rgba(255, 99, 132, 0.7)',
-                    'rgba(54, 162, 235, 0.7)',
-                    'rgba(255, 206, 86, 0.7)',
-                    'rgba(75, 192, 192, 0.7)',
-                    'rgba(153, 102, 255, 0.7)',
+                    'rgba(0, 0, 255, 0.7)',   // Bleu foncé
+                    'rgba(30, 144, 255, 0.7)', // Bleu dodger
+                    'rgba(70, 130, 180, 0.7)', // Bleu acier
+                    'rgba(135, 206, 235, 0.7)', // Bleu poudré
+                    'rgba(173, 216, 230, 0.7)', // Bleu clair
                 ],
             }],
         },

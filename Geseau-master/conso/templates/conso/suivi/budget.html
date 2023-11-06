@@ -4,65 +4,60 @@
 Gestion du budget mensuel
 {% endblock etatactuel %}
 
-{% block content %}
-<div class="container mt-4">
-    
-    <div class="row mt-3">
-        <div class="col-md-12">
-            <button id="show-budget-form" class="btn btn-primary" style="background-color: #65a9dc; border-color: #10b3d8;">Définir le budget</button>
-            <button id="show-depense-form" class="btn btn-primary" style="background-color: #65a9dc; border-color: #10b3d8;">Définir le coût d'approvisionnement</button>
+{% block content %}    
+<div class="row mt-3">
+    <div class="col-md-12">
+        <button id="show-budget-form" class="btn btn-primary text-dark" style="background-color: #65a9dc; border-color: #10b3d8;">Définir le budget</button>
+        <button id="show-depense-form" class="btn btn-primary text-dark" style="background-color: #65a9dc; border-color: #10b3d8;">Définir le coût d'approvisionnement</button>
+    </div>
+</div>
+<div class="row mt-4">
+    <div class="col-md-12">
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered table-hover text-center">
+                <thead class="sticky-top" style="background-color: #65a9dc;">
+                    <tr>
+                        <th>Budget alloué</th>
+                        <th>Quantité consommée</th>
+                        <th>Montant correspondant</th>
+                        <th>Montant des dépenses</th>
+                        <th>Portefeuille</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>{{ montant_budget }}</td>
+                        <td>{{ period_consommation }}</td>
+                        <td>{{ montant_consommation }}</td>
+                        <td>{{ montant_depense }}</td>
+                        <td>{{ reste_budget }}</td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     </div>
-
-    <div class="row mt-4">
-        <div class="col-md-12">
-            <div class="table-responsive">
-                <table class="table table-striped table-bordered table-hover text-center">
-                    <thead class="sticky-top text-white" style="background-color: #65a9dc;">
-                        <tr>
-                            <th>Budget alloué</th>
-                            <th>Quantité consommée</th>
-                            <th>Montant correspondant</th>
-                            <th>Montant des dépenses</th>
-                            <th>Portefeuille</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>{{ montant_budget }}</td>
-                            <td>{{ period_consommation }}</td>
-                            <td>{{ montant_consommation }}</td>
-                            <td>{{ montant_depense }}</td>
-                            <td>{{ reste_budget }}</td>
-                        </tr>
-                    </tbody>
-                </table>
+</div>
+<div class="row mt-4" id="budget-depense-forms">
+    <div class="col-md-12">
+        <form id="budget-form" action="{% url 'budget' %}" method="post">
+            <h2 class="mb-3">Définir le Budget</h2>
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="budget">Montant alloué pour le mois :</label>
+                <input type="number" name="budget" id="budget" class="form-control" required>
             </div>
-        </div>
-    </div>
-    
-    <div class="row mt-4" id="budget-depense-forms">
-        <div class="col-md-12">
-            <form id="budget-form" action="{% url 'budget' %}" method="post">
-                <h2 class="mb-3">Définir le Budget</h2>
-                {% csrf_token %}
-                <div class="form-group">
-                    <label for="budget">Montant alloué pour le mois :</label>
-                    <input type="number" name="budget" id="budget" class="form-control" required>
-                </div>
-                <button type="submit" class="btn btn-primary" style="background-color: #65a9dc; border-color: #10b3d8;">Définir le budget</button>
-            </form>
-            
-            <form id="depense-form" action="{% url 'budget' %}" method="post">
-                <h2 class="mb-3">Définir le Coût d'Approvisionnement</h2>
-                {% csrf_token %}
-                <div class="form-group">
-                    <label for="depense">Coût :</label>
-                    <input type="number" name="depense" id="depense" class="form-control" required>
-                </div>
-                <button type="submit" class="btn btn-primary" style="background-color: #65a9dc; border-color: #10b3d8;">Définir le coût</button>
-            </form>
-        </div>
+            <button type="submit" class="btn btn-primary" style="background-color: #65a9dc; border-color: #10b3d8;">Définir le budget</button>
+        </form>
+        
+        <form id="depense-form" action="{% url 'budget' %}" method="post">
+            <h2 class="mb-3">Définir le Coût d'Approvisionnement</h2>
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="depense">Coût :</label>
+                <input type="number" name="depense" id="depense" class="form-control" required>
+            </div>
+            <button type="submit" class="btn btn-primary" style="background-color: #65a9dc; border-color: #10b3d8;">Définir le coût</button>
+        </form>
     </div>
 </div>
 {% endblock content %}
@@ -76,17 +71,29 @@ Gestion du budget mensuel
 
         // Gérer le clic sur le bouton "Définir le budget"
         $("#show-budget-form").click(function() {
-            $("#budget-depense-forms").show();
-            $("#budget-form").show();
-            $("#depense-form").hide();
+            // Si le formulaire du budget est visible, le cacher
+            if ($("#budget-form").is(":visible")) {
+                $("#budget-form").hide();
+            } else {
+                // Sinon, afficher le formulaire du budget et cacher le formulaire du coût d'approvisionnement
+                $("#budget-form").show();
+                $("#depense-form").hide();
+            }
         });
 
         // Gérer le clic sur le bouton "Définir le coût d'approvisionnement"
         $("#show-depense-form").click(function() {
-            $("#budget-depense-forms").show();
-            $("#budget-form").hide();
-            $("#depense-form").show();
+            // Si le formulaire du coût d'approvisionnement est visible, le cacher
+            if ($("#depense-form").is(":visible")) {
+                $("#depense-form").hide();
+            } else {
+                // Sinon, afficher le formulaire du coût d'approvisionnement et cacher le formulaire du budget
+                $("#depense-form").show();
+                $("#budget-form").hide();
+            }
         });
+        
     });
+
 </script>
 {% endblock scripts %}

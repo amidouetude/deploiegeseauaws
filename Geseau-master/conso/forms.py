@@ -24,7 +24,10 @@ class DispositifForm(forms.ModelForm):
         widget = forms.Select(attrs={'placeholder': "Ex : ONEA, Forage"}),
         choices=[("ONEA", "ONEA"),("Forage", "Forage")]
     )
-
+    def __init__(self, user, *args, **kwargs):
+        super(DispositifForm, self).__init__(*args, **kwargs)
+        # Filtrer les sections en fonction de l'entreprise de l'utilisateur connecté
+        self.fields['section'].queryset = Section.objects.filter(entreprise__user=user)
     class Meta:
         model = Dispositif
         fields = '__all__'

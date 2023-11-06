@@ -7,7 +7,26 @@
 <div class="container mb-5">
     <form method="POST" class="card p-3 mt-2 myform" action="" autocomplete="off"> 
         {% csrf_token %}
-        {{form.as_p}}
+        <div class="row">
+            <div class="col-12">
+                <div class="row p-2">
+                    <label for="section"> Section </label>
+                    {{form.section}}
+                </div>
+                <div class="row p-2">
+                    <label for="numero_serie"> Numero serie </label>
+                    {{form.numero_serie}}
+                </div>
+                <div class="row p-2">
+                    <label for="nom_lieu"> Lieu d'emplacement </label>
+                    {{form.nom_lieu}}
+                </div>
+                <div class="row p-2">
+                    <label for="source_eau"> Source d'eau </label>
+                    {{form.source_eau}}
+                </div>              
+            </div>
+        </div>
         <div class="mt-2"> 
             <button style= "font-size: 15px;" type="submit" class="btn btn-info mb-3">Modifier</button>
         </div>

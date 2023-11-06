@@ -1,0 +1,200 @@
+{% extends 'base.html' %}
+
+{% block etatactuel %}
+Prévision
+{% endblock etatactuel %}
+
+{% block content %}
+{% if messages %}
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-10">
+                <form>
+                    {% for message in messages %}
+                        <div class="form-group text-center">
+                            <p id="messages" class="form-control">{{ message }}</p>
+                        </div>
+                    {% endfor %}
+                </form>
+            </div>
+        </div>
+    </div>
+{% else %}
+    <div class="container mt-3">
+        <ul class="nav nav-tabs" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" data-bs-toggle="tab" href="#home">Tableaux</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="tab" href="#menu1">Graphique</a>
+            </li>
+        </ul>
+        <br>
+        <!-- Tab panes -->
+        <div class="tab-content">
+            <div class="container tab-pane active" id="home">
+                <h1>Prévisions sur la consommation des 07 prochains jours</h1>
+                <table class="table table-bordered table-striped mt-4 text-center">
+                    <thead class="sticky-top text-white">
+                        <tr class="">
+                            <th>Numéro</th>
+                            <th>Date</th>
+                            <th>Prévision</th>
+                            <th>IC inf</th>
+                            <th>IC sup</th>                            
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for date, prediction, lower, upper in forecast_data %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ date|date:"Y-m-d" }}</td>
+                            <td>{{ prediction }}</td>
+                            <td>{{ lower }}</td>                            
+                            <td>{{ upper }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+                <div class="mt-4">
+                    <h2></h2>
+                    <p>
+                        <strong>Qualité prévisionnelle :</strong> {{ pourcentage }} % <br><br>
+                        <strong>Interprétation :</strong> <br>
+                        {% if pourcentage > 90 %}
+                        <span class="">Cela signifie que les prédictions sont très proches de ce qui se produira réellement. En d'autres termes, les données prédites sont extrêmement précises et fiables.
+                        Ainsi, il y a de forte chance que vos données prédites correspondent très étroitement à ce qui se produira effectivement dans la réalité. 
+                        Cette haute précision des prédictions suggère que vous pouvez avoir une grande confiance dans les résultats et que cela peut être un indicateur solide pour prendre
+                        des décisions éclairées. Cependant, notre prevision est fait uniquement à base de vos consommation. Elle n'est pas basée sur la temperature, la demande du marché etc. De ce fait,
+                        dans la prise de décision d'allocation du budget, vous pourriez en tenir compte.<span>
+                        
+                        {% elif pourcentage > 70 %}
+                        Le pourcentage associé à la qualité prévisionnelle est bon, ce qui indique des prédictions généralement précises. 
+                        Bien que les prévisions soient solides, il est toujours judicieux de tenir compte d'autres facteurs externes pour 
+                        une prise de décision plus complète.
+                        {% elif pourcentage > 50 %}
+                        Le pourcentage associé à la qualité prévisionnelle est moyen, ce qui suggère des écarts modérés par rapport aux 
+                        futures observations. Ces prévisions peuvent être utiles pour des décisions de base, mais il est conseillé de 
+                        rester vigilant quant à la possibilité d'erreurs plus importantes.
+                        {% elif pourcentage > 30 %}
+                        Le pourcentage associé à la qualité prévisionnelle est mauvais, indiquant des erreurs significatives par rapport 
+                        aux futures observations. Dans de tels cas, il est important de prendre en compte d'autres sources d'information 
+                        ou d'améliorer la méthodologie de prévision pour réduire ces erreurs.
+                        {% else %}
+                        Le pourcentage associé à la qualité prévisionnelle est très mauvais, ce qui signifie que les prédictions sont très 
+                        éloignées des futures observations. Il est impératif de réévaluer la méthode de prévision ou d'incorporer des données 
+                        supplémentaires pour améliorer la fiabilité des prédictions. Les décisions basées sur de telles prévisions peuvent 
+                        comporter un risque élevé d'erreur.
+                        {% endif %}
+                    </p>
+                </div>      
+            </div>
+            <div class="container tab-pane fade" id="menu1">
+                <div class="container mt-4">
+                    <h3>Graphique des Prévisions</h3>
+                    <canvas id="forecastChart" width="400" height="200"></canvas>
+                </div>
+                <div class="mt-4">
+                    <h3>Interprétation des Prévisions</h3>
+                    <p>
+                        Le graphique ci-dessus montre les prévisions pour les 7 prochains jours avec des intervalles de confiance (IC). Voici quelques points à noter :
+                        <ul>
+                            <li>La ligne bleue représente les prévisions.</li>
+                            <li>La ligne rouge représente la borne inférieure de l'IC.</li>
+                            <li>La ligne verte représente la borne supérieure de l'IC.</li>
+                        </ul>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endif %}
+{% endblock content %}
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    var dates = [];
+    var rawQuantities = [];
+    var predictions = [];
+    var lowerBounds = [];
+    var upperBounds = [];
+
+    // Génération des données pour les données brutes
+    // Génération des données pour les données brutes
+    {% for date, quantity in daily %}
+        dates.push("{{ date }}");
+        rawQuantities.push({{ quantity }});
+    {% endfor %}
+
+    // Trouver l'indice de la dernière date des données brutes
+    var lastIndex = dates.length - 1;
+
+    // Génération des données pour les prévisions et les intervalles de confiance
+    {% for date, prediction, lower, upper in forecast_data %}
+        // Vérifier si la date est après la dernière date des données brutes
+        if ("{{ date|date:'Y-m-d' }}" > dates[lastIndex]) {
+            predictions.push({{ prediction }});
+            predictions.push({{ lower }});
+            predictions.push({{ upper }});
+        }
+    {% endfor %}
+
+    var ctx = document.getElementById('forecastChart').getContext('2d');
+    var myChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: dates,
+            datasets: [
+                {
+                    label: 'Données Brutes',
+                    data: rawQuantities,
+                    borderColor: 'black',
+                    fill: true
+                },
+                {
+                    label: 'Prévision',
+                    data: predictions,
+                    borderColor: 'blue',
+                    fill: false
+                },
+                {
+                    label: 'Borne inférieure (IC)',
+                    data: lowerBounds,
+                    borderColor: 'red',
+                    fill: false
+                },
+                {
+                    label: 'Borne supérieure (IC)',
+                    data: upperBounds,
+                    borderColor: 'green',
+                    fill: false
+                }
+            ]
+        },
+        options: {
+            scales: {
+                x: {
+                    display: true,
+                    title: {
+                        display: true,
+                        text: 'Date'
+                    }
+                },
+                y: {
+                    display: true,
+                    title: {
+                        display: true,
+                        text: 'Valeur'
+                    }
+                }
+            }
+        }
+    });
+</script>
+{% endblock scripts %}

@@ -98,7 +98,6 @@ AWS_S3_VERITY = True
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto.S3Boto3Storage'
 
 
-
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
 
@@ -151,5 +150,5 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 SESSION_ENGINE = "django.contrib.sessions.backends.db"  # Utilisation de la base de données pour stocker les sessions
 
 CRON_CLASSES = [
-    'django_cron.cron.Frequency',
+    'django_cron.cron.SurconsommationCronJob',
 ]

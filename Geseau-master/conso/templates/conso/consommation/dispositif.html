@@ -7,39 +7,37 @@
 
 
 {% block content %}
-
-<div class="container mt-3">
-    
-            <div class="content-header">
-                <div>
-                    <p>Consommation de ce jour {{today}}</p>
-                    <h3>{{daily_consommation}} m&sup3</h3>
-                    <select name="dispo" class="form-select" required onchange="redirectToSection(this)">
-                        <option value="{% url 'graphe_dispo' dispositif.id %}">{{ dispositif.nom_lieu }}</option>
-                        {% for other_dispositif in dispos %}
-                            {% if other_dispositif.id != dispositif.id %}
-                                <option value="{% url 'graphe_dispo' other_dispositif.id %}">{{ other_dispositif.nom_lieu }}</option>
-                            {% endif %}
-                        {% endfor %}
-                    </select>
-                </div> 
-                <div>
-                    <h6>Consommation de la semaine</h6>
-                    <h3>{{weekly_consommation}} m&sup3</h3>
-                </div>
-                <div>
-                    <h6>Consommation de ce mois</h6>
-                    <h3>{{monthly_consommation}} m&sup3</h3>
-                </div>    
-            </div>
-            <div style="width: 80%; margin: 0 auto;">
-                <h3 class="text-center">Graphique de la consommation des sept derniers jours</h3>
-                <canvas id="myChart"></canvas>  
-            </div>
-        </div>
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <div class="text-center col-md-3">
+        <h6>Aujourd'hui</h6>
+        <h3>{{daily_consommation}} m&sup3</h3>
+    </div> 
+    <div class="text-center col-md-1"></div>
+    <div class="text-center col-md-3">
+        <h6>Cette sémaine</h6>
+        <h3>{{weekly_consommation}} m&sup3</h3>
     </div>
+    <div class="text-center col-md-1"></div>
+    <div class="text-center col-md-3">
+        <h6>Ce mois</h6>
+        <h3>{{monthly_consommation}} m&sup3</h3>
+    </div>    
+    <div class="text-center col-md-1"></div>
 </div>
-
+<div class="col-md-2">
+    <select name="dispo" class="form-select" required onchange="redirectToSection(this)">
+        <option value="{% url 'graphe_dispo' dispositif.id %}">{{ dispositif.nom_lieu }}</option>
+        {% for other_dispositif in dispos %}
+            {% if other_dispositif.id != dispositif.id %}
+                <option value="{% url 'graphe_dispo' other_dispositif.id %}">{{ other_dispositif.nom_lieu }}</option>
+            {% endif %}
+        {% endfor %}
+    </select>
+</div>
+<div style="width: 80%; margin: 0 auto;">
+    <h3 class="text-center">Graphique de la consommation des sept derniers jours</h3>
+    <canvas id="myChart"></canvas>  
+</div>
 {% endblock content %}
 
 {% block scripts %}

@@ -56,7 +56,7 @@
 
         .logo {
             width: 530px; /* Personnalisez la largeur selon vos besoins */
-            height: 478px; /* Personnalisez la hauteur selon vos besoins */
+            height: 440px; /* Personnalisez la hauteur selon vos besoins */
             animation: logoAnimation 0s ease-in-out;
             position: absolute;
             top: 50%;
@@ -73,7 +73,8 @@
             /* Autres styles CSS pour le paragraphe */
         }
 		/* Style pour la flèche */
-        .arrow {
+        /* Style pour la flèche */
+        .arrow-container {
             position: fixed;
             bottom: 20px;
             right: 20px;
@@ -83,17 +84,25 @@
             padding: 10px 15px;
             border-radius: 50%;
             cursor: pointer;
+            text-decoration: none; /* Supprimer la décoration du lien */
+            display: flex;
+            align-items: center;
+        }
+
+        .arrow {
+            font-size: 20px;
+            margin-left: 5px;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="d-flex flex-column align-items-center">
-            <img src="{% static 'media/logo_charge.png' %}" alt="logo" class="logo">
-            <p class="text-center">Pour une gestion rationnelle de l'eau</p>
+            <img src="{% static 'media/Fichier 15.png' %}" alt="logo" class="logo">
         </div>
     </div>
-	<a href="{% url 'login' %}" class="arrow-container">
+    <a href="{% url 'login' %}" class="arrow-container">
+        <span>Aller vers la page de connexion</span>
         <span class="arrow">&#8594;</span>
     </a>
 </body>

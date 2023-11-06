@@ -15,6 +15,8 @@ class Section(models.Model):
     entreprise = models.ForeignKey(Entreprise, null=True, blank=True, on_delete=models.CASCADE)
     nom_section = models.CharField(max_length=100, null=True, blank=True, verbose_name="Nom de la section")
     description = models.TextField(null=True, blank=True, verbose_name="Description")
+    class Meta:
+        unique_together = ('entreprise', 'nom_section')
     def __str__(self):
         return self.nom_section
     
@@ -36,6 +38,8 @@ class Dispositif(models.Model):
     longitude=models.FloatField(null=True,blank=True)
     altitude=models.FloatField(null=True,blank=True)
     precision=models.FloatField(null=True,blank=True)
+    class Meta:
+        unique_together = ('section', 'nom_lieu')
     def __str__(self):
         return self.nom_lieu
     
@@ -46,7 +50,7 @@ class Consommation(models.Model):
 
 class Budget(models.Model):
     entreprise = models.ForeignKey(Entreprise, null=True, blank=True, on_delete=models.CASCADE)
-    montant = models.DecimalField(max_digits=10, decimal_places=2)
+    montant = models.FloatField(default=0)
     description = models.TextField(blank=True, null=True)
     date_debut = models.DateField(default=date(2023, 1, 1))  # Date de début du budget
     date_fin = models.DateField(default=date(2023, 1, 1))    # Date de fin du budget
@@ -55,7 +59,7 @@ class Budget(models.Model):
 
 class Depense(models.Model):
     entreprise = models.ForeignKey(Entreprise, null=True, blank=True, on_delete=models.CASCADE)
-    montant = models.DecimalField(max_digits=10, decimal_places=2)
+    montant = models.FloatField(default=0)
     description = models.TextField(blank=True, null=True)
     date_debut = models.DateField(default=date(2023, 1, 1))  # Date de début du budget
     date_fin = models.DateField(default=date(2023, 1, 1))    # Date de fin du budget

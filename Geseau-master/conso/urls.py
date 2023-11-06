@@ -40,9 +40,11 @@ urlpatterns = [
 
     ###Vues vers les statistiques descriptives des historiques
     path('historique/',views.historique,name="historique"),
+    path('historique/section/<str:pk>/',views.hist_section,name="historique_section"),
     
     ###Vues vers les differentes previsions
     path('prevision/',views.prevision,name="prevision"),
+    path('prevision/section/<int:pk>/', views.prevision_section, name="prevision_section"),
 
     ###Vue vers la gestion de profil
     path('profil/',views.profil_views,name="profil"),

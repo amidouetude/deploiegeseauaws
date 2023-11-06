@@ -5,41 +5,45 @@ Liste des sections
 {% endblock etatactuel %}
 
 {% block content %}
-<div class="text-end mb-2">
-  <a type="submit" href="{% url 'add_section' %}" class="btn btn-primary" style="background-color: #65a9dc; border-color: #10b3d8;">Ajouter une section</a>
+<div class="row mt-3">
+  <div class="col-md-2">
+  <a type="submit" href="{% url 'add_section' %}" class="btn btn-primary" style="background-color: #65a9dc; border-color: #10b3d8;">Ajouter une section</a><br><br>
 </div>
-<div class="consojour">
-  <div class="table-responsive">
-    <table class="table table-striped table-bordered table-hover">
-      <thead class="sticky-top text-white">
-        <tr>
-          <th scope="col" class="col">Nom de la section</th>
-          <th scope="col" class="col">Consommation du jour</th>
-          <th scope="col" class="col">Consommation de la semaine</th>
-          <th scope="col" class="col">Consommation du mois</th>
-          <th scope="col" class="col">Consommation totale</th>
-          <th scope="col" class="col text-center">Options</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for entry in consom %}
-        <tr>
-          <td class="col"><a href="{% url 'graphe_section' entry.section.id%}" class="text-black btn btn-outline-info btn-sm">{{ entry.section.nom_section }}</a></td>
-          <td class="col text-center">{{ entry.daily_consommation }}</td>
-          <td class="col text-center">{{ entry.weekly_consommation }}</td>
-          <td class="col text-center">{{ entry.monthly_consommation }}</td>
-          <td class="col text-center">{{ entry.total_consommation }}</td>
-          <td class="col text-center">
-            <div class="btn">
-              <a href="{% url 'update_section' entry.section.id %}" class="btn btn-outline-warning bi bi-pencil"></a>
-              <a href="{% url 'detail_section' entry.section.id %}" class="btn btn-outline-primary bi bi-eye"></a>
-              <a href="{% url 'delete_section' entry.section.id %}" class="btn btn-outline-danger bi bi-trash"></a>
-            </div>
-          </td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
+</div>
+<div class="row mt-4">
+  <div class="col-md-12">
+    <div class="table-responsive">
+      <table class="table table-striped table-bordered table-hover text-center">
+        <thead class="sticky-top" style="background-color: #65a9dc;">
+          <tr>
+            <th scope="col" class="col">Nom de la section</th>
+            <th scope="col" class="col">Consommation du jour</th>
+            <th scope="col" class="col">Consommation de la semaine</th>
+            <th scope="col" class="col">Consommation du mois</th>
+            <th scope="col" class="col">Consommation totale</th>
+            <th scope="col" class="col text-center">Options</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for entry in consom %}
+          <tr>
+            <td class="col"><a href="{% url 'graphe_section' entry.section.id%}" class="text-black btn btn-outline-info btn-sm">{{ entry.section.nom_section }}</a></td>
+            <td class="col text-center">{{ entry.daily_consommation }}</td>
+            <td class="col text-center">{{ entry.weekly_consommation }}</td>
+            <td class="col text-center">{{ entry.monthly_consommation }}</td>
+            <td class="col text-center">{{ entry.total_consommation }}</td>
+            <td class="col text-center">
+              <div class="btn">
+                <a href="{% url 'update_section' entry.section.id %}" class="btn btn-outline-warning bi bi-pencil"></a>
+                <a href="{% url 'detail_section' entry.section.id %}" class="btn btn-outline-primary bi bi-eye"></a>
+                <a href="{% url 'delete_section' entry.section.id %}" class="btn btn-outline-danger bi bi-trash"></a>
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
   </div>
 </div>
 {% endblock content %}

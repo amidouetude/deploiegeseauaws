@@ -6,83 +6,81 @@
 {% endblock etatactuel %}
 
 {% block content %}
-
-<div class="container mt-3">
-    <ul class="nav nav-tabs" role="tablist">
-        <li class="nav-item">
-          <a class="nav-link active" data-bs-toggle="tab" href="#home">Consommation de la section</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" data-bs-toggle="tab" href="#menu1">Consommation des dispositifs</a>
-        </li>
-    </ul>
-    
-      <!-- Tab panes -->
-    <div class="tab-content">
-        <div id="home" class="container tab-pane active"><br>
-            <div class="content-header">
-                <div>
-                    <p>Consommation de ce jour {{today}}</p>
-                    <h3>{{daily_consommation}} m&sup3</h3>
-                    <select name="section" class="form-select" required onchange="redirectToSection(this)">
-                        <option value="{% url 'graphe_section' section.id %}">{{ section.nom_section }}</option>
-                        <option value="{% url 'index' %}">Générale</option>
-                        {% for other_section in sections %}
-                            {% if other_section.id != section.id %}
-                                <option value="{% url 'graphe_section' other_section.id %}">{{ other_section.nom_section }}</option>
-                            {% endif %}
-                        {% endfor %}
-                    </select>
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <div class="col-md-2"> 
+        <select name="section" class="form-select" required onchange="redirectToSection(this)">
+            <option value="{% url 'graphe_section' section.id %}">{{ section.nom_section }}</option>
+            <option value="{% url 'index' %}">Générale</option>
+            {% for other_section in sections %}
+                {% if other_section.id != section.id %}
+                    <option value="{% url 'graphe_section' other_section.id %}">{{ other_section.nom_section }}</option>
+                {% endif %}
+            {% endfor %}
+        </select> 
+    </div>
+    <div class="col-md-4 btn-toolbar mb-2 mb-md-0">
+        <div class="btn-group me-2">
+            <a class="btn btn-info" href="{% url 'historique'  %}">
+                <div class="flex-container">
+                    <ion-icon name="calendar-outline"></ion-icon>
+                    <span><strong>Historique</strong></span>
                 </div>
-                <div>
-                    <div>
-                        <p>Consommation de cette semaine</p>
-                        <h3>{{weekly_consommation}} m&sup3</h3>
-                    </div>
-                </div>
-                <div>
-                    <div>
-                        <p>Consommation de ce mois</p>
-                        <h3>{{monthly_consommation}} m&sup3</h3>
-                    </div>
-                </div>
-            </div>   
-            <div style="width: 80%; margin: 0 auto;">
-                <h3 class="text-center">Graphique de la consommation des sept derniers jours</h3>
-                <canvas id="myChart"></canvas>  
-            </div>    
+            </a>
         </div>
-
-        <div id="menu1" class="container tab-pane fade"><br>
-            <div class="row">
-                <div class="col-md-4">
-                    <h3 class="text-center">Journalière</h3>
-                    <canvas id="dispo-daily-chart"></canvas>
+        <div class="btn-group me-2">
+            <a class="btn btn-info" href="{% url 'prevision_section' section.id %}">
+                <div class="flex-container">
+                    <ion-icon name="bar-chart-outline"></ion-icon>
+                    <span><strong>Prévisions</strong></span>
                 </div>
-                <div class="col-md-4">
-                    <h3 class="text-center">Hebdomadaire</h3>
-                    <canvas id="dispo-weekly-chart"></canvas>
+            </a>
+        </div>
+        <div class="btn-group me-2">
+            <a class="btn btn-info" href="{% url 'prevision' %}">
+                <div class="flex-container">
+                    <ion-icon name="book-outline"></ion-icon>
+                    <span><strong>Rapports</strong></span>
                 </div>
-                <div class="col-md-4">
-                    <h3 class="text-center">Mensuelle</h3>
-                    <canvas id="dispo-monthly-chart"></canvas>
-                </div>
-        </div><br>
+            </a>
         </div>
     </div>
 </div>
-
+<br>
+<div class="row">
+    <div class="text-center col-md-3">
+        <h3>Aujourd'hui</h3>
+        <h3>{{daily_consommation}} m&sup3</h3>
+        <canvas id="dispo-daily-chart"></canvas>
+    </div>
+    <div class="text-center col-md-1"></div>
+    <div class="text-center col-md-3">
+        <h3 class="text-center">Cette sémaine</h3>
+        <h3 class="text-center">{{weekly_consommation}} m&sup3</h3>
+        <canvas id="dispo-weekly-chart"></canvas>
+    </div>
+    <div class="text-center col-md-1"></div>
+    <div class="text-center col-md-3">
+        <h3 class="text-center">Ce mois</h3>
+        <h3 class="text-center">{{monthly_consommation}} m&sup3</h3>
+        <canvas id="dispo-monthly-chart"></canvas>
+    </div>
+    <div class="text-center col-md-1"></div>
+</div><br><br>   
+<div style="width: 85%; margin: 0 auto;">
+    <h3 class="text-center">Graphique de la consommation des sept derniers jours</h3>
+    <canvas id="myChart"></canvas>  
+</div> 
 {% endblock content %}
 
 {% block scripts %}
 <script>
-    // Fonction pour rafraîchir la page toutes les 30 secondes
+    // Fonction pour rafraîchir la page toutes les 10 secondes
     function refreshPage() {
         location.reload();
     }
 
-    // Actualiser la page toutes les 10 secondes (10000 millisecondes)
-    setInterval(refreshPage, 10000);
+    // Actualiser la page toutes les 20 secondes (20000 millisecondes)
+    setInterval(refreshPage, 20000);
 </script>
 <script>
     var ctx = document.getElementById('myChart').getContext('2d');
@@ -120,17 +118,17 @@
 <script>
     // Configuration du graphique circulaire journalier
     var DispositifDailyChart = new Chart(document.getElementById('dispo-daily-chart'), {
-        type: 'pie',
+        type: 'polarArea',
         data: {
             labels: [{% for dispo in dispositifs %}"{{ dispo.nom_lieu }}",{% endfor %}],
             datasets: [{
                 data: [{% for dispo in daily_consommation_dispositif %}{{ dispo }},{% endfor %}],
                 backgroundColor: [
-                    'rgba(255, 99, 132, 0.7)',
-                    'rgba(54, 162, 235, 0.7)',
-                    'rgba(255, 206, 86, 0.7)',
-                    'rgba(75, 192, 192, 0.7)',
-                    'rgba(153, 102, 255, 0.7)',
+                    'rgba(0, 0, 255, 0.7)',   // Bleu foncé
+                    'rgba(30, 144, 255, 0.7)', // Bleu dodger
+                    'rgba(70, 130, 180, 0.7)', // Bleu acier
+                    'rgba(135, 206, 235, 0.7)', // Bleu poudré
+                    'rgba(173, 216, 230, 0.7)', // Bleu clair
                 ],
             }],
         },
@@ -153,17 +151,17 @@
 
     // Configuration du graphique circulaire hebdomadaire
     var DispositifWeeklyChart = new Chart(document.getElementById('dispo-weekly-chart'), {
-        type: 'pie',
+        type: 'polarArea',
         data: {
             labels: [{% for dispo in dispositifs %}"{{ dispo.nom_lieu }}",{% endfor %}],
             datasets: [{
                 data: [{% for dispo in weekly_consommation_dispositif %}{{ dispo }},{% endfor %}],
                 backgroundColor: [
-                    'rgba(255, 99, 132, 0.7)',
-                    'rgba(54, 162, 235, 0.7)',
-                    'rgba(255, 206, 86, 0.7)',
-                    'rgba(75, 192, 192, 0.7)',
-                    'rgba(153, 102, 255, 0.7)',
+                    'rgba(0, 0, 255, 0.7)',   // Bleu foncé
+                    'rgba(30, 144, 255, 0.7)', // Bleu dodger
+                    'rgba(70, 130, 180, 0.7)', // Bleu acier
+                    'rgba(135, 206, 235, 0.7)', // Bleu poudré
+                    'rgba(173, 216, 230, 0.7)', // Bleu clair
                 ],
             }],
         },
@@ -186,17 +184,17 @@
 
     // Configuration du graphique circulaire mensuel
     var DispositifMonthlyChart = new Chart(document.getElementById('dispo-monthly-chart'), {
-        type: 'pie',
+        type: 'polarArea',
         data: {
             labels: [{% for dispo in dispositifs %}"{{ dispo.nom_lieu }}",{% endfor %}],
             datasets: [{
                 data: [{% for dispo in monthly_consommation_dispositif %}{{ dispo }},{% endfor %}],
                 backgroundColor: [
-                    'rgba(255, 99, 132, 0.7)',
-                    'rgba(54, 162, 235, 0.7)',
-                    'rgba(255, 206, 86, 0.7)',
-                    'rgba(75, 192, 192, 0.7)',
-                    'rgba(153, 102, 255, 0.7)',
+                    'rgba(0, 0, 255, 0.7)',   // Bleu foncé
+                    'rgba(30, 144, 255, 0.7)', // Bleu dodger
+                    'rgba(70, 130, 180, 0.7)', // Bleu acier
+                    'rgba(135, 206, 235, 0.7)', // Bleu poudré
+                    'rgba(173, 216, 230, 0.7)', // Bleu clair
                 ],
             }],
         },
