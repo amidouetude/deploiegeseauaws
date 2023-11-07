@@ -130,7 +130,7 @@
                             <span class="notification-icon">
                                 <a href="{% url 'alert' %}">
                                     <ion-icon name="notifications-outline"></ion-icon>
-                                    <span class="badge-alert">{% if alert_count > 0 %}{{ alert_count }}{% endif %}</span>
+                                    {% if alert_count > 0 %}<span class="badge-alert">{{ alert_count }}</span>{% endif %}
                                 </a>
                             </span>
                         </div>
