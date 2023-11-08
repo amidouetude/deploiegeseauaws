@@ -7,9 +7,9 @@ Liste des sections
 {% block content %}
 <div class="row mt-3">
   <div class="col-md-2">
-  <a type="submit" href="{% url 'add_section' %}" class="btn btn-primary" style="background-color: #65a9dc; border-color: #10b3d8;">Ajouter une section</a><br><br>
+  <a type="submit" href="{% url 'add_section' %}" class="btn btn-primary" style="background-color: #65a9dc; border-color: #10b3d8;">Ajouter une section</a><br>
 </div>
-</div>
+{% if consom %}
 <div class="row mt-4">
   <div class="col-md-12">
     <div class="table-responsive">
@@ -27,17 +27,26 @@ Liste des sections
         <tbody>
           {% for entry in consom %}
           <tr>
-            <td class="col"><a href="{% url 'graphe_section' entry.section.id%}" class="text-black btn btn-outline-info btn-sm">{{ entry.section.nom_section }}</a></td>
-            <td class="col text-center">{{ entry.daily_consommation }}</td>
-            <td class="col text-center">{{ entry.weekly_consommation }}</td>
-            <td class="col text-center">{{ entry.monthly_consommation }}</td>
-            <td class="col text-center">{{ entry.total_consommation }}</td>
+            <td class="col">{{ entry.section.nom_section }}</td>
+            <td class="col text-center">{{ entry.daily_consommation }} m&sup3</td>
+            <td class="col text-center">{{ entry.weekly_consommation }} m&sup3</td>
+            <td class="col text-center">{{ entry.monthly_consommation }} m&sup3</td>
+            <td class="col text-center">{{ entry.total_consommation }} m&sup3</td>
             <td class="col text-center">
               <div class="btn">
-                <a href="{% url 'update_section' entry.section.id %}" class="btn btn-outline-warning bi bi-pencil"></a>
-                <a href="{% url 'detail_section' entry.section.id %}" class="btn btn-outline-primary bi bi-eye"></a>
-                <a href="{% url 'delete_section' entry.section.id %}" class="btn btn-outline-danger bi bi-trash"></a>
-              </div>
+                <a href="{% url 'graphe_section' entry.section.id%}" class="btn btn-outline-info bi bi-speedometer">
+                  <span class="btn-tooltip">Dashboard</span>
+                </a>
+                <a href="{% url 'update_section' entry.section.id %}" class="btn btn-outline-warning bi bi-pencil">
+                  <span class="btn-tooltip">Modifier</span>
+                </a>
+                <a href="{% url 'detail_section' entry.section.id %}" class="btn btn-outline-primary bi bi-eye">
+                  <span class="btn-tooltip">Détails</span>
+                </a>
+                <a href="{% url 'delete_section' entry.section.id %}" class="btn btn-outline-danger bi bi-trash">
+                  <span class="btn-tooltip">Supprimer</span>
+                </a>
+              </div>                                                         
             </td>
           </tr>
           {% endfor %}
@@ -46,4 +55,23 @@ Liste des sections
     </div>
   </div>
 </div>
+{% endif %}
 {% endblock content %}
+{% block scripts %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+$(document).ready(function() {
+    $('.btn a').hover(function() {
+        var tooltip = $(this).data('tooltip');
+        if (tooltip) {
+            $('<div class="tooltip">' + tooltip + '</div>').appendTo('body').css({
+                top: $(this).offset().top - 30,
+                left: $(this).offset().left + 30
+            }).fadeIn('fast');
+        }
+    }, function() {
+        $('.tooltip').remove();
+    });
+});
+</script>
+{% endblock scripts %}

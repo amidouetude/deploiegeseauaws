@@ -31,14 +31,6 @@ Tableau de bord
                 </div>
             </a>
         </div>
-        <div class="btn-group me-2">
-            <a class="btn btn-info" href="{% url 'prevision' %}">
-                <div class="flex-container">
-                    <ion-icon name="book-outline"></ion-icon>
-                    <span><strong>Rapports</strong></span>
-                </div>
-            </a>
-        </div>
     </div>                
 </div><br>
 <div class="row">
@@ -49,7 +41,7 @@ Tableau de bord
     </div>
     <div class="text-center col-md-1"></div>
     <div class="text-center col-md-3">
-        <h3>Cette sémaine</h3>
+        <h3>Cette semaine</h3>
         <h3>{{weekly_consommation}} m&sup3</h3>
         <canvas id="section-weekly-chart"></canvas>
     </div>

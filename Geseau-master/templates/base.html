@@ -95,14 +95,14 @@
                     </a>
                 </li>
 
-                <li class="nav-item mb-1">
+             <!--   <li class="nav-item mb-1">
                     <a href="{% url 'faq' %}">
                         <span class="icon">
                             <ion-icon name="book-outline"></ion-icon>
                         </span>
                         <span class="title">Rapport</span>
                     </a>
-                </li>
+                </li> -->
 
                 <li class="nav-item mb-1 d-flex text-dark">
                     <a href="{% url 'logout' %}">
@@ -130,7 +130,8 @@
                             <span class="notification-icon">
                                 <a href="{% url 'alert' %}">
                                     <ion-icon name="notifications-outline"></ion-icon>
-                                    {% if alert_count > 0 %}<span class="badge-alert">{{ alert_count }}</span>{% endif %}
+                                    {% if alert_count > 0 %}
+                                    <span class="badge-alert">{{ alert_count }}</span>{% endif %}
                                 </a>
                             </span>
                         </div>

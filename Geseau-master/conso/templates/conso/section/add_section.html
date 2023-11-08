@@ -9,21 +9,21 @@
     <form method="POST" class="card p-3 mt-2 myform" action="{% url 'add_section' %}" autocomplete="off"> 
               {% csrf_token %}
         <div class="row">
-            <div class="col-12">
+            <div class="col-12 ">
                     <div class="row p-2">
-                          <label for="nom_section"> Nom de la section </label>
-                          {{form.nom_section}}
+                        <label for="nom_section"> Nom de la section </label>
+                        {{form.nom_section}}
                     </div>
                     <div class="row p-2">
-                          <label for="description"> Description de la section </label>
-                          {{form.description}}
+                        <label for="description"> Description de la section </label>
+                        {{form.description}}
                     </div>
             </div>
         </div>
 
             <div class="mt-2">
                     <button style= "font-size: 15px;" type="submit" class="btn btn-info mb-3">
-                        <i class="fas fa-plus"></i>&nbsp;&nbsp; Valider
+                        <i class="fas fa-check"></i>&nbsp;&nbsp; Valider
                     </button>
             </div> 
     </form>

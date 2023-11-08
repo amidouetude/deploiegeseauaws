@@ -809,12 +809,12 @@ def prevision(request):
 
     # Évaluation de la précision
     actual_values = df_daily['quantite'][-forecast_days:]
-    mae = mean_absolute_error(actual_values, forecast)
-    mse = mean_squared_error(actual_values, forecast)
-    rmse_value = rmse(actual_values, forecast)
-    pourcentage_mae = (mae / actual_values.mean()) * 100
-    pourcentage_mse = (mse / (actual_values.mean() ** 2)) * 100
-    pourcentage_rmse_value = (rmse_value / actual_values.mean()) * 100
+   # mae = mean_absolute_error(actual_values, forecast)
+   # mse = mean_squared_error(actual_values, forecast)
+   # rmse_value = rmse(actual_values, forecast)
+   # pourcentage_mae = (mae / actual_values.mean()) * 100
+   # pourcentage_mse = (mse / (actual_values.mean() ** 2)) * 100
+   # pourcentage_rmse_value = (rmse_value / actual_values.mean()) * 100
 
     raw_dates = df_daily.index.strftime('%Y-%m-%d').tolist()
     raw_quantities = df_daily['quantite'].tolist()
@@ -823,18 +823,18 @@ def prevision(request):
 
     daily = list(zip(raw_dates,raw_quantities))
 
-    pourcentage = round((100 - pourcentage_mse), 3)
+    #pourcentage = round((100 - pourcentage_mse), 3)
 
     # Passer les données à la template
     context = {
         'alert_count':alert_count,
         "daily":daily,
         'forecast_data': forecast_data,
-        'forecast_data1': forecast1,
-        'mae': pourcentage_mae,
-        'mse': pourcentage_mse,
-        'rmse': pourcentage_rmse_value,
-        'pourcentage': pourcentage,
+        'forecast_data1': forecast1
+    #    'mae': pourcentage_mae,
+    #    'mse': pourcentage_mse,
+    #    'rmse': pourcentage_rmse_value,
+    #    'pourcentage': pourcentage,
     }
     return render(request, "conso/suivi/prevision.html",context)
 
