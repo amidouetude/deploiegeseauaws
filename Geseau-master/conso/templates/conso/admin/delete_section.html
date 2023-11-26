@@ -4,12 +4,13 @@
 
 
 {% block content %}
-
 <p>Voulez-vous vraiment supprimer cette section?</p>
 <form action="{% url 'delete_section' item.id %}" method="POST">
     {% csrf_token %}
-    <a class="btn btn-warning" href="{% url 'section' %}">Annuler</a>
+    <a class="btn btn-warning" href="{% url 'section' %}">
+        <i class="fa fa-close" aria-hidden="true"></i>&nbsp;&nbsp;  
+        <span><strong>Annuler</strong></span>
+    </a>
     <input class="btn btn-danger" type="submit" name="Confirmer" />
 </form>
-
 {% endblock content %}

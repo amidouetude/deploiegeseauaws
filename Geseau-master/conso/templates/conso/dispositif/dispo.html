@@ -32,9 +32,6 @@ Liste des dispositifs
                   <a href="{% url 'graphe_dispo' dispo.id %}" class="btn btn-outline-primary bi bi-speedometer">
                     <span class="btn-tooltip">Dashboard</span>
                   </a>
-                  <a href="{% url 'delete_dispositif' dispo.id %}" class="btn btn-outline-danger bi bi-trash">
-                    <span class="btn-tooltip">Supprimer</span>
-                  </a>
                 </div>
               </td>
             </tr>
@@ -44,23 +41,9 @@ Liste des dispositifs
       </div>
     </div>
   </div>
+{% else %}
+<div class="row mt-3">
+Pas de dispositif disponible pour le moment. 
+</div>
 {% endif %}
 {% endblock content %}
-{% block scripts %}
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-$(document).ready(function() {
-    $('.btn a').hover(function() {
-        var tooltip = $(this).data('tooltip');
-        if (tooltip) {
-            $('<div class="tooltip">' + tooltip + '</div>').appendTo('body').css({
-                top: $(this).offset().top - 30,
-                left: $(this).offset().left + 30
-            }).fadeIn('fast');
-        }
-    }, function() {
-        $('.tooltip').remove();
-    });
-});
-</script>
-{% endblock scripts %}

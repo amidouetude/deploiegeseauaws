@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block etatactuel %}Suppression de votre dispositif{% endblock etatactuel %}
+
+
+{% block content %}
+<p>Voulez-vous vraiment supprimer ce dispositif?</p>
+<form action="{% url 'delete_dispositif' item.id %}" method="POST">
+    {% csrf_token %}
+    <a class="btn btn-warning" href="{% url 'dispo' %}">
+        <i class="fa fa-close" aria-hidden="true"></i>&nbsp;&nbsp;  
+        <span><strong>Annuler</strong></span>
+    </a>
+    <input class="btn btn-danger" type="submit" name="Confirmer" />
+</form>
+{% endblock content %}

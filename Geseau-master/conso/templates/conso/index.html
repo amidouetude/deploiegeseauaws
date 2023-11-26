@@ -14,11 +14,11 @@ Tableau de bord
             {% endfor %}
         </select>
     </div>
-    <div class="col-md-4 btn-toolbar mb-2 mb-md-0">
+    <div class="col-md-2.5 btn-toolbar mb-2 mb-md-0">
         <div class="btn-group me-2">
             <a class="btn btn-info" href="{% url 'historique' %}">
                 <div class="flex-container">
-                    <ion-icon name="calendar-outline"></ion-icon>
+                    <i class="fa fa-history" aria-hidden="true"></i>&nbsp;&nbsp; 
                     <span><strong>Historique</strong></span>
                 </div>
             </a>
@@ -26,7 +26,7 @@ Tableau de bord
         <div class="btn-group me-2">
             <a class="btn btn-info" href="{% url 'prevision' %}">
                 <div class="flex-container">
-                    <ion-icon name="bar-chart-outline"></ion-icon>
+                    <i class="fa fa-line-chart" aria-hidden="true"></i> &nbsp;&nbsp;
                     <span><strong>Prévisions</strong></span>
                 </div>
             </a>
@@ -58,6 +58,11 @@ Tableau de bord
     <h3 class="text-center">Graphique de la consommation des sept derniers jours</h3>
     <canvas id="myChart"></canvas>
 </div> 
+<br><br>
+<div style="width: 85%; margin: 0 auto;">
+    <h3 class="text-center">Courbe sur la consommation globale</h3>
+    <canvas id="forecastChart" width="400" height="200"></canvas>
+</div>
 {% endblock content %}
 
 {% block scripts %}
@@ -65,13 +70,13 @@ Tableau de bord
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
 <script>
-    // Fonction pour rafraîchir la page toutes les 20 secondes
+    // Fonction pour rafraîchir la page toutes les 10 secondes
     function refreshPage() {
         location.reload();
     }
 
-    // Actualiser la page toutes les 20 secondes (20000 millisecondes)
-    setInterval(refreshPage, 20000);
+    // Actualiser la page toutes les 10 secondes (10000 millisecondes)
+    setInterval(refreshPage, 10000);
 </script>
 <script>
     var ctx = document.getElementById('myChart').getContext('2d');
@@ -114,11 +119,14 @@ Tableau de bord
             datasets: [{
                 data: [{% for section in daily_consommation_section %}{{ section }},{% endfor %}],
                 backgroundColor: [
-                    'rgba(0, 0, 255, 0.7)',   // Bleu foncé
-                    'rgba(30, 144, 255, 0.7)', // Bleu dodger
-                    'rgba(70, 130, 180, 0.7)', // Bleu acier
-                    'rgba(135, 206, 235, 0.7)', // Bleu poudré
-                    'rgba(173, 216, 230, 0.7)', // Bleu clair
+                    '#EBC3D2',
+                    '#CDEBC3',
+                    '#8FA9DE',
+                    '#DE8F99',
+                    '#F96AAE',
+                    '#F79519',
+                    '#F719AA',
+                    '#19F799',
                 ],
             }],
         },
@@ -147,11 +155,14 @@ Tableau de bord
             datasets: [{
                 data: [{% for section in weekly_consommation_section %}{{ section }},{% endfor %}],
                 backgroundColor: [
-                    'rgba(0, 0, 255, 0.7)',   // Bleu foncé
-                    'rgba(30, 144, 255, 0.7)', // Bleu dodger
-                    'rgba(70, 130, 180, 0.7)', // Bleu acier
-                    'rgba(135, 206, 235, 0.7)', // Bleu poudré
-                    'rgba(173, 216, 230, 0.7)', // Bleu clair
+                    '#EBC3D2',
+                    '#CDEBC3',
+                    '#8FA9DE',
+                    '#DE8F99',
+                    '#F96AAE',
+                    '#F79519',
+                    '#F719AA',
+                    '#19F799',
                 ],
             }],
         },
@@ -180,11 +191,14 @@ Tableau de bord
             datasets: [{
                 data: [{% for section in monthly_consommation_section %}{{ section }},{% endfor %}],
                 backgroundColor: [
-                    'rgba(0, 0, 255, 0.7)',   // Bleu foncé
-                    'rgba(30, 144, 255, 0.7)', // Bleu dodger
-                    'rgba(70, 130, 180, 0.7)', // Bleu acier
-                    'rgba(135, 206, 235, 0.7)', // Bleu poudré
-                    'rgba(173, 216, 230, 0.7)', // Bleu clair
+                    '#EBC3D2',
+                    '#CDEBC3',
+                    '#8FA9DE',
+                    '#DE8F99',
+                    '#F96AAE',
+                    '#F79519',
+                    '#F719AA',
+                    '#19F799',
                 ],
             }],
         },
@@ -213,6 +227,50 @@ Tableau de bord
             window.location.href = url;
         }
     }
+</script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    var dates = [];
+    var rawQuantities = [];
+    {% for date, quantity in daily %}
+        dates.push("{{ date }}");
+        rawQuantities.push({{ quantity }});
+    {% endfor %}
+    // Trouver l'indice de la dernière date des données brutes
+    var lastIndex = dates.length - 1;
+    var ctx = document.getElementById('forecastChart').getContext('2d');
+    var myChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: dates,
+            datasets: [
+                {
+                    label: 'Données Brutes',
+                    data: rawQuantities,
+                    borderColor: 'black',
+                    fill: true
+                },
+            ]
+        },
+        options: {
+            scales: {
+                x: {
+                    display: true,
+                    title: {
+                        display: true,
+                        text: 'Date'
+                    }
+                },
+                y: {
+                    display: true,
+                    title: {
+                        display: true,
+                        text: 'Valeur'
+                    }
+                }
+            }
+        }
+    });
 </script>
 
 {% endblock scripts %}

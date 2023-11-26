@@ -11,6 +11,8 @@ Gestion du budget mensuel
         <button id="show-depense-form" class="btn btn-primary text-dark" style="background-color: #65a9dc; border-color: #10b3d8;">Définir le coût d'approvisionnement</button>
     </div>
 </div>
+
+
 <div class="row mt-4">
     <div class="col-md-12">
         <div class="table-responsive">
@@ -37,6 +39,10 @@ Gestion du budget mensuel
         </div>
     </div>
 </div>
+
+
+
+
 <div class="row mt-4" id="budget-depense-forms">
     <div class="col-md-12">
         <form id="budget-form" action="{% url 'budget' %}" method="post">
@@ -64,36 +70,35 @@ Gestion du budget mensuel
 
 {% block scripts %}
 <script>
-    $(document).ready(function() {
-        // Masquer les formulaires au chargement de la page
-        $("#budget-form").hide();
-        $("#depense-form").hide();
+$(document).ready(function() {
+    // Masquer les formulaires au chargement de la page
+    $("#budget-form").hide();
+    $("#depense-form").hide();
 
-        // Gérer le clic sur le bouton "Définir le budget"
-        $("#show-budget-form").click(function() {
-            // Si le formulaire du budget est visible, le cacher
-            if ($("#budget-form").is(":visible")) {
-                $("#budget-form").hide();
-            } else {
-                // Sinon, afficher le formulaire du budget et cacher le formulaire du coût d'approvisionnement
-                $("#budget-form").show();
-                $("#depense-form").hide();
-            }
-        });
-
-        // Gérer le clic sur le bouton "Définir le coût d'approvisionnement"
-        $("#show-depense-form").click(function() {
-            // Si le formulaire du coût d'approvisionnement est visible, le cacher
-            if ($("#depense-form").is(":visible")) {
-                $("#depense-form").hide();
-            } else {
-                // Sinon, afficher le formulaire du coût d'approvisionnement et cacher le formulaire du budget
-                $("#depense-form").show();
-                $("#budget-form").hide();
-            }
-        });
-        
+    // Gérer le clic sur le bouton "Définir le budget"
+    $("#show-budget-form").click(function() {
+        // Si le formulaire du budget est visible, le cacher
+        if ($("#budget-form").is(":visible")) {
+            $("#budget-form").hide();
+        } else {
+            // Sinon, afficher le formulaire du budget et cacher le formulaire du coût d'approvisionnement
+            $("#budget-form").show();
+            $("#depense-form").hide();
+        }
     });
 
+    // Gérer le clic sur le bouton "Définir le coût d'approvisionnement"
+    $("#show-depense-form").click(function() {
+        // Si le formulaire du coût d'approvisionnement est visible, le cacher
+        if ($("#depense-form").is(":visible")) {
+            $("#depense-form").hide();
+        } else {
+            // Sinon, afficher le formulaire du coût d'approvisionnement et cacher le formulaire du budget
+            $("#depense-form").show();
+            $("#budget-form").hide();
+        }
+    });
+    
+});
 </script>
 {% endblock scripts %}

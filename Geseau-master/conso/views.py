@@ -91,6 +91,18 @@ def index(request):
         alert_count = Alert.objects.filter(entreprise=user_entreprise_id, is_read=False).count()
         data_list = [{'day': item['created_at__date'], 'quantite_sum': item['quantite_sum']} for item in data]
         nom_jour = today.strftime("%A %d %B %Y")
+
+        consommations = Consommation.objects.filter(dispositif__section__entreprise=user_entreprise_id)
+        df = pd.DataFrame(list(consommations.values('created_at', 'quantite')))
+        # Agrégation quotidienne des données
+        df['created_at'] = pd.to_datetime(df['created_at'])
+        df.set_index('created_at', inplace=True)
+        df_daily = df.resample('D').sum()
+
+        raw_dates = df_daily.index.strftime('%Y-%m-%d').tolist()
+        raw_quantities = df_daily['quantite'].tolist()
+        daily = list(zip(raw_dates,raw_quantities))
+
         context = {
             "alert_count":alert_count,
             'data': data_list,
@@ -99,6 +111,7 @@ def index(request):
             "daily_consommation": round(daily_consommation,3),
             "weekly_consommation": round(weekly_consommation,3),
             "monthly_consommation": round(monthly_consommation,3),
+            'daily':daily,
             "daily_consommation_section": [round(x, 3) if x is not None else 0 for x in daily_consommation_section],
             "weekly_consommation_section": [round(x, 3) if x is not None else 0 for x in weekly_consommation_section],
             "monthly_consommation_section": [round(x, 3) if x is not None else 0 for x in monthly_consommation_section],
@@ -222,7 +235,7 @@ def delete_section(request, pk):
         return redirect('section')
     context={'item':section,
              'alert_count':alert_count}
-    return render(request,'conso/section/delete_section.html',context)
+    return render(request,'conso/admin/delete_section.html',context)
 
 #Details sur une section
 @login_required
@@ -357,7 +370,7 @@ def delete_dispo(request, pk):
         return redirect('section')
     context={'item':dispo,
              'alert_count':alert_count}
-    return render(request,'conso/dispositif/delete_dispositif.html',context)
+    return render(request,'conso/admin/delete_dispositif.html',context)
 
 
 ##### Accès vers la vue de FAQ
@@ -653,8 +666,21 @@ def ConsDispo(request,pk):
         )
     data_list = [{'day': item['created_at__date'], 'quantite_sum': item['quantite_sum']} for item in data]
     nom_jour = today.strftime("%A %d %B %Y")
+
+    consommations = Consommation.objects.filter(dispositif=dispositif)
+    df = pd.DataFrame(list(consommations.values('created_at', 'quantite')))
+    # Agrégation quotidienne des données
+    df['created_at'] = pd.to_datetime(df['created_at'])
+    df.set_index('created_at', inplace=True)
+    df_daily = df.resample('D').sum()
+
+    raw_dates = df_daily.index.strftime('%Y-%m-%d').tolist()
+    raw_quantities = df_daily['quantite'].tolist()
+    daily = list(zip(raw_dates,raw_quantities))
+
     ahmed = {'data': data_list,
-                "alert_count":alert_count,
+            'daily':daily,
+            "alert_count":alert_count,
             "dispositif":dispositif,
             "dispos":dispos,
             "today":nom_jour,
@@ -720,8 +746,22 @@ def ConsSection(request, pk):
         monthly_consommation_dispositif.append(Consommation.objects.filter(dispositif=dispo, created_at__date__range=(month_start, month_end)).aggregate(Sum('quantite'))['quantite__sum'])
         weekly_consommation_dispositif.append(Consommation.objects.filter(dispositif=dispo, created_at__date__range=(start_of_week, end_of_week)).aggregate(Sum('quantite'))['quantite__sum'])
         daily_consommation_dispositif.append(Consommation.objects.filter(dispositif=dispo, created_at__date__range=(start_of_day, end_of_day)).aggregate(Sum('quantite'))['quantite__sum'])
+    
+        
+    consommations = Consommation.objects.filter(dispositif__section=section)
+    df = pd.DataFrame(list(consommations.values('created_at', 'quantite')))
+    # Agrégation quotidienne des données
+    df['created_at'] = pd.to_datetime(df['created_at'])
+    df.set_index('created_at', inplace=True)
+    df_daily = df.resample('D').sum()
+
+    raw_dates = df_daily.index.strftime('%Y-%m-%d').tolist()
+    raw_quantities = df_daily['quantite'].tolist()
+    daily = list(zip(raw_dates,raw_quantities))
+    
     rachid = {'data': data_list,
                 'alert_count':alert_count,
+                'daily':daily,
             "section":section,
             "sections":sections,
             "dispositifs":dispositifs,

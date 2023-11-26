@@ -6,9 +6,14 @@ Historique
 
 {% block content %}
 <!-- Formulaire pour consulter l'historique -->
+<button class="btn btn-info text-dark mb-3">
+    <a class="btn btn-info" href="{% url 'index' %}">
+    <i class="fa fa-arrow-left" aria-hidden="true"></i>&nbsp;&nbsp; 
+    <span><strong>Retour</strong></span></a>
+</button>
 <h4>Consulter l'historique pour voir la statistique descriptive sur les données de votre consommation générale</h4>
 <div class="row">
-    <div class="col-md-6">
+    <div class="col-md-8">
         <form method="post" class="card p-3 myform consojour" autocomplete="off">
             {% csrf_token %}
             <div class="row mb-3">
@@ -23,10 +28,12 @@ Historique
             </div>
             <div class="mb-3">
                 <button type="submit" class="btn btn-info">
-                    <ion-icon name="stats-chart-outline"></ion-icon>Voir statistique
+                    <i class="fa fa-poll" aria-hidden="true"></i></i>&nbsp;&nbsp; 
+                    <span><strong>Voir statistique</strong></span>
                 </button>
-                <button type="submit" name="download" value="true" class="btn btn-success">
-                    <ion-icon name="arrow-down-circle-outline"></ion-icon>Télécharger
+                <button type="submit" name="download" value="true" class="btn btn-info">
+                    <i class="fa fa-download" aria-hidden="true"></i></i>&nbsp;&nbsp; 
+                    <span><strong>Télécharger</strong></span>
                 </button>
             </div>
         </form>

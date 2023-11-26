@@ -25,6 +25,11 @@ Prévision
         </div>
     </div>
 {% else %}
+<button class="btn btn-info text-dark mb-3">
+    <a class="btn btn-info" href="{% url 'index' %}">
+    <i class="fa fa-arrow-left" aria-hidden="true"></i>&nbsp;&nbsp; 
+    <span><strong>Retour</strong></span></a>
+</button>
     <div class="container mt-3">
         <ul class="nav nav-tabs" role="tablist">
             <li class="nav-item">

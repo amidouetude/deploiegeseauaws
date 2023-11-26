@@ -9,31 +9,31 @@ Profil
     {% csrf_token %}
     <div class="row p-2">
         <div class="form-group col-md-5">
-            <label for="username"><strong>Nom d'utilisateur</strong></label>
+            <label for="username" class="form-label"><strong>Nom d'utilisateur</strong></label>
             <input type="text" class="form-control" id="username" name="username" value="{{ entreprise.user.username }}">
         </div>
         <div class="form-group col-md-5">
-            <label for="nom_societe"><strong>Nom de l'entreprise</strong></label>
+            <label for="nom_societe" class="form-label"><strong>Nom de l'entreprise</strong></label>
             <input type="text" class="form-control" id="nom_societe" name="nom_societe" value="{{ entreprise.nom_societe }}">
         </div>
     </div>
     <div class="row">
         <div class="form-group col-md-5">
-            <label for="telephone"><strong>Téléphone</strong></label>
+            <label for="telephone" class="form-label"><strong>Téléphone</strong></label>
             <input type="text" class="form-control" id="telephone" name="telephone" value="{{ entreprise.telephone }}">
         </div>
         <div class="form-group col-md-5">
-            <label for="email"><strong>Email</strong></label>
+            <label for="email" class="form-label"><strong>Email</strong></label>
             <input type="email" class="form-control" id="email" name="email" value="{{ entreprise.user.email }}">
         </div>
     </div>
     <div class="row">
         <div class="form-group col-md-5">
-            <label for="domaine_act"><strong>Domaine d'activité</strong></label>
+            <label for="domaine_act" class="form-label"><strong>Domaine d'activité</strong></label>
             <input type="text" class="form-control" id="domaine_act" name="domaine_act" value="{{ entreprise.domaine_act }}">
         </div>
         <div class="form-group col-md-5">
-            <label for="localite"><strong>Localisation</strong></label>
+            <label for="localite" class="form-label"><strong>Localisation</strong></label>
             <input type="text" class="form-control" id="localite" name="localite" value="{{ entreprise.localite }}">
         </div>
     </div>
