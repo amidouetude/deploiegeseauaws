@@ -13,6 +13,7 @@
         integrity="sha384-gfdkjb5BdAXd+lj+gudLWI+BXq4IuLW5IT+brZEZsLFm++aCMlF1V92rMkPaX4PP" crossorigin="anonymous">
 
     <style>
+
         /* Animation pour le fond */
         @keyframes backgroundAnimation {
             0% {
@@ -74,13 +75,53 @@
         }
 		/* Style pour la flèche */
         /* Style pour la flèche */
+        .btn {
+            cursor: pointer;
+            position: relative;
+            padding: 10px 20px;
+            background: white;
+            font-size: 28px;
+            border-top-right-radius: 10px;
+            border-bottom-left-radius: 10px;
+            transition: all 1s;
+        }
+        .btn:after,
+        .btn:before {
+            content: " ";
+            width: 10px;
+            height: 10px;
+            position: absolute;
+            border: 0px solid #0078b7;
+            transition: all 1s;
+        }
+        .btn:after {
+            top: -1px;
+            left: -1px;
+            border-top: 5px solid black;
+            border-left: 5px solid black;
+        }
+        .btn:before {
+            bottom: -1px;
+            right: -1px;
+            border-bottom: 5px solid black;
+            border-right: 5px solid black;
+        }
+        .btn:hover {
+            border-top-right-radius: 0px;
+            border-bottom-left-radius: 0px;
+        }
+        .btn:hover:before,
+        .btn:hover:after {
+            width: 100%;
+            height: 100%;
+        }
         .arrow-container {
             position: fixed;
             bottom: 20px;
             right: 20px;
             z-index: 9999;
-            background-color: #0078b7;
-            color: white;
+            /*background-color: #0078b7;*/
+            /*color: white;*/
             padding: 10px 15px;
             border-radius: 50%;
             cursor: pointer;
@@ -89,10 +130,67 @@
             align-items: center;
         }
 
-        .arrow {
-            font-size: 20px;
-            margin-left: 5px;
+        #loader {
+            width: 100px;
+            height: 40px;
+            position: fixed;
+            bottom: 0; /* Placer le loader en bas de la page */
+            left: 50%;
+            margin-left: -50px; /* Ajuster la position horizontale */
         }
+        #loader div {
+            width: 20px;
+            height: 20px;
+            background: #FFF;
+            border-radius: 50%;
+            position: absolute;
+        }
+        #d1 {
+            animation: animate 2s linear infinite;
+        }
+        #d2 {
+            animation: animate 2s linear infinite -.4s;
+        }
+        #d3 {
+            animation: animate 2s linear infinite -.8s;
+        }
+        #d4 {
+            animation: animate 2s linear infinite -1.2s;
+        }
+        #d5 {
+            animation: animate 2s linear infinite -1.6s;
+        }
+        @keyframes animate {
+            0% {
+                left: 100px;
+                bottom: 0;
+            }
+            80% {
+                left: 0;
+                bottom: 0;
+            }
+            85% {
+                left: 0;
+                bottom: -20px;
+                width: 20px;
+                height: 20px;
+            }
+            90% {
+                width: 40px;
+                height: 15px;
+            }
+            95% {
+                left: 100px;
+                bottom: -20px;
+                width: 20px;
+                height: 20px;
+            }
+            100% {
+                left: 100px;
+                bottom: 0;
+            }
+        }
+        
     </style>
 </head>
 <body>
@@ -101,9 +199,15 @@
             <img src="{% static 'media/Fichier 15.png' %}" alt="logo" class="logo">
         </div>
     </div>
+    <div id="loader">
+        <div id="d1"></div>
+        <div id="d2"></div>
+        <div id="d3"></div>
+        <div id="d4"></div>
+        <div id="d5"></div>
+    </div>
     <a href="{% url 'login' %}" class="arrow-container">
-        <span>Aller vers la page de connexion</span>
-        <span class="arrow">&#8594;</span>
+        <span class="btn">Aller vers la page de connexion</span>
     </a>
 </body>
 </html>

@@ -1,13 +1,14 @@
+from django.views.decorators.http import require_POST
 import calendar
 from statsmodels.tsa.holtwinters import ExponentialSmoothing
 from django.db.models.signals import post_save
 from collections import defaultdict
 from datetime import date, datetime, timedelta
-from django.http import HttpResponse, HttpResponseForbidden, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseForbidden, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 import numpy as np
 from conso.models import Alert, Budget, Depense, Section, Dispositif, Entreprise, Consommation
-from conso.serializers import ConsommationSerializer
+from conso.serializers import ConsommationSerializer, DispoSerializer
 from .forms import SectionForm, DispositifForm, EntrepriseForm, UserProfileForm
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
@@ -92,16 +93,25 @@ def index(request):
         data_list = [{'day': item['created_at__date'], 'quantite_sum': item['quantite_sum']} for item in data]
         nom_jour = today.strftime("%A %d %B %Y")
 
+        # Récupération des consommations
         consommations = Consommation.objects.filter(dispositif__section__entreprise=user_entreprise_id)
-        df = pd.DataFrame(list(consommations.values('created_at', 'quantite')))
-        # Agrégation quotidienne des données
-        df['created_at'] = pd.to_datetime(df['created_at'])
-        df.set_index('created_at', inplace=True)
-        df_daily = df.resample('D').sum()
-
-        raw_dates = df_daily.index.strftime('%Y-%m-%d').tolist()
-        raw_quantities = df_daily['quantite'].tolist()
-        daily = list(zip(raw_dates,raw_quantities))
+        # Création du DataFrame
+        df = pd.DataFrame(list(consommations.exclude(created_at__isnull=True).values('created_at', 'quantite')))
+        # Vérification si le DataFrame n'est pas vide
+        if not df.empty:
+            # Assure-toi que 'created_at' est au format datetime
+            df['created_at'] = pd.to_datetime(df['created_at'])
+            # Agrégation quotidienne des données
+            df.set_index('created_at', inplace=True)
+            df_daily = df.resample('D').sum()
+            # Obtention des dates et quantités
+            raw_dates = df_daily.index.strftime('%Y-%m-%d').tolist()
+            raw_quantities = df_daily['quantite'].tolist()
+            # Création de la liste pour affichage
+            daily = list(zip(raw_dates, raw_quantities))
+        else:
+            # Affecte une liste vide si le DataFrame est vide
+            daily = []
 
         context = {
             "alert_count":alert_count,
@@ -118,6 +128,9 @@ def index(request):
         }   
     
     return render(request, 'conso/index.html', context)
+
+
+
 ##### Accès vers la vue des sections
 
 #Accès vers la liste des sections
@@ -670,13 +683,16 @@ def ConsDispo(request,pk):
     consommations = Consommation.objects.filter(dispositif=dispositif)
     df = pd.DataFrame(list(consommations.values('created_at', 'quantite')))
     # Agrégation quotidienne des données
-    df['created_at'] = pd.to_datetime(df['created_at'])
-    df.set_index('created_at', inplace=True)
-    df_daily = df.resample('D').sum()
+    if not df.empty:
+        df['created_at'] = pd.to_datetime(df['created_at'])
+        df.set_index('created_at', inplace=True)
+        df_daily = df.resample('D').sum()
 
-    raw_dates = df_daily.index.strftime('%Y-%m-%d').tolist()
-    raw_quantities = df_daily['quantite'].tolist()
-    daily = list(zip(raw_dates,raw_quantities))
+        raw_dates = df_daily.index.strftime('%Y-%m-%d').tolist()
+        raw_quantities = df_daily['quantite'].tolist()
+        daily = list(zip(raw_dates,raw_quantities))
+    else:
+        daily = []
 
     ahmed = {'data': data_list,
             'daily':daily,
@@ -751,13 +767,16 @@ def ConsSection(request, pk):
     consommations = Consommation.objects.filter(dispositif__section=section)
     df = pd.DataFrame(list(consommations.values('created_at', 'quantite')))
     # Agrégation quotidienne des données
-    df['created_at'] = pd.to_datetime(df['created_at'])
-    df.set_index('created_at', inplace=True)
-    df_daily = df.resample('D').sum()
+    if not df.empty:
+        df['created_at'] = pd.to_datetime(df['created_at'])
+        df.set_index('created_at', inplace=True)
+        df_daily = df.resample('D').sum()
 
-    raw_dates = df_daily.index.strftime('%Y-%m-%d').tolist()
-    raw_quantities = df_daily['quantite'].tolist()
-    daily = list(zip(raw_dates,raw_quantities))
+        raw_dates = df_daily.index.strftime('%Y-%m-%d').tolist()
+        raw_quantities = df_daily['quantite'].tolist()
+        daily = list(zip(raw_dates,raw_quantities))
+    else:
+        daily = []
     
     rachid = {'data': data_list,
                 'alert_count':alert_count,
@@ -883,6 +902,35 @@ class ConsommationViewset(ModelViewSet):
     serializer_class = ConsommationSerializer
     def get_queryset(self):
         return Consommation.objects.all()
+    
+class DispositifViewset(ModelViewSet): 
+    serializer_class = DispoSerializer
+    def get_queryset(self):
+        return Dispositif.objects.all()
+
+
+def localisation(request, pk):
+    # Récupérer le dispositif spécifié par son identifiant
+    dispositif = Dispositif.objects.get(id=pk)
+    return render(request, 'conso/dispositif/localisation.html', {'dispositif': dispositif})
+
+@require_POST
+def update_coordinates(request):
+    dispositif_id = request.POST.get('dispositif_id')
+    latitude = request.POST.get('latitude')
+    longitude = request.POST.get('longitude')
+    altitude = request.POST.get('altitude')
+    precision = request.POST.get('precision')
+
+    # Mettre à jour les coordonnées du dispositif
+    dispositif = Dispositif.objects.get(id=dispositif_id)
+    dispositif.latitude = latitude
+    dispositif.longitude = longitude
+    dispositif.altitude = altitude
+    dispositif.precision = precision
+    dispositif.save()
+
+    return JsonResponse({'message': 'Coordonnées mises à jour avec succès'})
 
 @login_required
 def budget(request):

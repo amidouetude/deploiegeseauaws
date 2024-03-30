@@ -1,0 +1,56 @@
+<!-- localisation.html -->
+
+{% extends 'base.html' %}
+
+{% block etatactuel %}Coordonnées du dispositif{% endblock etatactuel %}
+
+{% block content %}
+<form id="update-form" method="POST" class="card p-3 mt-2 myform" action="" autocomplete="off"> 
+    {% csrf_token %}
+    <input type="hidden" name="dispositif_id" value="{{ dispositif.id }}">
+    <div class="row">
+        <div class="col-12">
+            <div class="row p-2">
+                <label for="latitude"> Latitude </label>
+                <input type="text" id="latitude" name="latitude" value="{{dispositif.latitude}}">
+            </div>
+            <div class="row p-2">
+                <label for="longitude"> Longitude </label>
+                <input type="text" id="longitude" name="longitude" value="{{dispositif.longitude}}">
+            </div>
+            <div class="row p-2">
+                <label for="altitude"> Altitude </label>
+                <input type="text" id="altitude" name="altitude" value="{{dispositif.altitude}}">
+            </div>
+            <div class="row p-2">
+                <label for="precision"> Précision </label>
+                <input type="text" id="precision" name="precision" value="{{dispositif.precision}}">
+            </div>              
+        </div>
+    </div>
+    <div class="mt-2"> 
+        <button style="font-size: 15px;" type="button" class="btn btn-info mb-3" onclick="updateCoordinates()"><i class="fas fa-edit"></i>&nbsp;&nbsp;  Mettre à jour</button>
+    </div>
+</form>
+{% endblock content %}
+
+<script>
+    function updateCoordinates() {
+        var formData = new FormData(document.getElementById('update-form'));
+        $.ajax({
+            url: "{% url 'update_coordinates' %}",
+            type: "POST",
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(response) {
+                // Gérer la réponse réussie
+                console.log(response);
+            },
+            error: function(xhr, status, error) {
+                // Gérer l'erreur
+                console.error(xhr.responseText);
+            }
+        });
+    }
+</script>

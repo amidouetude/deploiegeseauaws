@@ -6,10 +6,14 @@ from rest_framework import routers
 
 router = routers.SimpleRouter()
 router.register('consommation', views.ConsommationViewset, basename='consommation')
+chemin = routers.SimpleRouter()
+chemin.register('dispositif', views.DispositifViewset, basename='dispositif')
 
 
 urlpatterns = [
     path('api/', include(router.urls)),
+    path('api/', include(chemin.urls)),
+
 
     path('acceuil/', views.index, name="index"),
     path('acceuil/conso_section/<str:pk>/', views.ConsSection, name="graphe_section"),
@@ -26,6 +30,9 @@ urlpatterns = [
     path('dispo/add_dispo/<str:section_pk>/',views.add_dispo,name="add_dispositif"),
     path('dispo/update_dispo/<str:pk>/',views.update_dispo,name="update_dispositif"),
     path('dispo/delete_dispo/<str:pk>/',views.delete_dispo,name="delete_dispositif"),
+    path('dispo/localisation/<str:pk>/', views.localisation, name='localisation'),
+    path('dispo/update_coordinates/<str:pk>/', views.update_coordinates, name='update_coordinates'),
+
 
     ###Vue liée à la table foire aux questions
     path('faq/',views.faq,name="faq"),

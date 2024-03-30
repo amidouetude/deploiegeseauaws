@@ -54,6 +54,9 @@
                 <a href="{% url 'graphe_dispo' dispo.dispositif.id %}" class="btn btn-outline-primary bi bi-speedometer">
                   <span class="btn-tooltip">Dashboard</span>
                 </a>
+                <a href="{% url 'localisation' dispo.dispositif.id %}" class="btn btn-outline-success bi bi-geo-alt">
+                  <span class="btn-tooltip">Localisation</span>
+                </a>
               </div>
             </td>
           </tr>
