@@ -1,5 +1,5 @@
 from rest_framework.serializers import ModelSerializer
-from conso.models import Consommation, Dispositif
+from conso.models import Consommation, Localisation
 
 class ConsommationSerializer(ModelSerializer):
  
@@ -8,8 +8,8 @@ class ConsommationSerializer(ModelSerializer):
         fields = ['id','quantite', 'created_at', 'dispositif']
 
 
-class DispoSerializer(ModelSerializer):
+class LocalSerializer(ModelSerializer):
  
     class Meta:
-        model = Dispositif
-        fields = ['id','latitude', 'longitude', 'altitude','precision']
+        model = Localisation
+        fields = ['id','latitude', 'longitude','dispositif']

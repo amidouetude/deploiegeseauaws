@@ -1,5 +1,5 @@
 from django import forms
-from conso.models import Section, Dispositif, Entreprise
+from conso.models import Localisation, Section, Dispositif, Entreprise
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import User
@@ -59,5 +59,8 @@ class ConsommationAnterieureForm(forms.Form):
     date = forms.DateField(label="Date", widget=forms.SelectDateWidget(years=range(2000, 2031)))
 
 
-
+class LocalisationForm(forms.ModelForm):
+    class Meta:
+        model = Localisation
+        fields = ['latitude', 'longitude']
         

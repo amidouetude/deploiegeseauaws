@@ -34,14 +34,18 @@ class Dispositif(models.Model):
     numero_serie = models.CharField(max_length=100, null=True, blank=True, verbose_name="Numéro serie")
     nom_lieu = models.CharField(max_length=100,null=True,blank=True,verbose_name="Le lieu où se trouve le dispositif")    
     source_eau = models.CharField(max_length=100,null = True, blank=True, verbose_name="Source d'eau")
-    latitude=models.FloatField(null=True,blank=True)
-    longitude=models.FloatField(null=True,blank=True)
-    altitude=models.FloatField(null=True,blank=True)
-    precision=models.FloatField(null=True,blank=True)
     class Meta:
         unique_together = ('section', 'nom_lieu')
     def __str__(self):
         return self.nom_lieu
+    
+class Localisation(models.Model):
+    latitude=models.FloatField(null=True,blank=True)
+    longitude=models.FloatField(null=True,blank=True)
+    """ altitude=models.FloatField(null=True,blank=True)
+    precision=models.FloatField(null=True,blank=True) """
+    dispositif = models.ForeignKey(Dispositif, null=True, blank=True, on_delete=models.CASCADE)
+
     
 class Consommation(models.Model):
     dispositif = models.ForeignKey(Dispositif, null=True, blank=True, on_delete=models.CASCADE)

@@ -7,9 +7,9 @@ from datetime import date, datetime, timedelta
 from django.http import HttpResponse, HttpResponseForbidden, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 import numpy as np
-from conso.models import Alert, Budget, Depense, Section, Dispositif, Entreprise, Consommation
-from conso.serializers import ConsommationSerializer, DispoSerializer
-from .forms import SectionForm, DispositifForm, EntrepriseForm, UserProfileForm
+from conso.models import Alert, Budget, Depense, Localisation, Section, Dispositif, Entreprise, Consommation
+from conso.serializers import ConsommationSerializer, LocalSerializer
+from .forms import LocalisationForm, SectionForm, DispositifForm, EntrepriseForm, UserProfileForm
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
@@ -903,34 +903,57 @@ class ConsommationViewset(ModelViewSet):
     def get_queryset(self):
         return Consommation.objects.all()
     
-class DispositifViewset(ModelViewSet): 
-    serializer_class = DispoSerializer
+class LocalisationViewset(ModelViewSet): 
+    serializer_class = LocalSerializer
     def get_queryset(self):
-        return Dispositif.objects.all()
+        return Localisation.objects.all()
 
 
 def localisation(request, pk):
-    # Récupérer le dispositif spécifié par son identifiant
     dispositif = Dispositif.objects.get(id=pk)
-    return render(request, 'conso/dispositif/localisation.html', {'dispositif': dispositif})
+    last_localisation = Localisation.objects.filter(dispositif=dispositif).order_by('-id').first()
+    context = {
+        'dispositif': dispositif,
+        'last_localisation': last_localisation
+    }
 
-@require_POST
-def update_coordinates(request):
-    dispositif_id = request.POST.get('dispositif_id')
-    latitude = request.POST.get('latitude')
-    longitude = request.POST.get('longitude')
-    altitude = request.POST.get('altitude')
-    precision = request.POST.get('precision')
+    return render(request, 'conso/dispositif/localisation.html', context)
 
-    # Mettre à jour les coordonnées du dispositif
+
+
+def localisationG(request, pk):
+    user = request.user
+    user_entreprise = get_object_or_404(Entreprise, user=user)
+    dispos = Dispositif.objects.filter(section__entreprise__user=user_entreprise)
+    last_localisation = Localisation.objects.filter(dispositif=dispos).order_by('-id').first()
+    context = {
+        'dispositif': dispos,
+        'last_localisation': last_localisation
+    }
+
+    return render(request, 'conso/dispositif/localisationG.html', context)
+
+
+
+
+
+
+def update_localisation(request, dispositif_id):
     dispositif = Dispositif.objects.get(id=dispositif_id)
-    dispositif.latitude = latitude
-    dispositif.longitude = longitude
-    dispositif.altitude = altitude
-    dispositif.precision = precision
-    dispositif.save()
+    localisation = dispositif.localisation_set.last()
+    if request.method == 'POST':
+        form = LocalisationForm(request.POST, instance=localisation)
+        if form.is_valid():
+            form.save()
+            return redirect('conso/dispositif/localisation.html', dispositif_id=dispositif_id)
+    else:
+        form = LocalisationForm(instance=localisation)
+    context = {
+        'dispositif': dispositif,
+        'form': form
+    }
+    return render(request, 'conso/dispositif/localisation.html', context)
 
-    return JsonResponse({'message': 'Coordonnées mises à jour avec succès'})
 
 @login_required
 def budget(request):
