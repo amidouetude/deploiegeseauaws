@@ -317,8 +317,23 @@ def dispo(request):
     client = request.user
     dispos = Dispositif.objects.filter(section__entreprise__user=client)
     alert_count = Alert.objects.filter(entreprise__user=client, is_read=False).count()
-    context = {'dispos':dispos,
-               'alert_count':alert_count}
+    localisationG= {}
+    
+    # Parcourir tous les dispositifs et récupérer leur dernière localisation
+    for dispo in dispos:
+        # Récupérer la dernière localisation associée à ce dispositif s'il en existe
+        last_localisation = Localisation.objects.filter(dispositif=dispo).order_by('-id').first()
+        
+        # Stocker la dernière localisation dans le dictionnaire
+        localisationG[dispo] = last_localisation
+
+    first_localisation = next(iter(localisationG.values()), None)  # obtenir le premier élément
+
+    context = {
+        'localisationG': localisationG,
+        'first_localisation':first_localisation,
+        'dispos':dispos,
+        'alert_count':alert_count}
     return render(request,'conso/dispositif/dispo.html',context)
 
 #Ajout d'un nouveau dispositf
@@ -918,21 +933,6 @@ def localisation(request, pk):
     }
 
     return render(request, 'conso/dispositif/localisation.html', context)
-
-
-
-def localisationG(request, pk):
-    user = request.user
-    user_entreprise = get_object_or_404(Entreprise, user=user)
-    dispos = Dispositif.objects.filter(section__entreprise__user=user_entreprise)
-    last_localisation = Localisation.objects.filter(dispositif=dispos).order_by('-id').first()
-    context = {
-        'dispositif': dispos,
-        'last_localisation': last_localisation
-    }
-
-    return render(request, 'conso/dispositif/localisationG.html', context)
-
 
 
 
