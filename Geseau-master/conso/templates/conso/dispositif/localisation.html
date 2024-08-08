@@ -1,34 +1,27 @@
-<!-- localisation.html -->
 {% extends 'base.html' %}
 
-{% block etatactuel %}Coordonnées du dispositif{% endblock etatactuel %}
+{% block etatactuel %}Coordonnées du dispositif ({{ dispositif.nom_lieu }}){% endblock etatactuel %}
 
 {% block content %}
-<h1>Localisation du dispositif : {{ dispositif.nom_lieu }}</h1>
-{% if last_localisation %}
+
     <form id="update-form" method="POST" class="card p-3 mt-2 myform" action="{% url 'localisation' dispositif.id %}" autocomplete="off"> 
     {% csrf_token %}
     <input type="hidden" name="dispositif_id" value="{{ dispositif.id }}">
     <div class="row">
-        <div class="col-12">
-            <div class="row p-2">
-                <label for="latitude"> Latitude </label>
-                <input type="text" id="latitude" name="latitude" value="{{last_localisation.latitude}}">
+            <div class="form-group coolinput">
+                <label for="latitude" class="form-label text"> Latitude </label>
+                <input class="form-control input" type="text" id="latitude" name="latitude" value="{{last_localisation.latitude}}">
             </div>
-            <div class="row p-2">
-                <label for="longitude"> Longitude </label>
-                <input type="text" id="longitude" name="longitude" value="{{last_localisation.longitude}}">
+            <div class="form-group coolinput">
+                <label for="longitude" class="form-label text"> Longitude </label>
+                <input class="form-control input"type="text" id="longitude" name="longitude" value="{{last_localisation.longitude}}">
             </div>            
-        </div>
     </div>
     <div class="mt-2"> 
-        <button style="font-size: 15px;" type="submit" class="btn btn-info mb-3"><i class="fas fa-sync"></i>&nbsp;&nbsp;  Mettre à jour</button>
+        <button style="font-size: 15px;" type="submit" class="btn btn-info btn-kbd mb-3"><i class="fas fa-sync"></i>&nbsp;&nbsp;  Mettre à jour</button>
         <button style="font-size: 15px;" type="button" class="btn btn-primary mb-3" id="voir-carte"><i class="fas fa-map-marker-alt"></i>&nbsp;&nbsp;  Voir la carte</button>
     </div>
 </form> 
-{% else %}
-        <p>Localisation non disponible pour ce dispositif.</p>
-    {% endif %}
  
 <div class='row'>
     <br><br>

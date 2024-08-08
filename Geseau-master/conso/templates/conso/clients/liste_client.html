@@ -1,0 +1,67 @@
+<!-- conso/client/liste_client.html -->
+{% extends 'base.html' %}
+
+
+{% block etatactuel %}
+Liste des clients
+{% endblock etatactuel %}
+
+{% block content %}
+<div class="row mt-3">
+    <div class="col-md-2.5">
+    <a type="submit" href="{% url 'add_client' %}" class="btn btn-secondary text-dark selection" style="background-color: #65a9dc; border-color: #10b3d8;">
+      <i class="fa fa-plus" aria-hidden="true"></i>&nbsp;&nbsp; 
+      <span><strong>Ajouter un nouveau client</strong></span>
+    </a><br>
+  </div>
+{% if consom %}
+<div class="row mt-4">
+    <div class="col-md-12">
+      <div class="table-responsive">
+        <table class="table table-striped table-bordered table-hover text-center">
+            <thead class="sticky-top" style="background-color: #65a9dc;">
+                <tr>
+                    <th scope="col" class="col">Nom</th>
+                    <th scope="col" class="col">Prénom</th>
+                    <th scope="col" class="col">Section</th>
+                    <th scope="col" class="col">Consommation quotidienne</th>
+                    <th scope="col" class="col">Consommation hebdomadaire</th>
+                    <th scope="col" class="col">Consommation mensuelle</th>
+                    <th scope="col" class="col">Consommation totale</th>
+                    <th scope="col" class="col">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for client in consom %}
+            <tr>
+                <td class="col">{{ client.client.nom_client }}</td>
+                <td class="col">{{ client.client.prenom_client }}</td>
+                <td class="col">{{ client.section }}</td>
+                <td class="col">{{ client.daily_consommation }} m&sup3</td>
+                <td class="col">{{ client.weekly_consommation }} m&sup3</td>
+                <td class="col">{{ client.monthly_consommation }} m&sup3</td>
+                <td class="col">{{ client.total_consommation }} m&sup3</td>
+                <td class="col">
+                    {% comment %} <a href="{% url 'graphe_client' client.client.id%}" class="btn btn-outline-info bi bi-speedometer">
+                        <span class="btn-tooltip">Dashboard</span>
+                      </a> {% endcomment %}
+                    <a href="{% url 'update_client' client.client.id %}" class="btn btn-outline-warning bi bi-pencil">
+                        <span class="btn-tooltip">Modifier</span>
+                    </a>
+                    <a href="{% url 'detail_client' client.client.id %}" class="btn btn-outline-primary bi bi-info">
+                        <span class="btn-tooltip">Détails</span>
+                    </a>
+                    
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<div class="row mt-3">
+Pas de client disponible pour le moment. Veuillez cliquer sur le bouton ajouter un client afin de definir un client
+</div>
+{% endif %}
+
+
+{% endblock %}

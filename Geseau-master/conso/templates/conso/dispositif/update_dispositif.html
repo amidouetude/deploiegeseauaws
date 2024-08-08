@@ -9,9 +9,13 @@
     <div class="row">
         <div class="col-12">
             <div class="row p-2">
-                <label for="section"> Section </label>
+                <label for="section">Choisissez la répartition à laquelle correspond ce dispositif</label>
                 {{form.section}}
             </div>
+            {% comment %} <div class="row p-2">
+                <label for="section">Choisissez le client auquel appartient ce dispositif</label>
+                {{form.section}}
+            </div> {% endcomment %}
             <div class="row p-2">
                 <label for="numero_serie"> Numero serie </label>
                 {{form.numero_serie}}
@@ -46,4 +50,5 @@
         <button style= "font-size: 15px;" type="submit" class="btn btn-info mb-3"><i class="fas fa-edit"></i>&nbsp;&nbsp;  Modifier</button>
     </div>
 </form>
+
 {% endblock content %}

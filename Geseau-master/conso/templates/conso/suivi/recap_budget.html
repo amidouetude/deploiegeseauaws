@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block etatactuel %}
+Récapitulatif des Consommations Mensuelles
+{% endblock etatactuel %}
+
+{% block content %}
+<div class="row mt-4">
+    <div class="col-md-12">
+        <h2 class="separator mb-3">Récapitulatif des Consommations Mensuelles</h2>
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered table-hover text-center">
+                <thead class="sticky-top" style="background-color: #65a9dc;">
+                    <tr>
+                        <th>Mois</th>
+                        <th>Quantité Consommée (m³)</th>
+                        <th>Montant Consommé (FCFA)</th>
+                        <th>Budget (FCFA)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for entry in recap %}
+                    <tr>
+                        <td>{{ entry.mois }}</td>
+                        <td>{{ entry.quantite }}</td>
+                        <td>{{ entry.montant_consommation }}</td>
+                        <td>{{ entry.budget }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock content %}

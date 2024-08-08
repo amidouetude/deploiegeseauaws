@@ -8,53 +8,49 @@ Profil
 <form method="POST" class="card p-3 mt-2 myform details" action="{% url 'profil' %}">
     {% csrf_token %}
     <div class="row p-2">
-        <div class="form-group col-md-5">
-            <label for="username" class="form-label"><strong>Nom d'utilisateur</strong></label>
-            <input type="text" class="form-control" id="username" name="username" value="{{ entreprise.user.username }}">
+        <div class="form-group col-12 col-md-6 mt-2 coolinput">
+            <label for="username" class="form-label text"><strong>Nom d'utilisateur</strong></label>
+            <input type="text" class="form-control input" id="username" name="username" value="{{ entreprise.user.username }}">
         </div>
-        <div class="form-group col-md-5">
-            <label for="nom_societe" class="form-label"><strong>Nom de l'entreprise</strong></label>
-            <input type="text" class="form-control" id="nom_societe" name="nom_societe" value="{{ entreprise.nom_societe }}">
+        <div class="form-group col-12 col-md-6 mt-2 coolinput">
+            <label for="nom_societe" class="form-label text"><strong>Nom de l'entreprise</strong></label>
+            <input type="text" class="form-control input" id="nom_societe" name="nom_societe" value="{{ entreprise.nom_societe }}">
         </div>
-    </div>
-    <div class="row">
-        <div class="form-group col-md-5">
-            <label for="telephone" class="form-label"><strong>Téléphone</strong></label>
-            <input type="text" class="form-control" id="telephone" name="telephone" value="{{ entreprise.telephone }}">
+        <div class="form-group col-12 col-md-6 mt-2 coolinput">
+            <label for="telephone" class="form-label text"><strong>Téléphone</strong></label>
+            <input type="text" class="form-control input" id="telephone" name="telephone" value="{{ entreprise.telephone }}">
         </div>
-        <div class="form-group col-md-5">
-            <label for="email" class="form-label"><strong>Email</strong></label>
-            <input type="email" class="form-control" id="email" name="email" value="{{ entreprise.user.email }}">
+        <div class="form-group col-12 col-md-6 mt-2 coolinput">
+            <label for="email" class="form-label text"><strong>Email</strong></label>
+            <input type="email" class="form-control input" id="email" name="email" value="{{ entreprise.user.email }}">
         </div>
-    </div>
-    <div class="row">
-        <div class="form-group col-md-5">
-            <label for="domaine_act" class="form-label"><strong>Domaine d'activité</strong></label>
-            <input type="text" class="form-control" id="domaine_act" name="domaine_act" value="{{ entreprise.domaine_act }}">
+        <div class="form-group col-12 col-md-6 mt-2 coolinput">
+            <label for="domaine_act" class="form-label text"><strong>Domaine d'activité</strong></label>
+            <input type="text" class="form-control input" id="domaine_act" name="domaine_act" value="{{ entreprise.domaine_act }}">
         </div>
-        <div class="form-group col-md-5">
-            <label for="localite" class="form-label"><strong>Localisation</strong></label>
-            <input type="text" class="form-control" id="localite" name="localite" value="{{ entreprise.localite }}">
+        <div class="form-group col-12 col-md-6 mt-2 coolinput">
+            <label for="localite" class="form-label text"><strong>Localisation</strong></label>
+            <input type="text" class="form-control input" id="localite" name="localite" value="{{ entreprise.localite }}">
         </div>
     </div>
     <div class="mt-2">
-        <button type="submit" class="btn btn-info" style="background-color: #10b3d8;">Modifier</button>
-        <a href="{% url 'change_password' %}" class="btn btn-primary text-dark" style="background-color: #65a9dc; border-color: #10b3d8;">Modifier votre mot de passe</a>
+        <button type="submit" class="btn btn-info" style="font-weight: bold; background-color: #10b3d8;">Modifier</button>
+        <a href="{% url 'change_password' %}" class="btn btn-primary text-dark" style="font-weight: bold; background-color: #65a9dc; border-color: #10b3d8;">Modifier votre mot de passe</a>
     </div>
 </form>
-<form action="">
-    <div class="row">
-        <div class="col-md-4 mt-3">
-            <p class="mb-1 text-center"><strong>Consommation globale<h4 class="text-center" style="color: #10b3d8;">{{ consommation }}</h4></strong>
-            </p>
-        </div>
-        <div class="col-md-4 mt-3">
-            <p class="mb-1 text-center"><strong>Consommation ONEA<h4 class="text-center" style="color: #10b3d8;">{{ consommation_ONEA }}</h4></strong></p>
-        </div>
-        <div class="col-md-4 mt-3">
-            <p class="mb-1 text-center"><strong>Consommation Forage<h4 class="text-center" style="color: #10b3d8;">{{ consommation_Forage }}</h4></strong></p>
-            
-        </div>
+
+<div class="row quick-access">
+    <div class="col-md-4 mt-3 graph">
+        <p class="mb-1 text-center"><strong>Consommation globale<h4 class="text-center" style="color: #10b3d8;">{{ consommation }}</h4></strong>
+        </p>
     </div>
-</form>
+    <div class="col-md-4 mt-3 graph">
+        <p class="mb-1 text-center"><strong>Consommation ONEA<h4 class="text-center" style="color: #10b3d8;">{{ consommation_ONEA }}</h4></strong></p>
+    </div>
+    <div class="col-md-4 mt-3 graph">
+        <p class="mb-1 text-center"><strong>Consommation Forage<h4 class="text-center" style="color: #10b3d8;">{{ consommation_Forage }}</h4></strong></p>
+        
+    </div>
+</div>
+
 {% endblock content %}

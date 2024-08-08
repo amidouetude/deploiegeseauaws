@@ -5,6 +5,9 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
+# Configuration pour l'email en mode développement
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
@@ -21,7 +24,7 @@ ALLOWED_HOSTS = ["*"]
 # Application definition
 
 INSTALLED_APPS = [
- 'django.contrib.admin',
+    'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -31,7 +34,6 @@ INSTALLED_APPS = [
     'rest_framework',
     "corsheaders",
     'django_cron',
-    'whitenoise.runserver_nostatic',
 ]
 
 MIDDLEWARE = [
@@ -44,7 +46,6 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
-    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 ROOT_URLCONF = 'Geseau.urls'
@@ -77,26 +78,13 @@ WSGI_APPLICATION = 'Geseau.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'deploiedatabase',
-        'USER': 'admin',
-        'PASSWORD': 'magx2000',
-        'HOST':'deploiedatabase.cnnyycew25bt.us-east-1.rds.amazonaws.com',
+        'NAME': 'database',
+        'USER': 'root',
+        'PASSWORD': '',
+        'HOST':'localhost',
         'PORT':'3306',
     }
 }
-
-
-#AWS S3 BUCKET = Stockage
-
-AWS_ACCES_KEY_ID = 'AKIAYQZLJDUIRVTDQFSU'
-AWS_SECRET_ACCES_KEY = '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'
-AWS_STORAGE_BUCKET_NAME = 'deploiedatabase'
-AWS_S3_SIGNATURE_NAME = 's3v4'
-AWS_S3_REGION_NAME = 'us-east-1'
-AWS_S3_FILE_OVERWRITE = False
-AWS_DEFAULT_ACL = None
-AWS_S3_VERITY = True
-DEFAULT_FILE_STORAGE = 'storages.backends.s3boto.S3Boto3Storage'
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -152,3 +140,4 @@ SESSION_ENGINE = "django.contrib.sessions.backends.db"  # Utilisation de la base
 CRON_CLASSES = [
     'django_cron.cron.SurconsommationCronJob',
 ]
+

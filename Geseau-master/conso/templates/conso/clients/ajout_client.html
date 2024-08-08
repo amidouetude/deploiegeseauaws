@@ -1,0 +1,23 @@
+<!-- conso/clients/ajout_client.html -->
+{% extends 'base.html' %}
+
+
+{% block etatactuel%}
+Ajouter un client
+{% endblock etatactuel %}
+
+
+{% block content %}
+<form method="POST">
+    {% csrf_token %}
+    <div class="form-group coolinput">
+        <label for="{{ form.nom_client.id }}" class="form-label text">Nom du client</label>
+        {{ form.nom_client }}
+    </div>
+    <div class="form-group coolinput">
+        <label for="{{ form.prenom_client.id }}" class="form-label text" type="text">Prénom du client</label>
+        {{ form.prenom_client }}
+    </div>
+    <button type="submit" class="btn btn-primary">Ajouter</button>
+</form>
+{% endblock %}

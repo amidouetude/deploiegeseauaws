@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+
+{% block etatactuel %}
+    Liste des alertes
+{% endblock etatactuel %}
+
+{% block content %}
+    <div class="alert alert-info">
+        {% if alert_count > 0 %}
+            {% if alert_count == 1 %}
+                <p>Vous avez <strong>{{ alert_count }}</strong> alerte non lue.</p>
+            {% else %}
+                <p>Vous avez <strong>{{ alert_count }}</strong> alertes non lues.</p>
+            {% endif %}
+        {% else %}
+            <p>Aucune alerte non lue disponible.</p>
+        {% endif %}
+        <div class="alert-sort">
+            <button class="btn btn-secondary" onclick="sortAlerts('all')">Toutes</button>
+            <button class="btn btn-secondary" onclick="sortAlerts('read')">Lues</button>
+            <button class="btn btn-secondary" onclick="sortAlerts('unread')">Non lues</button>
+        </div>
+    </div>
+    <div class="email-list">
+        {% for alert in alerts %}
+            <div class="email-item {% if alert.is_read %}read{% else %}unread{% endif %}">
+                <div class="email-content" onclick="window.location.href='{% url 'read_alert' alert.id %}'">
+                    <div class="email-header">
+                        <div class="email-sender">
+                            {% if alert.is_read %}
+                                <i class="bi bi-envelope-open" aria-hidden="true"></i>
+                            {% else %}
+                                <i class="bi bi-envelope" aria-hidden="true"></i>
+                            {% endif %}
+                            <span class="{% if alert.is_read %}text-normal{% else %}text-bold{% endif %}">{{ alert.intitule }}</span>
+                        </div>
+                        <div class="email-date">{{ alert.date_creation|date:"d-m-Y H:i:s" }}</div>
+                    </div>
+                    <div class="email-body">
+                        {% if alert.is_read %}
+                            <p>{{ alert.message|slice:":30" }}{% if alert.message|length > 30 %}...{% endif %}</p>
+                        {% else %}
+                            <p><strong>{{ alert.message|slice:":30" }}{% if alert.message|length > 30 %}...{% endif %}</strong></p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    
+<script>
+    // Fonction pour trier les alertes
+    function sortAlerts(type) {
+        const alerts = document.querySelectorAll('.email-item');
+        alerts.forEach(alert => {
+            if (type === 'all' || (type === 'read' && alert.classList.contains('read')) || (type === 'unread' && alert.classList.contains('unread'))) {
+                alert.style.display = 'flex';
+            } else {
+                alert.style.display = 'none';
+            }
+        });
+    }
+</script>
+{% endblock content %}

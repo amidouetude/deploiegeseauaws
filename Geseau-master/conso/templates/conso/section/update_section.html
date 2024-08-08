@@ -1,22 +1,20 @@
 {% extends 'base.html' %}
 
-{% block etatactuel %}Modifier votre section{% endblock etatactuel %}
+{% block etatactuel %}Modifier votre répartition{% endblock etatactuel %}
 
 
 {% block content %}
-<form method="POST" class="card p-3 mt-2 myform" action="" autocomplete="off"> 
+
+<form method="POST" class="card p-3 mt-2 myform details" id="section-form" action="" autocomplete="off"> 
     {% csrf_token %}
-    
-    <div class="row">
-        <div class="col-12">
-                <div class="row p-2">
-                        <label for="nom_section"> Nom de la section </label>
-                        {{form.nom_section}}
-                </div>
-                <div class="row p-2">
-                        <label for="description"> Description de la section </label>
-                        {{form.description}}
-                </div>
+    <div class="row p-2">
+        <div class="form-group coolinput">
+            <label for="nom_section" class="form-label text">Nom de la section</label>
+            {{form.nom_section}}
+        </div>
+        <div class="form-group coolinput">
+            <label for="description" class="form-label text">Description de la section</label>
+            {{form.description}}
         </div>
     </div>
 
@@ -30,4 +28,16 @@
         </button>
     </div>
 </form>
+
+{% load static %}
+<link href="{% static 'css/styles.css' %}" rel="stylesheet">
+
 {% endblock content %}
+{% block scripts %}
+<style>
+    .btn.active {
+        color: black !important;
+        background-color: white !important;
+    }
+</style>
+{% endblock scripts %}

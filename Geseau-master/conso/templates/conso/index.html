@@ -1,12 +1,13 @@
 {% extends 'base.html' %}
 
+
 {% block etatactuel %}
 Tableau de bord
 {% endblock etatactuel %}
 
 {% block content %}
 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-    <div class="col-md-2"> 
+    <div class="btn-group col-md-2 selection"> 
         <select name="section" class="form-select" required onchange="redirectToSection(this)">
             <option value="{% url 'index' %}">Générale</option>
             {% for section in sections %}
@@ -15,15 +16,15 @@ Tableau de bord
         </select>
     </div>
     <div class="col-md-2.5 btn-toolbar mb-2 mb-md-0">
-        <div class="btn-group me-2">
+        <div class="btn-group me-2 buttons">
             <a class="btn btn-info" href="{% url 'historique' %}">
                 <div class="flex-container">
-                    <i class="fa fa-history" aria-hidden="true"></i>&nbsp;&nbsp; 
+                    <i class="fa fa-history " aria-hidden="true"></i>&nbsp;&nbsp; 
                     <span><strong>Historique</strong></span>
                 </div>
             </a>
         </div>
-        <div class="btn-group me-2">
+        <div class="btn-group me-2 buttons">
             <a class="btn btn-info" href="{% url 'prevision' %}">
                 <div class="flex-container">
                     <i class="fa fa-line-chart" aria-hidden="true"></i> &nbsp;&nbsp;
@@ -32,51 +33,47 @@ Tableau de bord
             </a>
         </div>
     </div>                
-</div><br>
-<div class="row">
-    <div class="text-center col-md-3">
+</div>
+<h3 class="separator text-center">Graphique des consommations périodique</h3>
+<div style="width: 95%; margin: 0 auto;" class="quick-access">
+    <!-- Graphiques des consommations périodique -->
+    <div class="text-center graph">
         <h3>Aujourd'hui</h3>
-        <h3>{{daily_consommation}} m&sup3</h3>
+        <h3 style="color: #10b3d8;">{{daily_consommation}} m&sup3</h3>
         <canvas id="section-daily-chart"></canvas>
     </div>
-    <div class="text-center col-md-1"></div>
-    <div class="text-center col-md-3">
-        <h3>Cette semaine</h3>
-        <h3>{{weekly_consommation}} m&sup3</h3>
+    <div class="text-center graph">
+        <h3 class="text-center">Cette semaine</h3>
+        <h3 style="color: #10b3d8;">{{weekly_consommation}} m&sup3</h3>
         <canvas id="section-weekly-chart"></canvas>
     </div>
-    <div class="text-center col-md-1"></div>
-    <div class="col-md-3 text-center">
-        <h3>Ce mois</h3>
-        <h3>{{monthly_consommation}} m&sup3</h3>
+    <div class="text-center graph">
+        <h3 class="text-center">Ce mois</h3>
+        <h3 style="color: #10b3d8;">{{monthly_consommation}} m&sup3</h3>
         <canvas id="section-monthly-chart"></canvas>
     </div>
-    <div class="text-center col-md-1"></div>
-</div>
-<br><br>          
-<div style="width: 85%; margin: 0 auto;">
-    <h3 class="text-center">Graphique de la consommation des sept derniers jours</h3>
-    <canvas id="myChart"></canvas>
-</div> 
-<br><br>
-<div style="width: 85%; margin: 0 auto;">
-    <h3 class="text-center">Courbe sur la consommation globale</h3>
-    <canvas id="forecastChart" width="400" height="200"></canvas>
+</div><br><br>          
+<div class="quick-access">   
+    <h3 class="separator text-center">Graphique de la consommation des sept derniers jours</h3>
+    <div style="width: 95%; margin: 0 auto;" class="graph1">
+        <canvas id="myChart"></canvas>   
+    </div><br><br>   
+    <h3 class="separator text-center">Courbe sur la consommation globale</h3>
+    <div style="width: 95%; margin: 0 auto;" class="graph1">
+        <canvas id="forecastChart" width="400" height="200"></canvas>
+    </div>
 </div>
 {% endblock content %}
 
 {% block scripts %}
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
 <script>
     // Fonction pour rafraîchir la page toutes les 10 secondes
     function refreshPage() {
         location.reload();
     }
 
-    // Actualiser la page toutes les 10 secondes (10000 millisecondes)
-    setInterval(refreshPage, 10000);
+    // Actualiser la page toutes les 20 secondes (20000 millisecondes)
+    setInterval(refreshPage, 20000);
 </script>
 <script>
     var ctx = document.getElementById('myChart').getContext('2d');
@@ -228,7 +225,6 @@ Tableau de bord
         }
     }
 </script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     var dates = [];
     var rawQuantities = [];
@@ -265,7 +261,7 @@ Tableau de bord
                     display: true,
                     title: {
                         display: true,
-                        text: 'Valeur'
+                        text: 'Quantité consommée'
                     }
                 }
             }

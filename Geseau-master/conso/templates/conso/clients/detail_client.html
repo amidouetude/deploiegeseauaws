@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+
+{% block etatactuel %} {{ client.nom_client  }} {{ client.prenom_client  }} {% endblock etatactuel %}
+
+{% block content %}
+{% if consom_by_dispositif %}
+<br>
+<h2>Liste des dispositifs du client "{{ client.nom_client }} {{ client.prenom_client }}"</h2>
+<div class="row mt-4">
+  <div class="col-md-12">
+    <div class="table-responsive">
+      <table class="table table-striped table-bordered table-hover text-center">
+        <thead class="sticky-top" style="background-color: #65a9dc;">
+          <tr>
+            <th scope="col">Lieu d'emplacement</th>
+            <th scope="col" class="col">Consommation du jour</th>
+            <th scope="col" class="col">Consommation de la semaine</th>
+            <th scope="col" class="col">Consommation du mois</th>
+            <th scope="col" class="col">Consommation totale</th>
+            <th scope="col">Options</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for dispo in consom_by_dispositif %}
+          <tr>
+            <td>{{dispo.dispositif.nom_lieu}}</td>
+            <td class="col text-center">{{dispo.daily_consommation_dispositif }} m&sup3</td>
+            <td class="col text-center">{{dispo.weekly_consommation_dispositif }} m&sup3</td>
+            <td class="col text-center">{{dispo.monthly_consommation_dispositif}} m&sup3</td>
+            <td class="col text-center">{{dispo.total_consommation_dispositif}} m&sup3</td>
+            <td>
+              <div class="btn">
+                <a href="{% url 'update_dispositif' dispo.dispositif.id %}" class="btn btn-outline-warning bi bi-pencil">
+                  <span class="btn-tooltip">Modifier</span>
+                </a>
+                <a href="{% url 'graphe_dispo' dispo.dispositif.id %}" class="btn btn-outline-primary bi bi-speedometer">
+                  <span class="btn-tooltip">Dashboard</span>
+                </a>
+                <a href="{% url 'localisation' dispo.dispositif.id %}" class="btn btn-outline-success bi bi-geo-alt">
+                  <span class="btn-tooltip">Localisation</span>
+                </a>
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% else %}
+<div class="row mt-3">
+Pas de dispositif disponible pour le moment. Veuillez cliquer sur le bouton ajouter un dispositif afin de definir un dispositif pour cette section
+</div>
+{% endif %}
+{% endblock content %}
+{% block scripts %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+$(document).ready(function() {
+    $('.btn a').hover(function() {
+        var tooltip = $(this).data('tooltip');
+        if (tooltip) {
+            $('<div class="tooltip">' + tooltip + '</div>').appendTo('body').css({
+                top: $(this).offset().top - 30,
+                left: $(this).offset().left + 30
+            }).fadeIn('fast');
+        }
+    }, function() {
+        $('.tooltip').remove();
+    });
+});
+</script>
+{% endblock scripts %}

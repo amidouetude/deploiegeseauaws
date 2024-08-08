@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block etatactuel %}
+    Alerte lue
+{% endblock etatactuel %}
+
+{% block content %}
+        <div class="alert alert-info">
+            <div class="alert-header">
+                <h2>{{ alert.intitule }}</h2>
+                <p class="alert-date">Date d'envoi' : {{ alert.date_creation|date:"d-m-Y H:i:s" }}</p>
+            </div>
+            <div class="alert-body">
+                <p class="alert-message">{{ alert.message }}</p>
+            </div>
+        </div>
+{% endblock content %}
