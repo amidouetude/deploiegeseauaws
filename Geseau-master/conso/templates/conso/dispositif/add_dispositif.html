@@ -4,28 +4,28 @@
 
 
 {% block content %}
-<form method="POST" class="card p-3 mt-2 myform" action="" autocomplete="off"> 
-    {% csrf_token %}
-    <div class="row p-2">
-        <div class="form-group coolinput">
-            <label for="numero_serie" class="form-label text">Numero serie </label>
-            {{form.numero_serie}}
-        </div>
-    </div>
-    <div class="form-group coolinput">
-        <label for="nom_lieu" class="form-label text"> Lieu d'emplacement </label>
-        {{form.nom_lieu}}
-    </div>
-    <div class="form-group coolinput">
-        <label for="source_eau" class="form-label text">> Source d'eau </label>
-        {{form.source_eau}}
-    </div>
-    <div class="mt-2">
-        <button style= "font-size: 15px;" type="submit" class="btn btn-info mb-3">
-            <i class="fas fa-check"></i>&nbsp;&nbsp; Valider
-        </button>
-    </div> 
-</form>
+<div class="row">
+    <div class="col-auto">
+        <form method="POST" class="card p-3 mt-2 myform" action="" autocomplete="off"> 
+            {% csrf_token %}
+            <div class="row p-2">
+                <label for="numero_serie"> Numero serie </label>
+                {{form.numero_serie}}
+            </div>
+            <div class="row p-2">
+                <label for="nom_lieu"> Lieu d'emplacement </label>
+                {{form.nom_lieu}}
+            </div>
+            <div class="row p-2">
+                <label for="latitude"> Source d'eau </label>
+                {{form.source_eau}}
+            </div>
+            <div class="mt-2">
+                <button style= "font-size: 15px;" type="submit" class="btn btn-info mb-3">
+                    <i class="fas fa-check"></i>&nbsp;&nbsp; Valider
+                </button>
+            </div> 
+        </form>
     </div>
 </div>
 {% endblock content %}

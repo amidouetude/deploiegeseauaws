@@ -1,52 +1,10 @@
 {% extends 'base.html' %}
 
 {% block etatactuel %}
-{{titre}}
+Prévision
 {% endblock etatactuel %}
 
 {% block content %}
-<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-    <div class="col-md-2 selection"> 
-        <select name="section" class="form-select" required onchange="redirectToSection(this)">
-            <option value="{% url 'index' %}">Générale</option>
-            {% for section in sections %}
-                <option value="{% url 'prevision_section' section.id %}">{{ section.nom_section }}</option>
-            {% endfor %}
-        </select> 
-    </div>
-    <div class="col-md-5">
-        <form class="btn btn-info text-dark mb-3" method="get" action="{% url 'prevision' %}">
-            <label for="unit">Type de prévision :</label>
-            <select name="unit" id="unit" onchange="this.form.submit()">
-                <option value="heure" {% if selected_unit == 'heure' %}selected{% endif %}>Horaire</option>
-                <option value="jour" {% if selected_unit == 'jour' %}selected{% endif %}>Journalier</option>
-                {% comment %} <option value="mois" {% if selected_unit == 'mois' %}selected{% endif %}>Mensuelle</option>
-                <option value="trimestre" {% if selected_unit == 'trimestre' %}selected{% endif %}>Trimestrielle</option>
-                <option value="semestre" {% if selected_unit == 'semestre' %}selected{% endif %}>Semestrielle</option>
-                <option value="année" {% if selected_unit == 'année' %}selected{% endif %}>Annuelle</option> {% endcomment %}
-            </select>
-        </form>
-    </div>
-    <div class="col-md-2.5 btn-toolbar mb-2 mb-md-0">
-        <div class="btn-group me-2 buttons">
-            <a class="btn btn-info" href="{% url 'historique'  %}">
-                <div class="flex-container">
-                    <i class="fa fa-history" aria-hidden="true"></i>&nbsp;&nbsp; 
-                    <span><strong>Historique</strong></span>
-                </div>
-            </a>
-        </div>
-        <div class="btn-group me-2 buttons">
-            <a class="btn btn-info" href="{% url 'index' %}">
-                <div class="flex-container">
-                    <i class="fa fa-dashboard" aria-hidden="true"></i>&nbsp;&nbsp; 
-                    <span><strong>Dashboard</strong></span>
-                </div>
-            </a>
-        </div>
-    </div>
-</div>
-<br>
 {% if messages %}
 <br>
 <br>
@@ -65,7 +23,13 @@
     </div>
 </div>
 {% else %}
+<button class="btn btn-info text-dark mb-3">
+    <a class="btn btn-info" href="{% url 'index' %}">
+    <i class="fa fa-arrow-left" aria-hidden="true"></i>&nbsp;&nbsp; 
+    <span><strong>Retour</strong></span></a>
+</button>
 
+<h1>Prévisions sur la consommation des 07 prochains jours</h1>
 <div class="table-responsive">
     <table class="table table-striped table-bordered table-hover text-center">
         <thead class="sticky-top" style="background-color: #65a9dc;">
@@ -81,76 +45,122 @@
             {% for date, prediction, lower, upper in forecast_data %}
             <tr>
                 <td>{{ forloop.counter }}</td>
-                <td>{{ date|date:"d-m-Y" }}</td>
+                <td>{{ date|date:"Y-m-d" }}</td>
                 <td>{{ prediction }}</td>
                 <td>{{ lower }}</td>
                 <td>{{ upper }}</td>
             </tr>
             {% endfor %}
         </tbody>
-    </table>
-</div>
+</table>
 
-<div class="quick-access">   
-    <h3 class="separator text-center"> Graphique des Prévisions</h3>
-    <div style="width: 95%; margin: 0 auto;" class="graph1">
-        <canvas id="forecastChart"></canvas>
-    </div>
+{% comment %} <div class="mt-4">
+    <h2></h2>
+    <p>
+        <strong>Qualité prévisionnelle :</strong> {{ pourcentage }} % <br><br>
+        <strong>Interprétation :</strong> <br>
+        {% if pourcentage > 90 %}
+        <span class="">Cela signifie que les prédictions sont très proches de ce qui se produira réellement. En d'autres termes, les données prédites sont extrêmement précises et fiables.
+        Ainsi, il y a de forte chance que vos données prédites correspondent très étroitement à ce qui se produira effectivement dans la réalité. 
+        Cette haute précision des prédictions suggère que vous pouvez avoir une grande confiance dans les résultats et que cela peut être un indicateur solide pour prendre
+        des décisions éclairées. Cependant, notre prevision est fait uniquement à base de vos consommation. Elle n'est pas basée sur la temperature, la demande du marché etc. De ce fait,
+        dans la prise de décision d'allocation du budget, vous pourriez en tenir compte.<span>
+        
+        {% elif pourcentage > 70 %}
+        Le pourcentage associé à la qualité prévisionnelle est bon, ce qui indique des prédictions généralement précises. 
+        Bien que les prévisions soient solides, il est toujours judicieux de tenir compte d'autres facteurs externes pour 
+        une prise de décision plus complète.
+        {% elif pourcentage > 50 %}
+        Le pourcentage associé à la qualité prévisionnelle est moyen, ce qui suggère des écarts modérés par rapport aux 
+        futures observations. Ces prévisions peuvent être utiles pour des décisions de base, mais il est conseillé de 
+        rester vigilant quant à la possibilité d'erreurs plus importantes.
+        {% elif pourcentage > 30 %}
+        Le pourcentage associé à la qualité prévisionnelle est mauvais, indiquant des erreurs significatives par rapport 
+        aux futures observations. Dans de tels cas, il est important de prendre en compte d'autres sources d'information 
+        ou d'améliorer la méthodologie de prévision pour réduire ces erreurs.
+        {% else %}
+        Le pourcentage associé à la qualité prévisionnelle est très mauvais, ce qui signifie que les prédictions sont très 
+        éloignées des futures observations. Il est impératif de réévaluer la méthode de prévision ou d'incorporer des données 
+        supplémentaires pour améliorer la fiabilité des prédictions. Les décisions basées sur de telles prévisions peuvent 
+        comporter un risque élevé d'erreur.
+        {% endif %}
+    </p>
+</div> {% endcomment %}      
+
+<div class="container mt-4">
+    <h3>Graphique des Prévisions</h3>
+    <canvas id="forecastChart" width="400" height="200"></canvas>
+</div>
+<div class="mt-4">
+    <h3>Interprétation des Prévisions</h3>
+    <p>
+        Le graphique ci-dessus montre les prévisions pour les 7 prochains jours avec des intervalles de confiance (IC). Voici quelques points à noter :
+        <ul>
+            <li>La ligne bleue représente les prévisions.</li>
+            <li>La ligne rouge représente la borne inférieure de l'IC.</li>
+            <li>La ligne verte représente la borne supérieure de l'IC.</li>
+        </ul>
+    </p>
+</div>
 </div>
 {% endif %}
 {% endblock content %}
-
 {% block scripts %}
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-    var rawDates = [];
+    var dates = [];
     var rawQuantities = [];
-    var forecastDates = [];
     var predictions = [];
     var lowerBounds = [];
     var upperBounds = [];
 
     // Génération des données pour les données brutes
+    // Génération des données pour les données brutes
     {% for date, quantity in daily %}
-        rawDates.push("{{ date }}");
+        dates.push("{{ date }}");
         rawQuantities.push({{ quantity }});
     {% endfor %}
 
+    // Trouver l'indice de la dernière date des données brutes
+    var lastIndex = dates.length - 1;
+
     // Génération des données pour les prévisions et les intervalles de confiance
     {% for date, prediction, lower, upper in forecast_data %}
-        forecastDates.push("{{ date|date:'Y-m-d' }}");
-        predictions.push({{ prediction }});
-        lowerBounds.push({{ lower }});
-        upperBounds.push({{ upper }});
+        // Vérifier si la date est après la dernière date des données brutes
+        if ("{{ date|date:'Y-m-d' }}" > dates[lastIndex]) {
+            predictions.push({{ prediction }});
+            lowerBounds.push({{ lower }});
+            upperBounds.push({{ upper }});
+        }
     {% endfor %}
 
     var ctx = document.getElementById('forecastChart').getContext('2d');
     var myChart = new Chart(ctx, {
         type: 'line',
         data: {
-            labels: rawDates.concat(forecastDates),
+            labels: dates,
             datasets: [
                 {
                     label: 'Données Brutes',
                     data: rawQuantities,
                     borderColor: 'black',
-                    fill: false
+                    fill: true
                 },
                 {
                     label: 'Prévision',
-                    data: Array(rawDates.length).fill(null).concat(predictions),
+                    data: predictions,
                     borderColor: 'blue',
                     fill: false
                 },
                 {
                     label: 'Borne inférieure (IC)',
-                    data: Array(rawDates.length).fill(null).concat(lowerBounds),
+                    data: lowerBounds,
                     borderColor: 'red',
                     fill: false
                 },
                 {
                     label: 'Borne supérieure (IC)',
-                    data: Array(rawDates.length).fill(null).concat(upperBounds),
+                    data: upperBounds,
                     borderColor: 'green',
                     fill: false
                 }
@@ -169,20 +179,11 @@
                     display: true,
                     title: {
                         display: true,
-                        text: 'Quantité consommée'
+                        text: 'Valeur'
                     }
                 }
             }
         }
     });
-</script>
-<script>
-    function redirectToSection(select) {
-        var selectedOption = select.options[select.selectedIndex];
-        var url = selectedOption.value;
-        if (url !== "") {
-            window.location.href = url;
-        }
-    }
 </script>
 {% endblock scripts %}

@@ -1,5 +1,5 @@
 from django import forms
-from conso.models import Localisation, Section, Dispositif, Entreprise, Client
+from conso.models import Localisation, Section, Dispositif, Entreprise
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import User
@@ -7,14 +7,12 @@ from django.contrib.auth.models import User
 
 class SectionForm(forms.ModelForm):
     nom_section = forms.CharField(
-        label="Nom de la section",
-        widget=forms.TextInput(attrs={'placeholder': "Nom de la section"})
+        label = "Nom de la section",
+        widget = forms.TextInput(attrs={'placeholder':"Nom de la section"})
     )
-    
     class Meta:
         model = Section
-        fields = ('nom_section', 'description')
-
+        fields = ('nom_section','description')
 
 class DispositifForm(forms.ModelForm):
     nom_lieu = forms.CharField(
@@ -66,23 +64,3 @@ class LocalisationForm(forms.ModelForm):
         model = Localisation
         fields = ['latitude', 'longitude']
         
-
-
-class ClientForm(forms.ModelForm):
-    class Meta:
-        model = Client
-        fields = '__all__'
-
-
-
-class UpdateClientProfileForm(forms.ModelForm):
-    class Meta:
-        model = Client
-        fields = ['nom_client', 'prenom_client']
-
-class UpdateUserForm(forms.ModelForm):
-    class Meta:
-        model = User
-        fields = ['first_name', 'last_name', 'email']
-
-
