@@ -24,7 +24,7 @@ class CronJobLog(models.Model):
         return "%s (%s)" % (self.code, "Success" if self.is_success else "Fail")
 
     class Meta:
-        index_together = [
+        indexes = [
             ('code', 'is_success', 'ran_at_time'),
             ('code', 'start_time', 'ran_at_time'),
             (
