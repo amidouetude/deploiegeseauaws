@@ -1,17 +1,44 @@
 {% extends 'base.html' %}
 
 {% block etatactuel %}
-Historique
+Historique - {{section.nom_section}}
 {% endblock etatactuel %}
 
 {% block content %}
-<div class="container mt-4">
+<div class="mt-4">
     <!-- Formulaire pour consulter l'historique -->
-    <button class="btn btn-info text-dark mb-3">
-        <a class="btn btn-info" href="{% url 'index' %}">
-        <i class="fa fa-arrow-left" aria-hidden="true"></i>&nbsp;&nbsp; 
-        <span><strong>Retour au tableau de bordx</strong></span></a>
-    </button>
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <div class="col-md-2 selection"> 
+            <select name="section" class="form-select" required onchange="redirectToSection(this)">
+                <option value="{% url 'historique_section' section.id %}">{{ section.nom_section }}</option>
+                <option value="{% url 'historique' %}">Générale</option>
+                {% for other_section in sections %}
+                    {% if other_section.id != section.id %}
+                        <option value="{% url 'historique_section' other_section.id %}">{{ other_section.nom_section }}</option>
+                    {% endif %}
+                {% endfor %}
+            </select> 
+        </div>
+        <div class="col-md-2.5 btn-toolbar mb-2 mb-md-0">
+            <div class="btn-group me-2 buttons">
+                <a class="btn btn-info" href="{% url 'graphe_section' section.id%}">
+                    <div class="flex-container">
+                        <i class="fa fa-dashboard" aria-hidden="true"></i>&nbsp;&nbsp; 
+                        <span><strong>Dashboard</strong></span>
+                    </div>
+                </a>
+            </div>
+            <div class="btn-group me-2 buttons">
+                <a class="btn btn-info" href="{% url 'prevision_section' section.id %}">
+                    <div class="flex-container">
+                        <i class="fa fa-line-chart" aria-hidden="true"></i>&nbsp;&nbsp; 
+                        <span><strong>Prévisions</strong></span>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+    <br>
     <h4>Consulter l'historique pour voir la statistique descriptive sur les données de votre consommation générale</h4>
     <div class="row">
         <div class="col-md-6">
@@ -36,9 +63,9 @@ Historique
                         <i class="fa fa-download" aria-hidden="true"></i></i>&nbsp;&nbsp; 
                         <span><strong>Télécharger</strong></span>
                     </button>
-                    <button class="btn btn-info text-dark" href="{% url 'section' %}">
-                        <i class="fa fa-arrow-left" aria-hidden="true"></i>&nbsp;&nbsp; 
-                        <span><strong>Retour</strong></span>
+                    <button type="submit" name="book" value="true" class="btn btn-info">
+                        <i class="fa fa-book" aria-hidden="true"></i>&nbsp;&nbsp; 
+                        <span><strong>Rapport sur la période</strong></span>
                     </button>
                 </div>
             </form>
@@ -50,7 +77,6 @@ Historique
     <br>
     <br>
     <br>
-    <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-10">
                 <form>
@@ -105,3 +131,14 @@ Historique
     {% endif %}
 </div>
 {% endblock content %}
+{% block scripts%}
+<script>
+    function redirectToSection(select) {
+        var selectedOption = select.options[select.selectedIndex];
+        var url = selectedOption.value;
+        if (url !== "") {
+            window.location.href = url;
+        }
+    }
+</script>
+{% endblock %}

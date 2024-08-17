@@ -1,15 +1,15 @@
 {% extends 'base.html' %}
 
 {% block etatactuel %}
-Liste des sections
+Liste des répartitions
 {% endblock etatactuel %}
 
 {% block content %}
 <div class="row mt-3">
   <div class="col-md-2.5">
-  <a type="submit" href="{% url 'add_section' %}" class="btn btn-primary text-dark" style="background-color: #65a9dc; border-color: #10b3d8;">
+  <a type="submit" href="{% url 'add_section' %}" class="btn btn-secondary text-dark selection" style="background-color: #65a9dc; border-color: #10b3d8;">
     <i class="fa fa-plus" aria-hidden="true"></i>&nbsp;&nbsp; 
-    <span><strong>Ajouter une section</strong></span>
+    <span><strong>Ajouter une nouvelle répartition</strong></span>
   </a><br>
 </div>
 {% if consom %}

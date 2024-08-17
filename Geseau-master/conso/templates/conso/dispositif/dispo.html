@@ -5,111 +5,147 @@ Liste des dispositifs
 {% endblock etatactuel %}
 
 {% block content %}
-{% if dispos %}
+{% if localisationG %}
 
-  <ul class="nav nav-pills" role="tablist">
-    <li class="nav-item">
-      <a class="nav-link active" data-bs-toggle="pill" href="#home">Liste</a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link" data-bs-toggle="pill" href="#menu1">coordonnées</a>
-    </li>
-  </ul>
+  <!-- Bouton pour afficher la carte -->
+  <button style="font-size: 15px; font-weight: bold; background-color: #65a9dc; border-color: #10b3d8;" type="button" class="selection btn btn-primary text-dark mb-3 voir-carte" id="voir-carte"><i class="fas fa-map-marker-alt"></i>&nbsp;&nbsp;  Voir la carte</button>
 
-  <!-- Tab panes -->
-  <div class="tab-content">
-    <div id="home" class=" tab-pane active"><br>
-      <div class="row mt-4">
-        <div class="col-md-12">
-          <div class="table-responsive">
-            <table class="table table-striped table-bordered table-hover text-center">
-              <thead class="sticky-top" style="background-color: #65a9dc;">
-                <tr>
-                  <th scope="col">Numero serie</th>
-                  <th scope="col">Lieu d'emplacement</th>
-                  <th scope="col">Source d'eau</th>
-                  <th scope="col">Modifier</th>
-                </tr>
-              </thead>
-              <tbody>
-                {% for dispo in dispos %}
-                <tr>
-                  <td>{{dispo.numero_serie}}</td>
-                  <td>{{dispo.nom_lieu}}</td>
-                  <td>{{dispo.source_eau}}</td>
-                  <td>
-                    <div class="btn">
-                      <a href="{% url 'update_dispositif' dispo.id %}" class="btn btn-outline-warning bi bi-pencil">
-                        <span class="btn-tooltip">Modifier</span>
-                      </a>
-                      <a href="{% url 'graphe_dispo' dispo.id %}" class="btn btn-outline-primary bi bi-speedometer">
-                        <span class="btn-tooltip">Dashboard</span>
-                      </a>
-                      <a href="{% url 'localisation' dispo.id %}" class="btn btn-outline-success bi bi-geo-alt">
-                        <span class="btn-tooltip">Localisation</span>
-                      </a>
-                    </div>
-                  </td>
-                </tr>
-                {% endfor %}
-              </tbody>
-            </table>
-          </div>
-        </div>
+  <!-- Bouton pour dessiner le chemin -->
+  <button style="font-size: 15px; font-weight: bold; background-color: #65a9dc; border-color: #10b3d8;" type="button" class="selection btn btn-primary text-dark mb-3 tracer-chemin" id="tracer-chemin"><i class="fas fa-route"></i>&nbsp;&nbsp; Dessiner le chemin</button>
+
+  <!-- Bouton pour retourner au tableau -->
+  <button style="font-size: 15px; font-weight: bold; background-color: #65a9dc; border-color: #10b3d8; display: none;" type="selection button" class="btn btn-secondary text-dark mb-3 retour-tableau" id="retour-tableau"><i class="fas fa-table"></i>&nbsp;&nbsp; Retour au tableau</button>
+
+  <div class="row mt-4 tableau">
+    <div class="col-md-12">
+      <div class="table-responsive">
+        <table class="table table-striped table-bordered table-hover text-center">
+          <thead class="sticky-top" style="background-color: #65a9dc;">
+            <tr>
+              <th scope="col">Numero serie</th>
+              <th scope="col">Lieu d'emplacement</th>
+              <th scope="col">Source d'eau</th>
+              <th scope="col">Latitude</th>
+              <th scope="col">Longitude</th>
+              <th scope="col">Modifier</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for item in localisationG %}
+            <tr>
+              <td>{{ item.dispositif.numero_serie }}</td>
+              <td>{{ item.dispositif.nom_lieu }}</td>
+              <td>{{ item.dispositif.source_eau }}</td>
+              <td>{{ item.last_localisation.latitude }}</td>
+              <td>{{ item.last_localisation.longitude }}</td>
+              <td>
+                <div class="btn">
+                  <a href="{% url 'update_dispositif' item.dispositif.id %}" class="btn btn-outline-warning bi bi-pencil">
+                    <span class="btn-tooltip">Modifier</span>
+                  </a>
+                  <a href="{% url 'graphe_dispo' item.dispositif.id %}" class="btn btn-outline-primary bi bi-speedometer">
+                    <span class="btn-tooltip">Dashboard</span>
+                  </a>
+                  <a href="{% url 'localisation' item.dispositif.id %}" class="btn btn-outline-success bi bi-geo-alt">
+                    <span class="btn-tooltip">Localisation</span>
+                  </a>
+                </div>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
       </div>
-    </div>
-    <div id="menu1" class="tab-pane fade" > <br>
-      <button style="font-size: 15px;" type="button" class="btn btn-primary mb-3" id="voir-carte"><i class="fas fa-map-marker-alt"></i>&nbsp;&nbsp;  Voir la carte</button>
-      <div class="row mt-4">
-        <div class="col-md-12">
-          <div class="table-responsive">
-            <table class="table table-striped table-bordered table-hover text-center">
-              <thead class="sticky-top" style="background-color: #65a9dc;">
-                <tr>
-                  <th scope="col">Lieu d'emplacement</th>
-                  <th scope="col">Latitude</th>
-                  <th scope="col">Longitude</th>
-                </tr>
-              </thead>
-              <tbody>
-                {% for dispositif, last_localisation in localisationG.items %}
-                <tr>
-                  <td>{{dispositif}}</td>
-                  <td>{{last_localisation.latitude}}</td>
-                  <td>{{last_localisation.longitude}}</td>
-                </tr>
-                {% endfor %}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-      <div id="map" style="height: 400px;"></div>
-      <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
-          crossorigin=""/>
-      <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-          integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
-          crossorigin=""></script>
-      <script type="text/javascript">
-        document.getElementById('voir-carte').addEventListener('click', function() {
-          var map = L.map('map').setView([{{ first_localisation.latitude }}, {{ first_localisation.latitude }}], 13); // Centre initial de la carte
-      
-          L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-              maxZoom: 19,
-              attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-          }).addTo(map);
-      
-          // Ajoutez les marqueurs des dispositifs à la carte
-          {% for dispositif, last_localisation in localisationG.items %}
-              L.marker([{{ last_localisation.latitude }}, {{ last_localisation.longitude }}]).addTo(map)
-                  .bindPopup('{{ dispositif }}');
-          {% endfor %}
-      });
-      </script>
     </div>
   </div>
+  <div id="map" style="height: 400px; display: none;"></div>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+        crossorigin=""/>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+        crossorigin=""></script>
 
+  <!-- Incluez les scripts Leaflet Routing Machine -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.css">
+  <script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.js"></script>
+
+  <style>
+    .btn.active {
+      color: black !important;
+      background-color: white !important;
+    }
+  </style>
+
+  <script type="text/javascript">
+    var map = null;
+    var polyline = null;
+
+    // Fonction pour afficher la carte
+    function afficherCarte() {
+      document.querySelector('.tableau').style.display = 'none';
+      document.getElementById('map').style.display = 'block';
+      document.getElementById('retour-tableau').style.display = 'inline-block';
+
+      if (polyline !== null) {
+        map.removeLayer(polyline);
+      }
+      if (map === null) {
+        map = L.map('map').setView([{{ first_localisation.last_localisation.latitude }}, {{ first_localisation.last_localisation.longitude }}], 13); // Centre initial de la carte
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          maxZoom: 19,
+          attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+        }).addTo(map);
+      }
+      // Ajoutez les marqueurs des dispositifs à la carte
+      {% for item in localisationG %}
+        L.marker([{{ item.last_localisation.latitude }}, {{ item.last_localisation.longitude }}]).addTo(map)
+          .bindPopup('{{ item.dispositif.nom_lieu }}');
+      {% endfor %}
+      // Mettre en surbrillance le bouton "Voir la carte"
+      document.getElementById('voir-carte').classList.add('active');
+      document.getElementById('tracer-chemin').classList.remove('active');
+    }
+
+    // Fonction pour tracer le chemin
+    function tracerChemin() {
+      document.querySelector('.tableau').style.display = 'none';
+      document.getElementById('map').style.display = 'block';
+      document.getElementById('retour-tableau').style.display = 'inline-block';
+
+      if (map === null) {
+        afficherCarte(); // Si la carte n'existe pas encore, l'afficher d'abord
+      }
+      if (polyline !== null) {
+        map.removeLayer(polyline);
+      }
+      var points = [
+        {% for item in localisationG %}
+          [{{ item.last_localisation.latitude }}, {{ item.last_localisation.longitude }}],
+        {% endfor %}
+      ];
+      polyline = L.polyline(points, {color: 'red'}).addTo(map);
+      map.fitBounds(polyline.getBounds()); // Ajuster la vue pour afficher le chemin
+      // Mettre en surbrillance le bouton "Dessiner le chemin"
+      document.getElementById('voir-carte').classList.remove('active');
+      document.getElementById('tracer-chemin').classList.add('active');
+    }
+
+    // Fonction pour retourner au tableau
+    function retourTableau() {
+      document.querySelector('.tableau').style.display = 'block';
+      document.getElementById('map').style.display = 'none';
+      document.getElementById('retour-tableau').style.display = 'none';
+
+      document.getElementById('voir-carte').classList.remove('active');
+      document.getElementById('tracer-chemin').classList.remove('active');
+    }
+
+    // Écouteurs d'événements pour les boutons
+    document.getElementById('voir-carte').addEventListener('click', afficherCarte);
+    document.getElementById('tracer-chemin').addEventListener('click', tracerChemin);
+    document.getElementById('retour-tableau').addEventListener('click', retourTableau);
+  </script>
 {% else %}
 <div class="row mt-3">
 Pas de dispositif disponible pour le moment. 

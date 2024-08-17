@@ -33,7 +33,6 @@ INSTALLED_APPS = [
     'conso',
     'rest_framework',
     "corsheaders",
-    'django_cron',
 ]
 
 MIDDLEWARE = [
@@ -76,29 +75,15 @@ WSGI_APPLICATION = 'Geseau.wsgi.application'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 DATABASES = {
-    'default': {
+    'default':{
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'databasegeseau',
-        'USER': 'admin',
+        'NAME': 'geseaudatabase',
+        'USER': 'mysuperuser',
         'PASSWORD': 'magx2000A#',
-        'HOST':'databasegeseau.cxugmk80ymex.eu-north-1.rds.amazonaws.com',
+        'HOST':'geseaudatabase.czawuiosm5x8.us-east-1.rds.amazonaws.com',
         'PORT':'3306',
     }
 }
-
-
-#AWS S3 BUCKET = Stockage
-
-AWS_ACCES_KEY_ID = 'AKIAYQZLJDUIRVTDQFSU'
-AWS_SECRET_ACCES_KEY = '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'
-AWS_STORAGE_BUCKET_NAME = 'deploiedatabase'
-AWS_S3_SIGNATURE_NAME = 's3v4'
-AWS_S3_REGION_NAME = 'us-east-1'
-AWS_S3_FILE_OVERWRITE = False
-AWS_DEFAULT_ACL = None
-AWS_S3_VERITY = True
-DEFAULT_FILE_STORAGE = 'storages.backends.s3boto.S3Boto3Storage'
-
 
 
 # Password validation
@@ -152,7 +137,4 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 SESSION_ENGINE = "django.contrib.sessions.backends.db"  # Utilisation de la base de données pour stocker les sessions
 
-CRON_CLASSES = [
-    'django_cron.cron.SurconsommationCronJob',
-]
 
