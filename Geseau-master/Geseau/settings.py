@@ -75,7 +75,7 @@ WSGI_APPLICATION = 'Geseau.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
-"""DATABASES = {
+DATABASES = {
     'default':{
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'geseaudatabase',
@@ -86,13 +86,7 @@ WSGI_APPLICATION = 'Geseau.wsgi.application'
     }
 }
 
-""" 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
+
 """
 DATABASES = {
     'default': {
