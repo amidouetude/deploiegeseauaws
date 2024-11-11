@@ -104,17 +104,7 @@ DATABASES = {
 }
 """
 
-#AWS S3 BUCKET = Stockage
 
-AWS_ACCES_KEY_ID = ''
-AWS_SECRET_ACCES_KEY = ''
-AWS_STORAGE_BUCKET_NAME = 'geseaubucket'
-AWS_S3_SIGNATURE_NAME = 's3v4'
-AWS_S3_REGION_NAME = 'eu-north-1'
-AWS_S3_FILE_OVERWRITE = False
-AWS_DEFAULT_ACL = None
-AWS_S3_VERITY = True
-DEFAULT_FILE_STORAGE = 'storages.backends.s3boto.S3Boto3Storage'
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
