@@ -1,30 +1,59 @@
-from rest_framework.serializers import ModelSerializer
+from rest_framework.serializers import ModelSerializer, SerializerMethodField
 from rest_framework.permissions import BasePermission
-from conso.models import Consommation, Localisation, Section, Dispositif
+from conso.models import Consommation, Localisation, Section, Dispositif, OperationFinanciere, Entreprise
+
+from django.db.models import Sum
+
+class WaterControlSerializer(ModelSerializer):
+    remaining_budget = SerializerMethodField()
+    electrovanne_status = SerializerMethodField()
+
+    class Meta:
+        model = Entreprise
+        fields = ['remaining_budget', 'electrovanne_status']
+
+    def get_remaining_budget(self, entreprise):
+        # Calculer le budget total et les dépenses
+        total_budget = OperationFinanciere.objects.filter(
+            entreprise=entreprise, 
+            type_operation=OperationFinanciere.BUDGET
+        ).aggregate(Sum('montant'))['montant__sum'] or 0.0
+
+        total_depense = OperationFinanciere.objects.filter(
+            entreprise=entreprise, 
+            type_operation=OperationFinanciere.DEPENSE
+        ).aggregate(Sum('montant'))['montant__sum'] or 0.0
+
+        # Calcul de la consommation totale
+        total_consommation = Consommation.objects.filter(
+            dispositif__source_eau="ONEA", 
+            dispositif__section__entreprise=entreprise
+        ).aggregate(Sum('quantite'))['quantite__sum'] or 0.0
+
+        montant_consommation = 1180.0 * total_consommation
+        remaining_budget = round(total_budget - (montant_consommation + total_depense), 3)
+        
+        return remaining_budget
+
+    def get_electrovanne_status(self, entreprise):
+        remaining_budget = self.get_remaining_budget(entreprise)
+        
+        if remaining_budget <= 0:
+            # Créer une alerte si le budget est insuffisant
+            Alert.objects.create(
+                entreprise=entreprise,
+                intitule="Electrovanne coupée",
+                contenu="Le solde est insuffisant, l'électrovanne a été coupée pour limiter la consommation."
+            )
+            return "Fermée"
+        else:
+            return "Ouverte"
 
 
 class SectionSerializer(ModelSerializer):
     class Meta:
         model = Section
         fields = '__all__'
-
-
-
-""" class SectionViewSet(viewsets.ModelViewSet):
-    serializer_class = SectionSerializer
-    permission_classes = [IsAuthenticated]
-
-    def get_queryset(self):
-        entreprise = self.request.user.entreprise
-        return Section.objects.filter(entreprise=entreprise)
-
-    def perform_create(self, serializer):
-        serializer.save(entreprise=self.request.user.entreprise)
-
-    def perform_update(self, serializer):
-        if not check_section_access(self.request, self.get_object()):
-            return Response({'error': 'Access denied'}, status=status.HTTP_403_FORBIDDEN)
-        serializer.save() """
 
 
 
@@ -51,3 +80,4 @@ class LocalSerializer(ModelSerializer):
     class Meta:
         model = Localisation
         fields = ['id','latitude', 'longitude','dispositif']
+

@@ -36,7 +36,7 @@ click-didyoumean==0.3.0
 click-plugins==1.1.1
 click-repl==0.3.0
 cmdstanpy==1.2.2
-colorama==0.4.0
+colorama==0.4.6
 comm==0.1.3
 common==0.1.2
 contourpy==1.1.1
@@ -151,6 +151,7 @@ prompt-toolkit==3.0.39
 prophet==1.1.5
 protobuf==4.22.4
 psutil==5.9.5
+psycopg2==2.9.7
 psycopg2-binary==2.9.7
 pure-eval==0.2.2
 pyasn1==0.5.0
@@ -169,8 +170,8 @@ pytesseract==0.3.10
 python-dateutil==2.8.2
 python-json-logger==2.0.7
 pytz==2023.3
-#pywin32==306
-#pywinpty==2.0.10
+pywin32==306
+pywinpty==2.0.10
 PyYAML==6.0
 pyzmq==25.0.2
 qtconsole==5.4.3
@@ -197,12 +198,12 @@ stack-data==0.6.2
 stanio==0.5.0
 statsmodels==0.14.0
 tenacity==8.5.0
-#tensorboard==2.12.3
-#tensorboard-data-server==0.7.0
-#tensorflow==2.12.0
-#tensorflow-estimator==2.12.0
-#tensorflow-intel==2.12.0
-#tensorflow-io-gcs-filesystem==0.31.0
+tensorboard==2.12.3
+tensorboard-data-server==0.7.0
+tensorflow==2.12.0
+tensorflow-estimator==2.12.0
+tensorflow-intel==2.12.0
+tensorflow-io-gcs-filesystem==0.31.0
 termcolor==1.1.0
 terminado==0.17.1
 threadpoolctl==3.2.0

@@ -1,4 +1,5 @@
 from django.views.decorators.http import require_POST
+from rest_framework.generics import RetrieveAPIView
 import calendar
 from prophet import Prophet
 from django.utils.timezone import make_aware
@@ -10,7 +11,7 @@ from django.http import HttpResponse, HttpResponseForbidden, HttpResponseRedirec
 from django.shortcuts import render, redirect, get_object_or_404
 import numpy as np
 from conso.models import Alert, OperationFinanciere, Localisation, Section, Dispositif, Entreprise, Consommation, Client
-from conso.serializers import ConsommationSerializer, IsAdminUserOnly, LocalSerializer
+from conso.serializers import ConsommationSerializer, IsAdminUserOnly, LocalSerializer, WaterControlSerializer
 from .forms import ClientForm, LocalisationForm, SectionForm, DispositifForm, EntrepriseForm, UpdateClientProfileForm, UpdateUserForm, UserProfileForm
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
@@ -56,10 +57,17 @@ def reset_password(request):
     return render(request, 'conso/profil/password_reset.html')
 
 
+class ControlViewset(ModelViewSet):
+    serializer_class = WaterControlSerializer
+    #permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+        return Entreprise.objects.filter(user=user)  # Filtrer selon l'utilisateur connecté
 
 class ConsommationViewset(ModelViewSet): 
     serializer_class = ConsommationSerializer
-    permission_classes = [IsAdminUserOnly]
+    #permission_classes = [IsAdminUserOnly]
 
     def get_queryset(self):
         return Consommation.objects.all()
@@ -415,27 +423,27 @@ def historique(request):
             consommation_par_section = []
             for section in sections:
                 total_quantite = Consommation.objects.filter(dispositif__section=section, created_at__date__range=(date_debut, date_fin)).aggregate(total_quantite=Sum('quantite'))['total_quantite'] or 0
-                consommation_par_section.append({'section': section, 'total_quantite': total_quantite})
+                consommation_par_section.append({'section': section, 'total_quantite': round(total_quantite,3)})
 
             consommation_par_dispositif = []
             for dispositif in dispositifs:
                 total_quantite = Consommation.objects.filter(dispositif=dispositif, created_at__date__range=(date_debut, date_fin)).aggregate(total_quantite=Sum('quantite'))['total_quantite'] or 0
-                consommation_par_dispositif.append({'dispositif': dispositif, 'total_quantite': total_quantite})
+                consommation_par_dispositif.append({'dispositif': dispositif, 'total_quantite': round(total_quantite,3)})
 
             consommation_par_source_eau = []
             for source_eau in sources_eau:
                 total_quantite = Consommation.objects.filter(dispositif__source_eau=source_eau['source_eau'], created_at__date__range=(date_debut, date_fin)).aggregate(total_quantite=Sum('quantite'))['total_quantite'] or 0
-                consommation_par_source_eau.append({'source_eau': source_eau['source_eau'], 'total_quantite': total_quantite})
+                consommation_par_source_eau.append({'source_eau': source_eau['source_eau'], 'total_quantite': round(total_quantite,3)})
 
             context = {
                 'alert_count': alert_count,
                 'sections': sections,
-                'moyenne': "{:.2f}".format(moyenne),
-                'total': "{:.2f}".format(total),
+                'moyenne': round(moyenne,3),
+                'total': round(total,3),
                 'min_date': min_date,
-                'min_val': "{:.2f}".format(min_quantity),
+                'min_val': round(min_quantity,3),
                 'max_date': max_date,
-                'max_val': "{:.2f}".format(max_quantity),
+                'max_val': round(max_quantity,3),
                 'daily_stats': daily_stats.to_dict(orient='records'),
                 'consommation_par_section': consommation_par_section,
                 'consommation_par_dispositif': consommation_par_dispositif,
@@ -458,6 +466,8 @@ def hist_section(request,pk):
     alert_count = Alert.objects.filter(entreprise=user_entreprise_id, is_read=False).count()
     section = get_object_or_404(Section, id=pk)
     sections = Section.objects.filter(entreprise_id=user_entreprise_id)
+    #dispositifs = Dispositif.objects.filter(section__entreprise=section)
+    #sources_eau = dispositifs.values('source_eau').distinct()
     if request.method == 'POST':
         date_debut_str = request.POST.get('date_debut')
         date_fin_str = request.POST.get('date_fin')
@@ -521,20 +531,27 @@ def hist_section(request,pk):
             moyenne = df_consommation['quantite'].mean()  # Moyenne globale
             total = df_consommation['quantite'].sum()    # Total globale
 
-            moyenne_formatted = "{:.2f}".format(moyenne)
-            total_formatted = "{:.2f}".format(total)
-            min_val_formatted = "{:.2f}".format(min_quantity)
-            max_val_formatted = "{:.2f}".format(max_quantity)
+            
+            """ consommation_par_dispositif = []
+            for dispositif in dispositifs:
+                total_quantite = Consommation.objects.filter(dispositif=dispositif, created_at__date__range=(date_debut, date_fin)).aggregate(total_quantite=Sum('quantite'))['total_quantite'] or 0
+                consommation_par_dispositif.append({'dispositif': dispositif, 'total_quantite': round(total_quantite,3)})
+
+            consommation_par_source_eau = []
+            for source_eau in sources_eau:
+                total_quantite = Consommation.objects.filter(dispositif__source_eau=source_eau['source_eau'], created_at__date__range=(date_debut, date_fin)).aggregate(total_quantite=Sum('quantite'))['total_quantite'] or 0
+                consommation_par_source_eau.append({'source_eau': source_eau['source_eau'], 'total_quantite': round(total_quantite,3)})
+ """
 
         context = {'alert_count':alert_count,
                    'section':section,
                    "sections":sections,
-            'moyenne': moyenne_formatted,
-            'total': total_formatted,
+            'moyenne': round(moyenne,3),
+            'total': round(total,3),
             'min_date': min_date,
-            'min_val': min_val_formatted,
+            'min_val': round(min_quantity,3),
             'max_date': max_date,
-            'max_val': max_val_formatted,
+            'max_val': round(max_quantity,3),
             'daily_stats': daily_stats.to_dict(orient='records'),
         }
 
@@ -1022,6 +1039,37 @@ def detail_section(request, pk):
 
 ##### Accès vers la vue des dispositifs
 #Accès vers la liste des dispositifs
+# @login_required
+# def dispo(request):
+#     client = request.user
+#     dispos = Dispositif.objects.filter(section__entreprise__user=client)
+#     alert_count = Alert.objects.filter(entreprise__user=client, is_read=False).count()
+#     localisationG = []
+
+#     # Parcourir tous les dispositifs et récupérer leur dernière localisation
+#     for dispo in dispos:
+#         # Récupérer la dernière localisation associée à ce dispositif s'il en existe
+#         last_localisation = Localisation.objects.filter(dispositif=dispo).order_by('-id').first()
+#         # Vérifier si une localisation existe pour ce dispositif
+#         if last_localisation:
+#             localisationG.append({
+#                 'dispositif': dispo,
+#                 'last_localisation': last_localisation
+#             })
+#     # Si des localisations ont été trouvées
+#     if localisationG:
+#         first_localisation = localisationG[0]  # Prendre le premier élément de la liste
+#     else:
+#         first_localisation = None  # Aucune localisation trouvée
+
+#     context = {
+#         'localisationG': localisationG,
+#         'first_localisation':first_localisation,
+#         'alert_count': alert_count
+#     }
+#     return render(request, 'conso/dispositif/dispo.html', context)
+
+
 @login_required
 def dispo(request):
     client = request.user
@@ -1033,24 +1081,27 @@ def dispo(request):
     for dispo in dispos:
         # Récupérer la dernière localisation associée à ce dispositif s'il en existe
         last_localisation = Localisation.objects.filter(dispositif=dispo).order_by('-id').first()
-        # Vérifier si une localisation existe pour ce dispositif
-        if last_localisation:
-            localisationG.append({
-                'dispositif': dispo,
-                'last_localisation': last_localisation
-            })
-    # Si des localisations ont été trouvées
-    if localisationG:
-        first_localisation = localisationG[0]  # Prendre le premier élément de la liste
-    else:
-        first_localisation = None  # Aucune localisation trouvée
+        localisationG.append({
+            'dispositif': dispo,
+            'last_localisation': last_localisation  # Peut être None si aucune localisation n'est trouvée
+        })
+
+    # Récupérer la première localisation pour l'affichage de la carte
+    first_localisation = next((loc for loc in localisationG if loc['last_localisation']), None)
 
     context = {
         'localisationG': localisationG,
-        'first_localisation':first_localisation,
+        'first_localisation': first_localisation,
         'alert_count': alert_count
     }
     return render(request, 'conso/dispositif/dispo.html', context)
+
+
+
+
+
+
+
 
 def check_dispo_access(request, dispo):
     user = request.user

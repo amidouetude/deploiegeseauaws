@@ -20,6 +20,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
 
+
+
 #Auth_USER_MODEL = 'users.Entreprise'
 # Application definition
 
@@ -33,7 +35,6 @@ INSTALLED_APPS = [
     'conso',
     'rest_framework',
     "corsheaders",
-    'whitenoise.runserver_nostatic',
 ]
 
 MIDDLEWARE = [
@@ -46,7 +47,6 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
-    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 ROOT_URLCONF = 'Geseau.urls'
@@ -75,18 +75,36 @@ WSGI_APPLICATION = 'Geseau.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
-
-DATABASES = {
+"""DATABASES = {
     'default':{
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'GeseauDatabase',
+        'NAME': 'geseaudatabase',
         'USER': 'mysuperuser',
-        'PASSWORD': 'magx2000A#',
-        'HOST':'geseaudatabase.czawuiosm5x8.us-east-1.rds.amazonaws.com',
+        'PASSWORD': 'magx2000A',
+        'HOST':'geseaudatabase.cxugmk80ymex.eu-north-1.rds.amazonaws.com',
         'PORT':'3306',
     }
 }
 
+""" 
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
+}
+"""
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'database',
+        'USER': 'root',
+        'PASSWORD': '',
+        'HOST':'localhost',
+        'PORT':'3306',
+    }
+}
+"""
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -140,3 +158,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 SESSION_ENGINE = "django.contrib.sessions.backends.db"  # Utilisation de la base de données pour stocker les sessions
 
 
+""" ###Configuration des entetes CSP
+SECURE_CONTENT_TYPE_NOSNIFF = True
+SECURE_BROWSER_XSS_FILTER = True
+SECURE_HSTS_SECONDS = 3600
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_SSL_REDIRECT = True """

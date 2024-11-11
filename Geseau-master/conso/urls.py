@@ -9,6 +9,9 @@ router.register('consommation', views.ConsommationViewset, basename='consommatio
 chemin = routers.SimpleRouter()
 chemin.register('localisation', views.LocalisationViewset, basename='localisation')
 
+budget = routers.SimpleRouter()
+budget.register('control', views.ControlViewset, basename='control'),
+
 
 #router = DefaultRouter()
 #router.register(r'sections', SectionViewSet, basename='section')
@@ -19,7 +22,7 @@ chemin.register('localisation', views.LocalisationViewset, basename='localisatio
 urlpatterns = [
     path('api/', include(router.urls)),
     path('api/', include(chemin.urls)),
-#    path('api/', include(router.urls)),
+    path('api/', include(budget.urls)),
 
 
     path('acceuil/', views.index, name="index"),

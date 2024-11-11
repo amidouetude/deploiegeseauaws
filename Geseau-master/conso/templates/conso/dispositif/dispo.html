@@ -6,16 +6,6 @@ Liste des dispositifs
 
 {% block content %}
 {% if localisationG %}
-
-  <!-- Bouton pour afficher la carte -->
-  <button style="font-size: 15px; font-weight: bold; background-color: #65a9dc; border-color: #10b3d8;" type="button" class="selection btn btn-primary text-dark mb-3 voir-carte" id="voir-carte"><i class="fas fa-map-marker-alt"></i>&nbsp;&nbsp;  Voir la carte</button>
-
-  <!-- Bouton pour dessiner le chemin -->
-  <button style="font-size: 15px; font-weight: bold; background-color: #65a9dc; border-color: #10b3d8;" type="button" class="selection btn btn-primary text-dark mb-3 tracer-chemin" id="tracer-chemin"><i class="fas fa-route"></i>&nbsp;&nbsp; Dessiner le chemin</button>
-
-  <!-- Bouton pour retourner au tableau -->
-  <button style="font-size: 15px; font-weight: bold; background-color: #65a9dc; border-color: #10b3d8; display: none;" type="selection button" class="btn btn-secondary text-dark mb-3 retour-tableau" id="retour-tableau"><i class="fas fa-table"></i>&nbsp;&nbsp; Retour au tableau</button>
-
   <div class="row mt-4 tableau">
     <div class="col-md-12">
       <div class="table-responsive">
@@ -36,8 +26,8 @@ Liste des dispositifs
               <td>{{ item.dispositif.numero_serie }}</td>
               <td>{{ item.dispositif.nom_lieu }}</td>
               <td>{{ item.dispositif.source_eau }}</td>
-              <td>{{ item.last_localisation.latitude }}</td>
-              <td>{{ item.last_localisation.longitude }}</td>
+              <td>{% if item.last_localisation %}{{ item.last_localisation.latitude }}{% else %}-{% endif %}</td>
+              <td>{% if item.last_localisation %}{{ item.last_localisation.longitude }}{% else %}-{% endif %}</td>
               <td>
                 <div class="btn">
                   <a href="{% url 'update_dispositif' item.dispositif.id %}" class="btn btn-outline-warning bi bi-pencil">
@@ -148,7 +138,7 @@ Liste des dispositifs
   </script>
 {% else %}
 <div class="row mt-3">
-Pas de dispositif disponible pour le moment. 
+Pas de dispositif disponible pour le moment.
 </div>
 {% endif %}
 {% endblock content %}
