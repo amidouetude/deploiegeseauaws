@@ -78,13 +78,14 @@ WSGI_APPLICATION = 'Geseau.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
+
 DATABASES = {
     'default':{
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'geseaudatabase',
+        'NAME': 'geseaudatabase1',
         'USER': 'mysuperuser',
-        'PASSWORD': 'magx2000A',
-        'HOST':'geseaudatabase.czawuiosm5x8.us-east-1.rds.amazonaws.com',
+        'PASSWORD': 'magx2000A#',
+        'HOST':'geseaudatabase1.czawuiosm5x8.us-east-1.rds.amazonaws.com',
         'PORT':'3306',
     }
 }
