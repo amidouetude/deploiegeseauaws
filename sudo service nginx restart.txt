@@ -1,0 +1,25 @@
+sudo service nginx restart
+sudo service gunicorn restart
+
+from django.conf import settings # new
+from  django.conf.urls.static import static #new
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)
+    urlpatterns += static(settings.STATIC_URL, document_root = settings.STATIC_URL)
+
+
+
+mysql -h deploiedatabase.cnnyycew25bt.us-east-1.rds.amazonaws.com -u admin -p
+
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'deploiedatabase',
+        'USER': 'admin',
+        'PASSWORD': 'magx2000',
+        'HOST':'deploiedatabase.cnnyycew25bt.us-east-1.rds.amazonaws.com',
+        'PORT':'3306',
+    }
+}

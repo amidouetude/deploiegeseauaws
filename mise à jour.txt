@@ -1,0 +1,12 @@
+cd deploiegeseauaws
+cd geseau-master
+cd Geseau-master
+source env/bin/activate
+git pull origin main
+python manage.py collectstatic
+deactivate
+cd
+sudo service nginx restart
+sudo service gunicorn restart
+sudo service nginx restart
+sudo service nginx restart
