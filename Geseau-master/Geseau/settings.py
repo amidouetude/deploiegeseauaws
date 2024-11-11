@@ -84,7 +84,7 @@ DATABASES = {
         'NAME': 'geseaudatabase',
         'USER': 'mysuperuser',
         'PASSWORD': 'magx2000A',
-        'HOST':'geseaudatabase.cxugmk80ymex.eu-north-1.rds.amazonaws.com',
+        'HOST':'geseaudatabase.czawuiosm5x8.us-east-1.rds.amazonaws.com',
         'PORT':'3306',
     }
 }
