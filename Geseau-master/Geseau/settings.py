@@ -102,17 +102,7 @@ DATABASES = {
     }
 }
 """
-#AWS S3 BUCKET = Stockage
 
-AWS_ACCES_KEY_ID = 'AKIAQMEY6HFOJ3NCZIEQ'
-AWS_SECRET_ACCES_KEY = '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'
-AWS_STORAGE_BUCKET_NAME = 'geseaubucket'
-AWS_S3_SIGNATURE_NAME = 's3v4'
-AWS_S3_REGION_NAME = 'eu-north-1'
-AWS_S3_FILE_OVERWRITE = False
-AWS_DEFAULT_ACL = None
-AWS_S3_VERITY = True
-DEFAULT_FILE_STORAGE = 'storages.backends.s3boto.S3Boto3Storage'
 
 
 # Password validation
