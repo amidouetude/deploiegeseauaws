@@ -16,7 +16,7 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 SECRET_KEY = 'django-insecure-xgb^91p1sss(2u&*#m%4nipdj0nm=msaz93tkjh!va^tc$-7&#'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ["*"]
 
@@ -35,6 +35,8 @@ INSTALLED_APPS = [
     'conso',
     'rest_framework',
     "corsheaders",
+    'django_cron',
+    'whitenoise.runserver_nostatic',
 ]
 
 MIDDLEWARE = [
@@ -47,6 +49,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
+    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 ROOT_URLCONF = 'Geseau.urls'
@@ -75,7 +78,7 @@ WSGI_APPLICATION = 'Geseau.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
-"""DATABASES = {
+DATABASES = {
     'default':{
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'geseaudatabase',
@@ -86,13 +89,8 @@ WSGI_APPLICATION = 'Geseau.wsgi.application'
     }
 }
 
-""" 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
+
+
 """
 DATABASES = {
     'default': {
@@ -105,6 +103,18 @@ DATABASES = {
     }
 }
 """
+
+#AWS S3 BUCKET = Stockage
+
+AWS_ACCES_KEY_ID = 'AKIAQMEY6HFOJ3NCZIEQ'
+AWS_SECRET_ACCES_KEY = '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'
+AWS_STORAGE_BUCKET_NAME = 'geseaubucket'
+AWS_S3_SIGNATURE_NAME = 's3v4'
+AWS_S3_REGION_NAME = 'eu-north-1'
+AWS_S3_FILE_OVERWRITE = False
+AWS_DEFAULT_ACL = None
+AWS_S3_VERITY = True
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto.S3Boto3Storage'
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
