@@ -83,7 +83,7 @@ DATABASES = {
     'default':{
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'geseaudatabase1',
-        'USER': 'mysuperuser',
+        'USER': 'admin',
         'PASSWORD': 'magx2000A#',
         'HOST':'geseaudatabase1.czawuiosm5x8.us-east-1.rds.amazonaws.com',
         'PORT':'3306',
