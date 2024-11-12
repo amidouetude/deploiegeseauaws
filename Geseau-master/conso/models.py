@@ -3,8 +3,6 @@ import random
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models import Sum
-from django.db.models import Index
-
 
 class Entreprise(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, null=True)
@@ -24,11 +22,7 @@ class Section(models.Model):
     nom_section = models.CharField(max_length=100, null=True, blank=True, verbose_name="Nom de la section")
     description = models.TextField(null=True, blank=True, verbose_name="Description")
     class Meta:
-      indexes = [
-        models.Index(fields=['entreprise', 'nom_section']),
-    ]
-    #class Meta:
-        #unique_together = ('entreprise', 'nom_section')
+        unique_together = ('entreprise', 'nom_section')
     def __str__(self):
         return self.nom_section
     
@@ -71,11 +65,7 @@ class Dispositif(models.Model):
     nom_lieu = models.CharField(max_length=100,null=True,blank=True,verbose_name="Le lieu où se trouve le dispositif")    
     source_eau = models.CharField(max_length=100,null = True, blank=True, verbose_name="Source d'eau")
     class Meta:
-      indexes = [
-        models.Index(fields=['section', 'nom_lieu']),
-    ]
-    #class Meta:
-        #unique_together = ('section', 'nom_lieu')
+        unique_together = ('section', 'nom_lieu')
     def __str__(self):
         return self.nom_lieu
 

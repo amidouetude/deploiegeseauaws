@@ -16,7 +16,7 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 SECRET_KEY = 'django-insecure-xgb^91p1sss(2u&*#m%4nipdj0nm=msaz93tkjh!va^tc$-7&#'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
 
@@ -35,8 +35,6 @@ INSTALLED_APPS = [
     'conso',
     'rest_framework',
     "corsheaders",
-    'django_cron',
-    'whitenoise.runserver_nostatic',
 ]
 
 MIDDLEWARE = [
@@ -49,7 +47,6 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
-    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 ROOT_URLCONF = 'Geseau.urls'
@@ -82,16 +79,27 @@ WSGI_APPLICATION = 'Geseau.wsgi.application'
 DATABASES = {
     'default':{
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'DatabaseGeseau',
-        'USER': 'admin',
+        'NAME': 'geseaudatabase',
+        'USER': 'mysuperuser',
         'PASSWORD': 'magx2000A#',
-        'HOST':'databasegeseau.czawuiosm5x8.us-east-1.rds.amazonaws.com',
+        'HOST':'geseaudatabase.czawuiosm5x8.us-east-1.rds.amazonaws.com',
         'PORT':'3306',
     }
 }
 
 
-
+"""
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'database',
+        'USER': 'root',
+        'PASSWORD': '',
+        'HOST':'localhost',
+        'PORT':'3306',
+    }
+}
+"""
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
